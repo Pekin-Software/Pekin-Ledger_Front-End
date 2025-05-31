@@ -68,14 +68,9 @@ function SignInForm({ navigate }) {
       Cookies.set("role", role, { path: "/" });
       Cookies.set("tenant", tenant_domain.split('.')[0], { path: "/" });
       Cookies.set("user", user, { path: "/" });
-<<<<<<< HEAD
       // Cookies.set("access_token", access_token, { path: "/" });
       // Cookies.set("refresh_token", refresh_token, { path: "/" });
-  
-=======
-      Cookies.set("access_token", access_token, { path: "/" });
-      Cookies.set("refresh_token", refresh_token, { path: "/" });
->>>>>>> 547edca765e835b7a796d71a9bbc983bb47bc6a6
+
       // Redirect user to the appropriate dashboard based on the role
       navigate(`/${role.toLowerCase()}`);
   
