@@ -23,15 +23,15 @@ export default function AdminDashboard() {
       // Get the refresh token from cookie
       const refreshToken = Cookies.get("refresh_token");
 
-      const response = await fetch("https://pekin-ledger.onrender.com/api/auth/logut/", {
+      const response = await fetch("https://pekin-ledger.onrender.com/api/auth/logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include", // still needed if server uses HttpOnly cookies
-        body: JSON.stringify({
-          refresh: refreshToken, // ✅ send refresh token here
-        }),
+        // body: JSON.stringify({
+        //   refresh: refreshToken, // ✅ send refresh token here
+        // }),
       });
 
       if (!response.ok) {
@@ -41,8 +41,8 @@ export default function AdminDashboard() {
       }
 
       // ✅ Clear any client-side cookies (whether or not backend does)
-      Cookies.remove("access_token", { path: "/" });
-      Cookies.remove("refresh_token", { path: "/" });
+      // Cookies.remove("access_token", { path: "/" });
+      // Cookies.remove("refresh_token", { path: "/" });
       Cookies.remove("role", { path: "/" });
       Cookies.remove("tenant", { path: "/" });
       Cookies.remove("user", { path: "/" });
