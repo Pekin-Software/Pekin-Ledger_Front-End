@@ -42,7 +42,9 @@ function SignInForm({ navigate }) {
   const handleLogin = async (e) => {
     e.preventDefault(); 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login/", {
+      // const response = await fetch("http://localhost:8000/api/auth/login/", {
+      const response = await fetch("https://pekin-ledger.onrender.com/api/auth/login/", {
+      
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -117,45 +119,167 @@ function SignInForm({ navigate }) {
 }
 
 function SignUpForm({ navigate}) {
+  const [formData, setFormData] = useState({
+    email: "",
+    username: "",
+    password: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    phone1: "",
+    phone2: "",
+    address: "",
+    city: "",
+    country: "Liberia",
+    date_of_birth: "",
+    nationality: "",
+    position: "Admin",
+    business_name: "",
+    photo: null,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "file" ? files[0] : value,
+    }));
+  };
+
+
     const [selectedCountry, setSelectedCountry] = useState("Liberia");
     const [selectedDialCode, setSelectedDialCode] = useState("+231");
-    const handleCountryChange = (e) => {
-      const countryName = e.target.value;
-      const country = countries.find((c) => c.name === countryName);
-      if (country) {
-        setSelectedCountry(country.name);
-        setSelectedDialCode(country.dialCode);
-      }
-    };
+
+  const handleCountryChange = (e) => {
+    const countryName = e.target.value;
+    const country = countries.find((c) => c.name === countryName);
+    if (country) {
+      setSelectedCountry(country.name);
+      setSelectedDialCode(country.dialCode);
+    }
+  };
   
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const payload = {
+  //     ...formData,
+  //     phone1: selectedDialCode + formData.phone1,
+  //     phone2: formData.phone2 || "",
+  //     country: selectedCountry,
+  //     photo: null,  // Explicitly set as null
+  //   };
+
+  //   try {
+  //     const response = await fetch("http://localhost:8000/api/create/", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json(); // 💡 This gives real backend errors
+  //       console.error("Signup failed:", errorData);
+  //       return;
+  //     }
+
+  //     const data = await response.json();
+  //     console.log("Signup successful:", data);
+  //     navigate("/login");
+  //   } catch (error) {
+  //     console.error("Error signing up:", error);
+  //   }
+  // };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    ...formData,
+    phone1: selectedDialCode + formData.phone1,
+    phone2: formData.phone2 || "",
+    country: selectedCountry,
+    photo: null,
+  };
+
+  try {
+    // 1. Send signup request
+    const response = await fetch("https://pekin-ledger.onrender.com/api/create/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Signup failed:", errorData);
+      return;
+    }
+
+    // 2. If successful, auto-login
+    const loginResponse = await fetch("https://pekin-ledger.onrender.com/api/auth/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: 'include',
+      body: JSON.stringify({
+        username: formData.username,
+        password: formData.password,
+      }),
+    });
+
+    if (!loginResponse.ok) {
+      const loginError = await loginResponse.json();
+      console.error("Auto-login failed:", loginError);
+      return;
+    }
+
+    const loginData = await loginResponse.json();
+    const { role, tenant_domain, user, access_token } = loginData;
+
+    Cookies.set("role", role, { path: "/" });
+    Cookies.set("tenant", tenant_domain.split('.')[0], { path: "/" });
+    Cookies.set("user", user, { path: "/" });
+    Cookies.set("access_token", access_token, { path: "/" });
+
+    navigate(`/${role.toLowerCase()}`);
+  } catch (error) {
+    console.error("Error during signup/login:", error);
+  }
+  };
+
+
     return (
-      <form className="auth-form sign-up-form">
+      <form className="auth-form sign-up-form" onSubmit={handleSubmit}>
         <h2 className="form-title">Create an account</h2>
         <p className="welcome-txt">Start your 30-day free trial.</p>
         <label htmlFor="business-name">Business Name</label>
-        <input type="text" placeholder="Enter your Business Name" className="auth-input" />
+        <input type="text"  name="business_name" placeholder="Enter your Business Name" className="auth-input" onChange={handleInputChange}  />
   
         <div></div>
   
         <div className="row-input">
           <div>
             <label htmlFor="first-name">First Name</label>
-            <input type="text" placeholder="Enter your First Name" className="auth-input" />
+            <input type="text"  name="first_name" placeholder="Enter your First Name" className="auth-input"  onChange={handleInputChange} />
           </div>
           <div >
           <label htmlFor="middle-name">Middle Name</label>
-          <input type="text" placeholder="Enter your Middle Name" className="auth-input" />
+          <input type="text"  name="middle_name" placeholder="Enter your Middle Name" className="auth-input" onChange={handleInputChange}  />
           </div>
           <div>
           <label htmlFor="last-name">Last Name</label>
-          <input type="text" placeholder="Enter your Last Name" className="auth-input" />
+          <input type="text"  name="last_name" placeholder="Enter your Last Name" className="auth-input" onChange={handleInputChange}  />
           </div>
         </div>
   
         <div className="row-input">
           <div >
             <label htmlFor="dob">Date of Birth</label>
-            <input type="date" className="auth-input" />
+            <input type="date"name="date_of_birth" className="auth-input" onChange={handleInputChange} />
           </div>
   
           <div>
@@ -171,30 +295,30 @@ function SignUpForm({ navigate}) {
           
           <div>
             <label htmlFor="nationality">Nationality</label>
-            <input type="text" placeholder="Enter your nationality" className="auth-input" />
+            <input type="text" name="nationality" placeholder="Enter your nationality" className="auth-input" onChange={handleInputChange} />
           </div>
         </div>
   
         <div className="row-input">
           <div>
             <label htmlFor="address">Address</label>
-            <input type="text" placeholder="Enter your address" className="auth-input" />
+            <input type="text" name="address" placeholder="Enter your address" className="auth-input" onChange={handleInputChange}  />
           </div>
           <div>
             <label htmlFor="city">City</label>
-            <input type="text" placeholder="Enter your city" className="auth-input" />
+            <input type="text"  name="city" placeholder="Enter your city" className="auth-input" onChange={handleInputChange} />
           </div>
           <div>
             <label htmlFor="mobile-number">Mobile Number</label>
             <section className="mobile-input">
               <select className="input-list" value={selectedDialCode} onChange={(e) => setSelectedDialCode(e.target.value)}>
                 {countries.map((country) => (
-                  <option key={country.dialCode} value={country.dialCode}>
+                  <option key={`${country.dialCode}-${country.code}`} value={country.dialCode}>
                     {country.dialCode}
                   </option>
                 ))}
               </select>
-              <input type="text" placeholder="775-123-456" className="phone-num" />
+              <input type="text" name="phone1"placeholder="775-123-456" className="phone-num"  onChange={handleInputChange} />
             </section>
           </div>
         </div>
@@ -203,17 +327,17 @@ function SignUpForm({ navigate}) {
         <div className="row-input">
           <div>
             <label htmlFor="email">Email</label>
-            <input type="email" placeholder="Enter your email" className="auth-input" />
+            <input type="email" name="email" placeholder="Enter your email" className="auth-input" onChange={handleInputChange} />
         
           </div>
           <div>
             <label htmlFor="username">Username</label>
-            <input type="text" placeholder="Enter your username" className="auth-input" />
+            <input type="text" name="username" placeholder="Enter your username" className="auth-input" onChange={handleInputChange}  />
           </div>
           
           <div> 
             <label htmlFor="password">Password</label>
-            <input type="password" placeholder="Enter your password" className="auth-input" />
+            <input type="password" name="password" placeholder="Enter your password" className="auth-input" onChange={handleInputChange} />
           </div>
         </div>
   

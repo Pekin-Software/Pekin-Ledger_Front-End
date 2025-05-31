@@ -19,7 +19,7 @@ export const ApiProvider = ({ children }) => {
   const apiBase = `http://${tenantDomain}.localhost:8000/api`;
   const categoriesUrl = `${apiBase}/categories/`;
   const productsUrl = `${apiBase}/products/`;
-
+  
   // Fetch Categories from API
   const fetchCategories = async () => {
     try {
@@ -187,6 +187,7 @@ const uploadProductImage = async (productId, file) => {
           "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${accessToken}`,
         },
+         credentials: "include", 
       });
   
       if (!response.ok) {
@@ -251,4 +252,5 @@ function useApi() {
 }
 
 export { useApi };
+
 
