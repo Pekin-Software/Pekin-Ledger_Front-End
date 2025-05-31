@@ -70,7 +70,6 @@ function SignInForm({ navigate }) {
       Cookies.set("user", user, { path: "/" });
       Cookies.set("access_token", access_token, { path: "/" });
       Cookies.set("refresh_token", refresh_token, { path: "/" });
-  
       // Redirect user to the appropriate dashboard based on the role
       navigate(`/${role.toLowerCase()}`);
   
