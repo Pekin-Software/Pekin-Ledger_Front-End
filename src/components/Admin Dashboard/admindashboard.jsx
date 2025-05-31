@@ -23,7 +23,7 @@ export default function AdminDashboard() {
       // Get the refresh token from cookie
       const refreshToken = Cookies.get("refresh_token");
 
-      const response = await fetch("http://localhost:8000/api/auth/logout/", {
+      const response = await fetch("https://pekin-ledger.onrender.com/api/auth/logut/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

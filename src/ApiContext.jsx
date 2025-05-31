@@ -187,6 +187,7 @@ const uploadProductImage = async (productId, file) => {
           "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${accessToken}`,
         },
+         credentials: "include", 
       });
   
       if (!response.ok) {

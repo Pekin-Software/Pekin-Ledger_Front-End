@@ -42,7 +42,9 @@ function SignInForm({ navigate }) {
   const handleLogin = async (e) => {
     e.preventDefault(); 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login/", {
+      // const response = await fetch("http://localhost:8000/api/auth/login/", {
+      const response = await fetch("https://pekin-ledger.onrender.com/api/auth/login/", {
+      
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -204,7 +206,7 @@ function SignUpForm({ navigate}) {
 
   try {
     // 1. Send signup request
-    const response = await fetch("http://localhost:8000/api/create/", {
+    const response = await fetch("https://pekin-ledger.onrender.com/api/create/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -219,7 +221,7 @@ function SignUpForm({ navigate}) {
     }
 
     // 2. If successful, auto-login
-    const loginResponse = await fetch("http://localhost:8000/api/auth/login/", {
+    const loginResponse = await fetch("https://pekin-ledger.onrender.com/api/auth/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
