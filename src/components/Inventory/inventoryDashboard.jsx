@@ -70,10 +70,11 @@ export default function InventoryDashboard() {
     <div className="inventory-container">
          {productsLoading ? (
         <p>Loading products...</p>
-      ) : productsError ? (
-        <p>Error: {productsError}</p>
       ) : !selectedProduct ? (
           <>
+          {/* : productsError ? (
+        // <p>Error: {productsError}</p>
+      )  */}
             <section className="overview">
               <h2>Inventory Overview</h2>
               <div className="card-container">
