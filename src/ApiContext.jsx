@@ -16,7 +16,7 @@ export const ApiProvider = ({ children }) => {
   const accessToken = Cookies.get("access_token");
   const csrfToken = Cookies.get("csrftoken");
 
-  const apiBase = `http://${tenantDomain}.localhost:8000/api`;
+  const apiBase = `https://${tenantDomain}.pekin-ledger.onrender.com/api/`;
   const categoriesUrl = `${apiBase}/categories/`;
   const productsUrl = `${apiBase}/products/`;
   
