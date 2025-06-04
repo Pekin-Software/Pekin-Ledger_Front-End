@@ -160,43 +160,9 @@ function SignUpForm({ navigate}) {
     }
   };
   
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const payload = {
-  //     ...formData,
-  //     phone1: selectedDialCode + formData.phone1,
-  //     phone2: formData.phone2 || "",
-  //     country: selectedCountry,
-  //     photo: null,  // Explicitly set as null
-  //   };
-
-  //   try {
-  //     const response = await fetch("http://localhost:8000/api/create/", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(payload),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json(); // 💡 This gives real backend errors
-  //       console.error("Signup failed:", errorData);
-  //       return;
-  //     }
-
-  //     const data = await response.json();
-  //     console.log("Signup successful:", data);
-  //     navigate("/login");
-  //   } catch (error) {
-  //     console.error("Error signing up:", error);
-  //   }
-  // };
-
+  
   const handleSubmit = async (e) => {
   e.preventDefault();
-
   const payload = {
     ...formData,
     phone1: selectedDialCode + formData.phone1,
@@ -207,7 +173,7 @@ function SignUpForm({ navigate}) {
 
   try {
     // 1. Send signup request
-    const response = await fetch("https://pekin-ledger.onrender.com/api/create/", {
+    const response = await fetch("https://pekingledger.store/api/create/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
