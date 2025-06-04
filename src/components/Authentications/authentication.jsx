@@ -38,23 +38,15 @@ function SignInForm({ navigate }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   
-  const getCookie = (name) => {
-    const cookieValue = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith(name + "="));
-    return cookieValue ? decodeURIComponent(cookieValue.split("=")[1]) : null;
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault(); 
-    const csrfToken = getCookie("csrftoken");
-    console.log(csrfToken)
     try {
       // const response = await fetch("http://localhost:8000/api/auth/login/", {
       const response = await fetch("https://pekingledger.store/api/auth/login/", {
       
         method: "POST",
-        headers: { "Content-Type": "application/json",  "X-CSRFToken": csrfToken,  },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
         credentials: 'include',  // Include cookies with the request
       });
