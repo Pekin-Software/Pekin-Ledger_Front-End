@@ -14,7 +14,7 @@ export const ApiProvider = ({ children }) => {
   // Get Tenant from Cookies
   const tenantDomain = Cookies.get("tenant"); 
   const accessToken = Cookies.get("access_token");
-  const csrfToken = Cookies.get("csrftoken");
+  // const csrfToken = Cookies.get("csrftoken");
 
   const apiBase = `https://${tenantDomain}.pekingledger.store/api`;
   const categoriesUrl = `${apiBase}/categories/`;
@@ -27,7 +27,7 @@ export const ApiProvider = ({ children }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
+          // "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${accessToken}`, // Manually add the access token
         },
       });
@@ -48,7 +48,7 @@ export const ApiProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
+          // "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${accessToken}`, // Manually add the access token
         },
         body: JSON.stringify(newCategory),
@@ -108,7 +108,7 @@ export const ApiProvider = ({ children }) => {
         body: JSON.stringify(mappedData), // Send JSON, not FormData
         headers: { 
           "Content-Type": "application/json", // Required for JSON API
-          "X-CSRFToken": csrfToken,
+          // "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${accessToken}`,
         },
       });
@@ -152,7 +152,7 @@ const uploadProductImage = async (productId, file) => {
     const response = await fetch(imageUploadUrl, {
       method: "POST",
       headers: {
-        "X-CSRFToken": csrfToken,
+        // "X-CSRFToken": csrfToken,
         "Authorization": `Bearer ${accessToken}`,
       },
       body: formData,
@@ -184,7 +184,7 @@ const uploadProductImage = async (productId, file) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
+          // "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${accessToken}`,
         },
          credentials: "include", 
