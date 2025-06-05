@@ -18,76 +18,42 @@ export default function AdminDashboard() {
     setTimeout(() => setLoading(false), 2000); // Simulate loading time
   }, []);
   
-  // const handleLogout = async () => {
-  //   try {
-  //     // Get the refresh token from cookie
-  //     const refreshToken = Cookies.get("refresh_token");
-
-  //     const response = await fetch("https://pekingledger.store/api/auth/logout/", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include", // still needed if server uses HttpOnly cookies
-  //       // body: JSON.stringify({
-  //       //   refresh: refreshToken, // ✅ send refresh token here
-  //       // }),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       console.error("Logout failed:", errorData.detail || "Unknown error");
-  //       return;
-  //     }
-
-  //     // ✅ Clear any client-side cookies (whether or not backend does)
-  //     // Cookies.remove("access_token", { path: "/" });
-  //     // Cookies.remove("refresh_token", { path: "/" });
-  //     Cookies.remove("role", { path: "/" });
-  //     Cookies.remove("tenant", { path: "/" });
-  //     Cookies.remove("user", { path: "/" });
-
-  //     // ✅ Navigate to login
-  //     navigate("/");
-
-  //     } catch (error) {
-  //       console.error("Logout error:", error);
-  //     }
-  // };
   const handleLogout = async () => {
-    const navigate = useNavigate();
-
     try {
+      // Get the refresh token from cookie
+      const refreshToken = Cookies.get("refresh_token");
+
       const response = await fetch("https://pekingledger.store/api/auth/logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Ensures cookies are sent cross-site
+        credentials: "include", // still needed if server uses HttpOnly cookies
+        // body: JSON.stringify({
+        //   refresh: refreshToken, // ✅ send refresh token here
+        // }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Logout failed:", errorData?.error || "Unknown error");
+        console.error("Logout failed:", errorData.detail || "Unknown error");
         return;
       }
 
-      // 🔐 Attempt to remove cookies (note: won't affect HttpOnly cookies)
-      const cookieOptions = { path: "/", domain: ".pekingledger.store" };
-      Cookies.remove("access_token", cookieOptions);
-      Cookies.remove("refresh_token", cookieOptions);
-      Cookies.remove("role", cookieOptions);
-      Cookies.remove("tenant", cookieOptions);
-      Cookies.remove("user", cookieOptions);
+      // ✅ Clear any client-side cookies (whether or not backend does)
+      // Cookies.remove("access_token", { path: "/" });
+      // Cookies.remove("refresh_token", { path: "/" });
+      Cookies.remove("role", { path: "/" });
+      Cookies.remove("tenant", { path: "/" });
+      Cookies.remove("user", { path: "/" });
 
-      // ✅ Redirect to login or landing page
+      // ✅ Navigate to login
       navigate("/");
 
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
   };
-
 
   const renderContent = () => {
     switch (activePage) {
