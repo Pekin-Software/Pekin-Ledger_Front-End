@@ -188,7 +188,7 @@ function SignUpForm({ navigate}) {
     }
 
     // 2. If successful, auto-login
-    const loginResponse = await fetch("https://pekin-ledger.onrender.com/api/auth/login/", {
+    const loginResponse = await fetch("https://pekingledger.store/api/auth/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
