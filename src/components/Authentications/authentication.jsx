@@ -119,7 +119,18 @@ function SignInForm({ navigate }) {
   );
 }
 
-function SignUpForm({ navigate}) {
+export function SignUpForm({ 
+  navigate,
+  title = "Create an account",
+  subtitle = "Start your 30-day free trial.",
+  usePositionInsteadOfBusinessName = false,
+  defaultPosition = "Admin",
+  apiEndpoint = "https://pekingledger.store/api/create/",
+  onSuccess,
+  showLoginLink = true,
+  submitButtonText = "Sign Up",
+  onSubmit, 
+}) {
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -134,7 +145,7 @@ function SignUpForm({ navigate}) {
     country: "Liberia",
     date_of_birth: "",
     nationality: "",
-    position: "Admin",
+    position: defaultPosition,
     business_name: "",
     photo: null,
   });
@@ -161,27 +172,96 @@ function SignUpForm({ navigate}) {
   };
   
   
+  // const handleSubmit = async (e) => {
+  // e.preventDefault();
+  // const payload = {
+  //   ...formData,
+  //   phone1: selectedDialCode + formData.phone1,
+  //   phone2: formData.phone2 || "",
+  //   country: selectedCountry,
+  //   photo: null,
+  // };
+
+  // try {
+  //   // 1. Send signup request
+  //   const response = await fetch("https://pekingledger.store/api/create/", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(payload),
+  //   });
+
+  //   if (!response.ok) {
+  //     const errorData = await response.json();
+  //     console.error("Signup failed:", errorData);
+  //     return;
+  //   }
+
+  //   // 2. If successful, auto-login
+  //   const loginResponse = await fetch("https://pekingledger.store/api/auth/login/", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     credentials: 'include',
+  //     body: JSON.stringify({
+  //       username: formData.username,
+  //       password: formData.password,
+  //     }),
+  //   });
+
+  //   if (!loginResponse.ok) {
+  //     const loginError = await loginResponse.json();
+  //     console.error("Auto-login failed:", loginError);
+  //     return;
+  //   }
+
+  //   const loginData = await loginResponse.json();
+  //   const { role, tenant_domain, user, access_token } = loginData;
+
+  //   Cookies.set("role", role, { path: "/" });
+  //   Cookies.set("tenant", tenant_domain.split('.')[0], { path: "/" });
+  //   Cookies.set("user", user, { path: "/" });
+  //   Cookies.set("access_token", access_token, { path: "/" });
+
+  //   navigate(`/${role.toLowerCase()}`);
+  // } catch (error) {
+  //   console.error("Error during signup/login:", error);
+  // }
+  // };
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const payload = {
-    ...formData,
-    phone1: selectedDialCode + formData.phone1,
-    phone2: formData.phone2 || "",
-    country: selectedCountry,
-    photo: null,
-  };
+    e.preventDefault();
 
-  try {
+    const payload = {
+      ...formData,
+      phone1: selectedDialCode + formData.phone1,
+      phone2: formData.phone2 || "",
+      country: selectedCountry,
+      photo: null,
+    };
+
+    if (usePositionInsteadOfBusinessName) {
+      delete payload.business_name;
+    } else {
+      delete payload.position;
+    }
+
+    if (onSubmit) {
+      // If custom onSubmit passed, call it with payload
+      onSubmit(payload);
+      return;
+    }
+    try {
     // 1. Send signup request
-    const response = await fetch("https://pekingledger.store/api/create/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+      const response = await fetch("https://pekingledger.store/api/create/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
       const errorData = await response.json();
       console.error("Signup failed:", errorData);
       return;
@@ -213,19 +293,49 @@ function SignUpForm({ navigate}) {
     Cookies.set("access_token", access_token, { path: "/" });
 
     navigate(`/${role.toLowerCase()}`);
-  } catch (error) {
-    console.error("Error during signup/login:", error);
-  }
-  };
-
+    } catch (error) {
+      console.error("Error during signup/login:", error);
+    }
+    };
 
     return (
       <form className="auth-form sign-up-form" onSubmit={handleSubmit}>
-        <h2 className="form-title">Create an account</h2>
+        {/* <h2 className="form-title">Create an account</h2>
         <p className="welcome-txt">Start your 30-day free trial.</p>
         <label htmlFor="business-name">Business Name</label>
-        <input type="text"  name="business_name" placeholder="Enter your Business Name" className="auth-input" onChange={handleInputChange}  />
-  
+        <input type="text"  name="business_name" placeholder="Enter your Business Name" className="auth-input" onChange={handleInputChange}  /> */}
+        {title && <h2 className="form-title">{title}</h2>}
+        {subtitle && <p className="welcome-txt">{subtitle}</p>}
+
+        {usePositionInsteadOfBusinessName ? (
+          <>
+            <label htmlFor="position">Position</label>
+            <select
+              name="position"
+              className="auth-input position-dropdown"
+              value={formData.position || ""}
+              onChange={handleInputChange}
+            >
+              <option value="">Select Position</option>
+              <option value="Manager">Manager</option>
+              <option value="Cashier">Cashier</option>
+            </select>
+          </>
+        ) : (
+          <>
+            <label htmlFor="business_name">Business Name</label>
+            <input
+              type="text"
+              name="business_name"
+              placeholder="Enter your Business Name"
+              className="auth-input"
+              value={formData.business_name || ""}
+              onChange={handleInputChange}
+            />
+          </>
+        )}
+
+
         <div></div>
   
         <div className="row-input">
@@ -309,11 +419,14 @@ function SignUpForm({ navigate}) {
         </div>
   
         
-        <button className="submit-button">Sign Up</button>
-        <p className="signup-txt">
-        Already have an account? 
-        <button onClick={() => navigate('/login')}>Login</button>
-      </p>
+        <button className="submit-button">{submitButtonText} </button>
+
+        {showLoginLink && (
+          <p className="signup-txt">
+            Already have an account?
+            <button onClick={() => navigate('/login')}>Login</button>
+          </p>
+        )}
       </form>
     );
-  }
+}
