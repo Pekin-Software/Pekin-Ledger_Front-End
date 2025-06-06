@@ -95,6 +95,8 @@
 
   .auth-input[type="date"]{
     width: 90%;
+    padding: 6px;
+    margin-top: 5px;
   }
   .auth-input[type="date"]::-webkit-calendar-picker-indicator{
     background-color: #ccc;
@@ -110,6 +112,7 @@
   
   .submit-button {
     padding: 10px;
+    margin-bottom: 30px;
     border: none;
     border-radius: 5px;
     background-color: #1366D9;
@@ -133,7 +136,7 @@
   
   .sign-up-form {
     width: 80%;
-    margin: auto;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     color: #282424;
@@ -147,45 +150,42 @@
     div{
       display: flex;
       flex-direction: column;
-      width: 31.9%;
+      width: 30%;
     }
     .auth-input {
-      width: 90%;
+      width: 100%;
     }
   }
 
   .countries{
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
+      padding: 6px;
+      margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 5px;
       background-color: transparent;
       color: #776c6c;
-     
   }
  
   .mobile-input{
     width: 100%;
     display: flex;
     gap: 2px;
-    flex-wrap: wrap;
-      
     }
 
   .input-list{
-    padding: 8px;
+    padding: 6px;
+    margin-top: 5px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: transparent;
     color: #776c6c;
     margin-right: 0;
-    width: 39%;
+    width: 30%;
     
   }
   .phone-num{
-   width: 49%;
+   flex: 1;
    padding: 8px;
    margin-bottom: 10px;
    border: 1px solid #ccc;
@@ -193,3 +193,8 @@
    background-color: transparent;
    color: #776c6c;
   }
+
+.position-dropdown {
+  width: 30%;         
+  padding: 6px;
+}

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Bell, Search, Settings, LogOut, LayoutDashboard, Package, BarChart, Truck, ShoppingCart, Store } from "lucide-react";
+import { Bell, Search, Settings, LogOut, LayoutDashboard, Package, BarChart, Truck, ShoppingCart, Store, User } from "lucide-react";
 import "./admindashboard.css";
 import Stores from "./Store Dashboard/store";
+import ManageStaff from "./Staff Dashboard/manageStaff";
 import InventoryDashboard from "../Inventory/inventoryDashboard";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
@@ -61,6 +62,8 @@ export default function AdminDashboard() {
         return <InventoryDashboard />;
       case "store":
         return <Stores />;
+      case "manageStaff":
+        return <ManageStaff />;
       default:
         return (
           <div className="dashboard-items">
@@ -101,11 +104,20 @@ export default function AdminDashboard() {
           <a href="#"><BarChart /> Reports</a>
           <a href="#"><Truck /> Suppliers</a>
           <a href="#"><ShoppingCart /> Orders</a>
-          <a 
-            href="#"
+          
+          <a href="#"
             className={activePage === "store" ? "active" : ""} 
             onClick={() => setActivePage("store")}
-          ><Store /> Manage Store</a>
+          >
+            <Store /> Manage Store
+          </a>
+
+          <a href="#"
+            className={activePage === "manageStaff" ? "active" : ""} 
+            onClick={() => setActivePage("manageStaff")}
+          >
+            <User /> Manage Staff
+          </a>
         </nav>
         <div className="bottom-links">
           <a href="#" className="settings">
