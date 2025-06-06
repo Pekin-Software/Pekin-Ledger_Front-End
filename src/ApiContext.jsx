@@ -14,7 +14,6 @@ export const ApiProvider = ({ children }) => {
   // Get Tenant from Cookies
   const tenantDomain = Cookies.get("tenant"); 
   const accessToken = Cookies.get("access_token");
-  // const csrfToken = Cookies.get("csrftoken");
 
   const apiBase = `https://${tenantDomain}.pekingledger.store/api`;
   const categoriesUrl = `${apiBase}/categories/`;
