@@ -40,7 +40,7 @@ export default function ManageStaff() {
 
     const handleCreateStaff = async (formData) => {
    
-    const apiUrl = `http://${tenantDomain}.pekingledger.store/api/users/add_users/`;
+    const apiUrl = `https://${tenantDomain}.pekingledger.store/api/users/add_users/`;
     
     try {
         const response = await fetch(apiUrl, {
