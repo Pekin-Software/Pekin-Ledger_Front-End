@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./storeDetails.css"; // Ensure you have a CSS file for styling
 // import { useApi } from "../../../ApiContext";
-
+import { useApi } from "../../../../ApiContext";
 
 export default function StoreDetails({ store, onClose }) {
   const back_btn = "/arrow.png";
