@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useApi } from "../../../ApiContext";
 import StoreProfile from "./storeProfile";
 import "./store.css";
+import StoreDetails from "./Store Details/storeDetails";
 
-function StoreCard({ store, onEdit }) {
+function StoreCard({ store, onEdit, onViewDetails }) {
   return (
     <div className="store-card">
       <div className="store-name">{store.store_name}</div>
@@ -13,13 +14,19 @@ function StoreCard({ store, onEdit }) {
         <p>{store.phone_number}</p>
         <p><strong>Manager:</strong> {store.managerName}</p>
         <p><strong>Manager Contact:</strong> {store.managerContact}</p>
-        <button className="edit-button" onClick={() => onEdit(store)}>Edit</button>
-      </div>
+        {/* <button className="edit-button" onClick={() => onEdit(store)}>Edit</button> */}
+      <button className="edit-button" onClick={(e) => {
+          e.stopPropagation(); // Prevent triggering the view
+          onEdit(store);
+        }}>Edit</button>
+     </div>
     </div>
+    
   );
 }
 
 export default function Stores() {
+  const [viewingStore, setViewingStore] = useState(null);
   const { storeData, fetchStores, addStore, updateStore } = useApi();
   const [selectedStore, setSelectedStore] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
@@ -52,16 +59,25 @@ export default function Stores() {
   };
 
   return (
+     viewingStore ? (
+    <StoreDetails
+      store={viewingStore} onClose={() => setViewingStore(null)}
+    />
+  ) : (
     <div className="store-container">
       <div className="store-header">
         <h2>Manage Stores</h2>
         <button className="add-store" onClick={handleAddStore}>Add Store</button>
       </div>
-      {/* Store list or empty message */}
       <div className="store-list scrollable">
         {storeData && storeData.length > 0 ? (
           storeData.map((store) => (
-            <StoreCard key={store.id} store={store} onEdit={handleEditStore} />
+            <StoreCard 
+              key={store.id} 
+              store={store} 
+              onEdit={handleEditStore} 
+              onViewDetails={(store) => setViewingStore(store)} 
+            />
           ))
         ) : (
           <p className="no-stores-message">No stores yet. Click "Add Store" to create one.</p>
@@ -75,5 +91,7 @@ export default function Stores() {
         />
       )}
     </div>
+  )
+
   );
 }
