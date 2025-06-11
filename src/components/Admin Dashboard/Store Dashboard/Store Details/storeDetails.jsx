@@ -52,48 +52,23 @@ export default function StoreDetails({ store, onClose }) {
             
             <section className="tab-content-product-detail">
               <div className="tab-content-left">
-                <h3>Product Details</h3>
+                <h3>Store Details</h3>
 
                 <div className="product-detail">
-                  <p className="info">Product Name: </p>
+                  <p className="info">Store Name: </p>
                   <p>{store.store_name}</p>
                 </div>
 
                 <div className="product-detail">
-                  <p className="info">Product ID: </p>
+                  <p className="info">Store ID: </p>
                   <p>{store.id}</p>
                 </div>
 
                 <div className="product-detail">
-                  <p className="info">Product Category: </p>
-                  <p>{store.category}</p>
-                </div>
-
-                <div className="product-detail">
-                  <p className="info">Expiry Date: </p>
-                  {
-                    store.expired_date || 
-                    (store.lots && store.lots.length > 0 && store.lots[0].expired_date) || 
-                    'N/A'
-                  }
-                </div>
-
-                <div className="product-detail">
-                  <p className="info">Threshold Value: </p>
-                  <p>{store.threshold_value}</p>
-                </div>
-
-                <section className="supplier-details">
-                  <h3>Supplier Details</h3>
-                  <div className="product-detail">
-                    <p className="info">Supplier Name: </p>
-                    <p>{store.name}</p>
-                  </div>
-                  <div className="product-detail">
                     <p className="info">Contact Number: </p>
-                    <p >{store.name} 0770-957-345</p>
-                  </div>
-                </section>
+                    <p >{store.phone_number}</p>
+                </div>
+               
               </div>
 
               <div className="tab-content-right"> 
@@ -162,7 +137,7 @@ export default function StoreDetails({ store, onClose }) {
 
           </section>
         );
-      case "Purchases":
+      case "Order":
         return (
           <div className="tab-content">
             <h3>Purchases</h3>
@@ -176,7 +151,7 @@ export default function StoreDetails({ store, onClose }) {
             <p>No sales data available.</p> {/* Replace with actual data */}
           </div>
         );
-      case "Restock":
+      case "Staff":
         return (
           <div className="tab-content">
             <h3>Restock Information</h3>
