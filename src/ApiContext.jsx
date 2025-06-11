@@ -229,69 +229,150 @@ const uploadProductImage = async (productId, file) => {
   
   //store request
   // ✅ Fetch all stores
-  const fetchStores = async () => {
-    try {
-      const response = await fetch(storesUrl, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+  // const fetchStores = async () => {
+  //   try {
+  //     const response = await fetch(storesUrl, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
 
-      if (!response.ok) throw new Error("Failed to fetch stores");
-      const storeList = await response.json();
-      setStoreData(storeList);
-    } catch (error) {
-      console.error("Error fetching stores:", error);
+  //     if (!response.ok) throw new Error("Failed to fetch stores");
+  //     const storeList = await response.json();
+  //     setStoreData(storeList);
+  //   } catch (error) {
+  //     console.error("Error fetching stores:", error);
+  //   }
+  // };
+
+  const fetchStores = async () => {
+  try {
+    const response = await fetch(storesUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const raw = await response.text(); // Read raw response body
+
+    if (!response.ok) {
+      console.error("Failed to fetch stores, raw response:", raw);
+      throw new Error("Failed to fetch stores");
     }
-  };
+
+    const storeList = JSON.parse(raw);
+    setStoreData(storeList);
+  } catch (error) {
+    console.error("Error fetching stores:", error);
+  }
+};
 
   // ✅ Add a new store
-  const addStore = async (newStore) => {
-    try {
-      const response = await fetch(`${storesUrl}create-store/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(newStore),
-      });
+  // const addStore = async (newStore) => {
+  //   try {
+  //     const response = await fetch(`${storesUrl}create-store/`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       body: JSON.stringify(newStore),
+  //     });
 
-      if (!response.ok) throw new Error("Failed to add store");
-      const createdStore = await response.json();
+  //     if (!response.ok) throw new Error("Failed to add store");
+  //     const createdStore = await response.json();
       
-      await fetchStores(); // ✅ Auto-refresh after add
-      return createdStore;
-    } catch (error) {
-      console.error("Error adding store:", error);
-      return null;
+  //     await fetchStores(); // ✅ Auto-refresh after add
+  //     return createdStore;
+  //   } catch (error) {
+  //     console.error("Error adding store:", error);
+  //     return null;
+  //   }
+  // };
+  const addStore = async (newStore) => {
+  try {
+    console.log("Sending new store data:", newStore); // 👈 log request payload
+
+    const response = await fetch(`${storesUrl}create-store/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(newStore),
+    });
+
+    const responseText = await response.text(); // Read raw response for debugging
+
+    if (!response.ok) {
+      console.error("Server error response:", responseText); // 👈 log server error body
+      throw new Error("Failed to add store");
     }
-  };
+
+    const createdStore = JSON.parse(responseText);
+    await fetchStores();
+    return createdStore;
+  } catch (error) {
+    console.error("❌ Error adding store:", error);
+    return null;
+  }
+};
+
 
   // ✅ Update an existing store
-  const updateStore = async (id, updatedStore) => {
-    try {
-      const response = await fetch(`${storesUrl}${id}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(updatedStore),
-      });
+  // const updateStore = async (id, updatedStore) => {
+  //   try {
+  //     const response = await fetch(`${storesUrl}${id}/`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       body: JSON.stringify(updatedStore),
+  //     });
 
-      if (!response.ok) throw new Error("Failed to update store");
-      const updated = await response.json();
+  //     if (!response.ok) throw new Error("Failed to update store");
+  //     const updated = await response.json();
       
-      await fetchStores(); // ✅ Auto-refresh after update
-      return updated;
-    } catch (error) {
-      console.error("Error updating store:", error);
-      return null;
+  //     await fetchStores(); // ✅ Auto-refresh after update
+  //     return updated;
+  //   } catch (error) {
+  //     console.error("Error updating store:", error);
+  //     return null;
+  //   }
+  // };
+  const updateStore = async (id, updatedStore) => {
+  try {
+    console.log(`Updating store ${id} with data:`, updatedStore); // 👈 log payload
+
+    const response = await fetch(`${storesUrl}${id}/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(updatedStore),
+    });
+
+    const responseText = await response.text(); // raw body
+
+    if (!response.ok) {
+      console.error("Server error response:", responseText); // 👈 server's error message
+      throw new Error("Failed to update store");
     }
-  };
+
+    const updated = JSON.parse(responseText);
+    await fetchStores();
+    return updated;
+  } catch (error) {
+    console.error("❌ Error updating store:", error);
+    return null;
+  }
+};
 
 
   return (
