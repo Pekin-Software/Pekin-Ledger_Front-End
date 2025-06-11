@@ -261,7 +261,8 @@ const uploadProductImage = async (productId, file) => {
 
       if (!response.ok) throw new Error("Failed to add store");
       const createdStore = await response.json();
-      setStoreData((prev) => [...prev, createdStore]);
+      
+      await fetchStores(); // ✅ Auto-refresh after add
       return createdStore;
     } catch (error) {
       console.error("Error adding store:", error);
@@ -283,15 +284,15 @@ const uploadProductImage = async (productId, file) => {
 
       if (!response.ok) throw new Error("Failed to update store");
       const updated = await response.json();
-      setStoreData((prev) =>
-        prev.map((store) => (store.id === id ? updated : store))
-      );
+      
+      await fetchStores(); // ✅ Auto-refresh after update
       return updated;
     } catch (error) {
       console.error("Error updating store:", error);
       return null;
     }
   };
+
 
   return (
     <ApiContext.Provider 
