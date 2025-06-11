@@ -10,6 +10,8 @@ export const ApiProvider = ({ children }) => {
   const [productsLoading, setProductsLoading] = useState(false);
   const [productsError, setProductsError] = useState(null);
   const [products, setProducts] = useState([]);
+  const [storeData, setStoreData] = useState([]);
+  
 
   // Get Tenant from Cookies
   const tenantDomain = Cookies.get("tenant"); 
@@ -18,7 +20,7 @@ export const ApiProvider = ({ children }) => {
   const apiBase = `https://${tenantDomain}.pekingledger.store/api`;
   const categoriesUrl = `${apiBase}/categories/`;
   const productsUrl = `${apiBase}/products/`;
-  
+  const storesUrl = `${apiBase}/store/`;
   // Fetch Categories from API
   const fetchCategories = async () => {
     try {
@@ -225,6 +227,72 @@ const uploadProductImage = async (productId, file) => {
     if (tenantDomain) fetchCategories();
   }, [tenantDomain]); // Fetch only when tenant is available
   
+  //store request
+  // ✅ Fetch all stores
+  const fetchStores = async () => {
+    try {
+      const response = await fetch(storesUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch stores");
+      const storeList = await response.json();
+      setStoreData(storeList);
+    } catch (error) {
+      console.error("Error fetching stores:", error);
+    }
+  };
+
+  // ✅ Add a new store
+  const addStore = async (newStore) => {
+    try {
+      const response = await fetch(`${storesUrl}create-store/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(newStore),
+      });
+
+      if (!response.ok) throw new Error("Failed to add store");
+      const createdStore = await response.json();
+      setStoreData((prev) => [...prev, createdStore]);
+      return createdStore;
+    } catch (error) {
+      console.error("Error adding store:", error);
+      return null;
+    }
+  };
+
+  // ✅ Update an existing store
+  const updateStore = async (id, updatedStore) => {
+    try {
+      const response = await fetch(`${storesUrl}${id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(updatedStore),
+      });
+
+      if (!response.ok) throw new Error("Failed to update store");
+      const updated = await response.json();
+      setStoreData((prev) =>
+        prev.map((store) => (store.id === id ? updated : store))
+      );
+      return updated;
+    } catch (error) {
+      console.error("Error updating store:", error);
+      return null;
+    }
+  };
+
   return (
     <ApiContext.Provider 
       value={{ 
@@ -236,6 +304,11 @@ const uploadProductImage = async (productId, file) => {
         productsLoading,
         productsError,
         uploadProductImage,
+
+        storeData,
+        fetchStores,
+        addStore,
+        updateStore,
       }}
     >
       {children}
