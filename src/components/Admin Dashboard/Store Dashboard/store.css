@@ -4,6 +4,15 @@
     margin: 15px 15px;
     background-color: #FFFFFF;
   }
+
+.store-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.store-card:hover {
+  transform: scale(1.01);
+}
   
 .store-header {
     display: flex;

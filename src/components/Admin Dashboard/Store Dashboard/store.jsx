@@ -6,7 +6,7 @@ import StoreDetails from "./Store Details/storeDetails";
 
 function StoreCard({ store, onEdit, onViewDetails }) {
   return (
-    <div className="store-card">
+    <div className="store-card"  onClick={() => onViewDetails(store)} >
       <div className="store-name">{store.store_name}</div>
       <div className="store-details">
         <p>{store.address}</p>
@@ -15,10 +15,12 @@ function StoreCard({ store, onEdit, onViewDetails }) {
         <p><strong>Manager:</strong> {store.managerName}</p>
         <p><strong>Manager Contact:</strong> {store.managerContact}</p>
         {/* <button className="edit-button" onClick={() => onEdit(store)}>Edit</button> */}
-      <button className="edit-button" onClick={(e) => {
-          e.stopPropagation(); // Prevent triggering the view
-          onEdit(store);
-        }}>Edit</button>
+
+      <button className="edit-button" 
+        onClick={(e) => {
+        e.stopPropagation(); //Prevents card click while editing
+        onEdit(store);
+      }}>Edit</button>
      </div>
     </div>
     
