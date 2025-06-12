@@ -11,10 +11,10 @@ export default function StoreStaff({storeID}) {
   const [availableUsers, setAvailableUsers] = useState([])
 
   useEffect(() => {
-    if (storeId) {
-      fetchStoreStaff(storeId);
+    if (storeID) {
+      fetchStoreStaff(storeID);
     }
-  }, [storeId]);
+  }, [storeID]);
 
   const handleAddStaffClick = () => {
     setShowModal(true);
@@ -69,7 +69,7 @@ export default function StoreStaff({storeID}) {
           />
         ))}
       </div>
-      
+
       {showModal && (
         <StaffListModal
           users={availableUsers}
