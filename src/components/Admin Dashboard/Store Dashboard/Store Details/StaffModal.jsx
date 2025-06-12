@@ -8,14 +8,13 @@ export default function StaffListModal({ onAddStaff, onClose }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const loadData = async () => {
-        setLoading(true);
-        await fetchUnassignedStaff();
-        setLoading(false);
-        };
-
-        loadData();
-    }, []);
+    const load = async () => {
+      setLoading(true);
+      await fetchUnassignedStaff();
+      setLoading(false);
+    };
+    load();
+  }, []);
 
   return (
     <div className="modal-overlay">
@@ -29,8 +28,8 @@ export default function StaffListModal({ onAddStaff, onClose }) {
             <p>Loading staff...</p>
           ) : UnassignedStaff.length > 0 ? (
             UnassignedStaff.map((user) => (
-              <StaffCard 
-                key={user.id || user.email} 
+              <StaffCard
+                key={user.email}
                 staff={user}
                 mode="add"
                 onAdd={onAddStaff}

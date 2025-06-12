@@ -53,20 +53,13 @@ export default function StoreStaff({storeID}) {
 
       <div className="staff-list">
         {storeStaffList.map((staff, index) => (
-          <StaffCard
-            key={index}
-            staff={{
-              id: index,
-              name: `${staff.first_name} ${staff.last_name}`,
-              address: staff.address,
-              contact: staff.email,
-              position: staff.position,
-              phone: `${staff.phone1}${staff.phone2 ? ` / ${staff.phone2}` : ""}`,
-            }}
-            mode="view"
-            onChangePosition={handleChangePosition}
-            onDelete={handleDelete}
-          />
+        <StaffCard
+          key={staff.email}
+          staff={staff}
+          mode="view"
+          onChangePosition={handleChangePosition}
+          onDelete={handleDelete}
+        />
         ))}
       </div>
 
