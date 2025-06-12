@@ -1,8 +1,22 @@
 import React from "react";
 import './storeDetails.css'
 import StaffCard from "./StaffCard";
+import { useApi } from "../../../../ApiContext";
 
-export default function StaffListModal({ users, onAddStaff, onClose }) {
+export default function StaffListModal({ onAddStaff, onClose }) {
+    const { fetchUnassignedStaff, UnassignedStaff } = useApi();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadData = async () => {
+        setLoading(true);
+        await fetchUnassignedStaff();
+        setLoading(false);
+        };
+
+        loadData();
+    }, []);
+
   return (
     <div className="modal-overlay">
       <div className="staff-modal">
@@ -11,13 +25,16 @@ export default function StaffListModal({ users, onAddStaff, onClose }) {
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
         <div className="staff-content">
-          {users.length > 0 ? (
-            users.map((user) => (
+          {loading ? (
+            <p>Loading staff...</p>
+          ) : UnassignedStaff.length > 0 ? (
+            UnassignedStaff.map((user) => (
               <StaffCard 
-                key={user.id} 
+                key={user.id || user.email} 
                 staff={user}
                 mode="add"
-                onAdd={onAddStaff} />
+                onAdd={onAddStaff}
+              />
             ))
           ) : (
             <p>No available staff to assign.</p>
