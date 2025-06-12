@@ -11,7 +11,10 @@ export const ApiProvider = ({ children }) => {
   const [productsError, setProductsError] = useState(null);
   const [products, setProducts] = useState([]);
   const [storeData, setStoreData] = useState([]);
-  
+  const [subaccounts, setSubaccounts] = useState([]);
+  const [StoreStaff, setStoreStaff] = useState([]);
+  const [UnassignedStaff, setUnassignedStaff] = useState([]);
+
 
   // Get Tenant from Cookies
   const tenantDomain = Cookies.get("tenant"); 
@@ -21,6 +24,67 @@ export const ApiProvider = ({ children }) => {
   const categoriesUrl = `${apiBase}/categories/`;
   const productsUrl = `${apiBase}/products/`;
   const storesUrl = `${apiBase}/store/`;
+
+  // Fetch all subaccounts (excluding Admins)
+  const fetchSubaccounts = async () => {
+    try {
+      const response = await fetch(`${apiBase}/users/staff/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const raw = await response.text();
+      if (!response.ok) throw new Error("Failed to fetch subaccounts");
+      const data = JSON.parse(raw);
+      setSubaccounts(data);
+    } catch (error) {
+      console.error("Error fetching subaccounts:", error);
+    }
+  };
+
+  // Fetch staff assigned to a specific store (based on store ID)
+  const fetchStoreStaff = async (storeId) => {
+    try {
+      const response = await fetch(`${storesUrl}${storeId}/list-staff/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const raw = await response.text();
+      if (!response.ok) throw new Error("Failed to fetch store staff");
+      const data = JSON.parse(raw);
+      setStoreStaff(data);
+    } catch (error) {
+      console.error("Error fetching store staff:", error);
+    }
+  };
+
+  // Fetch unassigned staff (not linked to any store)
+  const fetchUnassignedStaff = async () => {
+    try {
+      const response = await fetch(`${apiBase}/users/staff-unassigned/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const raw = await response.text();
+      if (!response.ok) throw new Error("Failed to fetch unassigned staff");
+      const data = JSON.parse(raw);
+      setUnassignedStaff(data);
+    } catch (error) {
+      console.error("Error fetching unassigned staff:", error);
+    }
+  };
+
   // Fetch Categories from API
   const fetchCategories = async () => {
     try {
@@ -229,24 +293,6 @@ const uploadProductImage = async (productId, file) => {
   
   //store request
   // ✅ Fetch all stores
-  // const fetchStores = async () => {
-  //   try {
-  //     const response = await fetch(storesUrl, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     });
-
-  //     if (!response.ok) throw new Error("Failed to fetch stores");
-  //     const storeList = await response.json();
-  //     setStoreData(storeList);
-  //   } catch (error) {
-  //     console.error("Error fetching stores:", error);
-  //   }
-  // };
-
   const fetchStores = async () => {
   try {
     const response = await fetch(storesUrl, {
@@ -272,27 +318,6 @@ const uploadProductImage = async (productId, file) => {
 };
 
   // ✅ Add a new store
-  // const addStore = async (newStore) => {
-  //   try {
-  //     const response = await fetch(`${storesUrl}create-store/`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //       body: JSON.stringify(newStore),
-  //     });
-
-  //     if (!response.ok) throw new Error("Failed to add store");
-  //     const createdStore = await response.json();
-      
-  //     await fetchStores(); // ✅ Auto-refresh after add
-  //     return createdStore;
-  //   } catch (error) {
-  //     console.error("Error adding store:", error);
-  //     return null;
-  //   }
-  // };
   const addStore = async (newStore) => {
   try {
     console.log("Sending new store data:", newStore); // 👈 log request payload
@@ -324,27 +349,6 @@ const uploadProductImage = async (productId, file) => {
 
 
   // ✅ Update an existing store
-  // const updateStore = async (id, updatedStore) => {
-  //   try {
-  //     const response = await fetch(`${storesUrl}${id}/`, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //       body: JSON.stringify(updatedStore),
-  //     });
-
-  //     if (!response.ok) throw new Error("Failed to update store");
-  //     const updated = await response.json();
-      
-  //     await fetchStores(); // ✅ Auto-refresh after update
-  //     return updated;
-  //   } catch (error) {
-  //     console.error("Error updating store:", error);
-  //     return null;
-  //   }
-  // };
   const updateStore = async (id, updatedStore) => {
   try {
     console.log(`Updating store ${id} with data:`, updatedStore); // 👈 log payload
@@ -391,6 +395,13 @@ const uploadProductImage = async (productId, file) => {
         fetchStores,
         addStore,
         updateStore,
+
+        subaccounts,
+        StoreStaff,
+        UnassignedStaff,
+        fetchSubaccounts,
+        fetchStoreStaff,
+        fetchUnassignedStaff,
       }}
     >
       {children}

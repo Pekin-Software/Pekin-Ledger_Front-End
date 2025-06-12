@@ -1,137 +1,36 @@
 import React, { useState } from "react";
-import "./storeDetails.css"; // Ensure you have a CSS file for styling
-// import { useApi } from "../../../ApiContext";
+import "./storeDetails.css"; 
+import StoreStaff from "./StoreStaff";
 import { useApi } from "../../../../ApiContext";
 
 export default function StoreDetails({ store, onClose }) {
   const back_btn = "/arrow.png";
-  const { uploadProductImage } = useApi();
-  const [imageFile, setImageFile] = useState(null); // actual file to send
-
   const [activeTab, setActiveTab] = useState("Overview"); // State to track active tab
 
-  const [image, setImage] = useState(null);
-
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImageFile(file); // Store file for upload
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result); // preview
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  const handleUploadImage = async (productId) => {
-    if (!imageFile) return;
-    const result = await uploadProductImage(productId, imageFile);
-    if (result) {
-      alert("✅ Image uploaded successfully!");
-    } else {
-      alert("❌ Failed to upload image.");
-    }
-  };
-
-  const stockData = [
-    { storeName: "Main Branch", stock: 120 },
-    { storeName: "Downtown", stock: 85 },
-    { storeName: "Uptown", stock: 42 },
-    { storeName: "Suburb", stock: 230 },
-    { storeName: "Warehouse", stock: 500 },
-    { storeName: "Warehouse", stock: 500 },
-    { storeName: "Warehouse", stock: 500 },
-    // add more to test scroll
-  ];
   const renderTabContent = () => {
     switch (activeTab) {
       case "Overview":
         return (
-          <section className="tab-content">
+          <section className="overview-content">
             
-            <section className="tab-content-product-detail">
-              <div className="tab-content-left">
-                <h3>Store Details</h3>
+            <section className="store-info">
+              <div className="store-info-txt">
+                <h3>{store.store_name} </h3>
 
-                <div className="product-detail">
-                  <p className="info">Store Name: </p>
-                  <p>{store.store_name}</p>
-                </div>
-
-                <div className="product-detail">
-                  <p className="info">Store ID: </p>
-                  <p>{store.id}</p>
-                </div>
-
-                <div className="product-detail">
-                    <p className="info">Contact Number: </p>
-                    <p >{store.phone_number}</p>
+                <div className="address">
+                    <p >{store.city}, {store.country}</p>
+                    <p >{store.phone_number}</p> 
+                    <h4 >Manager: {store.managerName} </h4>
                 </div>
                
               </div>
-
-              <div className="tab-content-right"> 
-                <section className="image-upload">
-                  <label htmlFor="image-upload" className="image-holder">
-                    {/* {image ? <img src={image} alt="Product" /> : "Drag image or Browse"} */}
-                    {image 
-                      ? <img src={image} alt="Product Preview" />
-                      : store.image 
-                        ? <img src={store.image} alt="Existing Product" />
-                        : "Drag image or Browse"
-                    }
-
-                  </label>
-                  <input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} hidden />
-                    <button 
-                      className="upload-btn" 
-                      onClick={() => handleUploadImage(store.id)} 
-                      disabled={!imageFile}
-                    >
-                    Upload Image
-                  </button>
-                </section>
-
-                <section>
-                  <div className="product-detail">
-                    <p className="info-right">Opening Stock: </p>
-                    <p>40</p>
-                  </div>
-
-                  <div className="product-detail">
-                    <p className="info-right">Remaining Stock: </p>
-                    <p>36</p>
-                  </div>
-
-                  <div className="product-detail">
-                    <p className="info-right">On the way: </p>
-                    <p>15</p>
-                  </div>
-                </section>
-              </div>
             </section>
 
-            <section className="tab-content-store-list">
-              <h3 className="sticky-heading">Stock Locations</h3>
+            <section className="store-data-graph">
+              <h3 className="sticky-heading">Revenue Graphs</h3>
 
               <div className="table-wrapper">
-                <table className="stock-table">
-                  <thead>
-                    <tr>
-                      <th className="stores">Store Name</th>
-                      <th className="stock-detail">Stock at hand</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stockData.map((row, idx) => (
-                      <tr key={idx}>
-                        <td className="store">{row.storeName}</td>
-                        <td className="stock-value">{row.stock}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+               
               </div>
             </section>
 
@@ -140,7 +39,7 @@ export default function StoreDetails({ store, onClose }) {
       case "Order":
         return (
           <div className="tab-content">
-            <h3>Purchases</h3>
+            <h3>Order</h3>
             <p>No purchase data available.</p> {/* Replace with actual data */}
           </div>
         );
@@ -154,8 +53,7 @@ export default function StoreDetails({ store, onClose }) {
       case "Staff":
         return (
           <div className="tab-content">
-            <h3>Restock Information</h3>
-            <p>Restock is due in 30 days.</p> {/* Replace with actual restock info */}
+             <StoreStaff />
           </div>
         );
       default:
@@ -164,7 +62,7 @@ export default function StoreDetails({ store, onClose }) {
   };
 
   return (
-    <div className="product-detail-container">
+    <div className="store-detail-container">
       <div className="product-detail-modal">
         {/* Close Button */}
         <section className="model-ctrl">
@@ -181,10 +79,10 @@ export default function StoreDetails({ store, onClose }) {
               Overview
             </li>
             <li
-              className={activeTab === "Purchases" ? "active" : ""}
-              onClick={() => setActiveTab("Purchases")}
+              className={activeTab === "Order" ? "active" : ""}
+              onClick={() => setActiveTab("Order")}
             >
-              Purchases
+              Order
             </li>
             <li
               className={activeTab === "Sales" ? "active" : ""}
@@ -193,10 +91,10 @@ export default function StoreDetails({ store, onClose }) {
               Sales
             </li>
             <li
-              className={activeTab === "Restock" ? "active" : ""}
-              onClick={() => setActiveTab("Restock")}
+              className={activeTab === "Staff" ? "active" : ""}
+              onClick={() => setActiveTab("Staff")}
             >
-              Restock
+              Staff
             </li>
           </ul>
         </div>
