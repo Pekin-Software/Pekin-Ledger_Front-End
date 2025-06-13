@@ -53,7 +53,7 @@ export default function StoreDetails({ store, onClose }) {
       case "Staff":
         return (
           <div className="tab-content">
-             <StoreStaff />
+             <StoreStaff storeID={store.id}/>
           </div>
         );
       default:
