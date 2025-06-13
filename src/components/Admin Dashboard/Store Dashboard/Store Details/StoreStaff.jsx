@@ -101,10 +101,43 @@ export default function StoreStaff({ storeID }) {
     setShowModal(true);
   };
 
-  const handleAddStaff = (user) => {
-    setStaffList((prev) => [...prev, user]);
-    setShowModal(false);
+  // const handleAddStaff = (user) => {
+  //   setStaffList((prev) => [...prev, user]);
+  //   setShowModal(false);
+  // };
+  const handleAddStaff = async (user) => {
+    try {
+      const accessToken = Cookies.get("access_token");
+      const response = await fetch(`https://pekingledger.store/api/store/${storeID}/add-staff/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // from your context
+        },
+        body: JSON.stringify({ username: user.username }),
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        console.error("Failed to add staff, server response:", errorResponse);
+        throw new Error(`Error: ${errorResponse?.detail || response.statusText}`);
+      }
+
+      // Optionally get updated staff data from the response
+      const addedStaff = await response.json();
+
+      // Update UI
+      setStaffList((prev) => [...prev, addedStaff]);
+      setAvailableUsers((prev) => prev.filter((u) => u.id !== user.id));
+      setShowModal(false);
+
+      console.log("Successfully added staff:", addedStaff);
+    } catch (error) {
+      console.error("Error adding staff:", error);
+      alert("Failed to assign staff to store.");
+    }
   };
+
 
   const handleChangePosition = (staff) => {
     const updatedList = staffList.map((s) =>
