@@ -98,7 +98,7 @@ export default function Stores() {
         <button className="add-store" onClick={handleAddStore}>Add Store</button>
       </div>
       <div className="store-list scrollable">
-        {/* {storeData && storeData.length > 0 ? (
+        {storeData && storeData.length > 0 ? (
           storeData.map((store) => (
             <StoreCard 
               key={store.id} 
@@ -109,20 +109,7 @@ export default function Stores() {
           ))
         ) : (
           <p className="no-stores-message">No stores yet. Click "Add Store" to create one.</p>
-        )} */}
-        <StoreCard 
-              store={{
-                store_name: "Paynesville Branch",
-                address: "ELWA Junction",
-                city: "Paynesville City",
-                country: "Liberia",
-                phone_number: "0775441329",
-                managerName: "Johnson",
-                managerContact: "0775441329",
-              }}
-              onEdit={handleEditStore}
-              onViewDetails={(store) => setViewingStore(store)}
-            />
+        )}
       </div>
       {showProfile && (
         <StoreProfile
