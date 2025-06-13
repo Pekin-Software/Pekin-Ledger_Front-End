@@ -91,6 +91,12 @@ export default function StoreStaff({ storeID }) {
     }
   }, [storeID]);
 
+  useEffect(() => {
+  if (storeStaffList) {
+    console.log("Fetched Store Staff:", storeStaffList);
+  }
+}, [storeStaffList]);
+
   const handleAddStaffClick = () => {
     setShowModal(true);
   };
