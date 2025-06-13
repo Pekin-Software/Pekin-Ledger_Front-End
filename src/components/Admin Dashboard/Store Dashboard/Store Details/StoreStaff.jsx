@@ -79,6 +79,7 @@ import "./storeDetails.css";
 import StaffListModal from "./StaffModal";
 import StaffCard from "./StaffCard";
 import { useApi } from "../../../../ApiContext";
+import Cookies from "js-cookie";
 
 export default function StoreStaff({ storeID }) {
   const { fetchStoreStaff, StoreStaff: storeStaffList } = useApi();
