@@ -179,6 +179,8 @@ export default function StoreStaff({ storeID }) {
 
       {showModal && (
         <StaffListModal
+          storeID={storeID}
+          users={availableUsers}
           onAddStaff={handleAddStaff}
           onClose={() => setShowModal(false)}
         />
