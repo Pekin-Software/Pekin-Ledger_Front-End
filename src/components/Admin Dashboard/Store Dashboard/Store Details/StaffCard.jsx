@@ -112,7 +112,7 @@ export default function StaffCard({ staff, mode, onAdd, onChangePosition, onDele
       <div className="staff-info">
         <div className="staff-actions">
           <div>
-            <p className="staff-name">{staff.first_name} {staff.last_name}</p>
+            <p className="staff-name">{staff.first_name} <br /> {staff.last_name}</p>
             <p className="staff-role">{staff.position}</p>
           </div>
 
@@ -128,17 +128,13 @@ export default function StaffCard({ staff, mode, onAdd, onChangePosition, onDele
             <p>Address:</p>
             <p>City:</p>
             <p>Email:</p>
-            <p>Phone 1:</p>
-            <p>Phone 2:</p>
-            <p>Position:</p>
+            <p>Phone:</p>
           </div>
           <div>
             <p>{staff.address}</p>
             <p>{staff.city}</p>
             <p>{staff.email}</p>
-            <p>{staff.phone1}</p>
-            <p>{staff.phone2}</p>
-            <p>{staff.position}</p>
+            <p>{staff.phone1} {staff.phone2}</p>
           </div>
         </div>
 
