@@ -3,7 +3,7 @@ import "./storeDetails.css";
 import StaffCard from "./StaffCard";
 import { useApi } from "../../../../ApiContext";
 
-export default function StaffListModal({ onAddStaff, onClose }) {
+export default function StaffListModal({ storeID, onAddStaff, onClose }) {
   const { fetchUnassignedStaff, UnassignedStaff } = useApi();
   const [loading, setLoading] = useState(true);
 
