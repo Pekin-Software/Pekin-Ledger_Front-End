@@ -108,8 +108,9 @@ export default function StoreStaff({ storeID }) {
   // };
   const handleAddStaff = async (user) => {
     try {
+      const tenantDomain = Cookies.get("tenant"); 
       const accessToken = Cookies.get("access_token");
-      const response = await fetch(`https://pekingledger.store/api/store/${storeID}/add-staff/`, {
+      const response = await fetch(`https://${tenantDomain}.pekingledger.store/api/store/${storeID}/add-staff/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
