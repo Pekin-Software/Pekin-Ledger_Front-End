@@ -129,7 +129,6 @@ export default function StoreStaff({ storeID }) {
 
       // Update UI
       setStaffList((prev) => [...prev, addedStaff]);
-      setAvailableUsers((prev) => prev.filter((u) => u.id !== user.id));
       setShowModal(false);
 
       console.log("Successfully added staff:", addedStaff);
@@ -179,8 +178,7 @@ export default function StoreStaff({ storeID }) {
 
       {showModal && (
         <StaffListModal
-          storeID={storeID}
-          users={availableUsers}
+          storeID={storeID} 
           onAddStaff={handleAddStaff}
           onClose={() => setShowModal(false)}
         />
