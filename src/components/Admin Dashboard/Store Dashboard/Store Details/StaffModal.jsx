@@ -59,7 +59,6 @@ export default function StaffListModal({ onAddStaff, onClose }) {
       setLoading(true);
       await fetchUnassignedStaff();
       setLoading(false);
-      console.log("Fetched Unassigned Staff:", UnassignedStaff); // Log here
     };
     load();
   }, []);
