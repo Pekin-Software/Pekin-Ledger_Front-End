@@ -59,9 +59,17 @@ export default function StaffListModal({ onAddStaff, onClose }) {
       setLoading(true);
       await fetchUnassignedStaff();
       setLoading(false);
+      console.log("Fetched Unassigned Staff:", UnassignedStaff); // Log here
     };
     load();
   }, []);
+
+  useEffect(() => {
+  if (UnassignedStaff) {
+    console.log("Fetched Unassigned Staff:", UnassignedStaff);
+  }
+}, [UnassignedStaff]);
+
 
   return (
     <div className="modal-overlay">
