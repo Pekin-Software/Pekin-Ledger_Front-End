@@ -1,0 +1,104 @@
+.item-card {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.637); 
+}
+
+.item-card.selected {
+  background-color: #e0f0ff;
+}
+
+.item-img-container {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fallback-icon {
+  color: #aaa;
+}
+
+.item-details {
+  flex-grow: 1;
+}
+
+.item-name {
+  font-weight: bold;
+}
+
+.item-price,
+.item-name {
+  font-size: 0.7rem;
+  margin-bottom: 2px;
+}
+
+.quantity-ctrl {
+  display: flex;
+  gap: 2px;
+  padding-bottom: 5px;
+}
+
+.quantity-ctrl input {
+  width: 35px;
+  text-align: center;
+  border: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.quantity-ctrl button {
+  padding: 2px 6px;
+  cursor: pointer;
+  border: none;
+  background-color: #054bac;
+  color: white;
+}
+
+/* Remove arrows in inputs */
+.quantity-ctrl input::-webkit-outer-spin-button,
+.quantity-ctrl input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.quantity-ctrl input[type=number] {
+  appearance: textfield;
+}
+
+@media (max-width: 1024px) {
+  .item-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-left: none;
+    padding: 0 0 .7rem;
+  }
+
+  .item-img-container {
+    margin-right: 0;
+    margin-bottom: 0.5rem; 
+    width: 100%;
+    height: 100px;
+  }
+
+  .item-details {
+    width: 100%;
+  }
+   .quantity-ctrl {
+   justify-content: center;
+  }
+}
+
+
