@@ -286,11 +286,6 @@ const uploadProductImage = async (productId, file) => {
     
   };
   
-  // Load Categories when Component Mounts
-  useEffect(() => {
-    if (tenantDomain) fetchCategories();
-  }, [tenantDomain]); // Fetch only when tenant is available
-  
   //store request
   // ✅ Fetch all stores
   const fetchStores = async () => {
