@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Package } from 'lucide-react';
-import './reciept.css';
+import './cart.css';
 import { PaymentController } from './PaymentController';
 import DiscountModal from './DiscountModal';
 
