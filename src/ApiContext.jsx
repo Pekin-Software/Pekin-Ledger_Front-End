@@ -137,10 +137,12 @@ export const ApiProvider = ({ children }) => {
       category: parseInt(selectedCategory, 10), // Convert category to integer
       unit: selectedUnit, // Required
       threshold_value: parseInt(formData.threshold_value, 10), // Convert to integer
-      attributes: attributes.map(attr => ({
-        name: attr.name,
-        value: attr.value,
-      })), // Ensure attributes is an array
+      attributes: attributes
+        .filter(attr => attr.name.trim() !== "" && attr.value.trim() !== "")
+        .map(attr => ({
+          name: attr.name,
+          value: attr.value,
+        })),
       lots: formData.lots.map(lot => ({
         purchase_date: lot.purchased_date,
         quantity: parseInt(lot.quantity, 10),
@@ -170,6 +172,8 @@ export const ApiProvider = ({ children }) => {
   
       console.log("✅ Product successfully added!");
       const created = await response.json();
+
+      await fetchProducts();
 
     // ✅ Now fetch full product by ID
     const fullResponse = await fetch(`${productsUrl}${created.id}/`, {
