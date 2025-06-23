@@ -15,10 +15,19 @@ export const ApiProvider = ({ children }) => {
   const [StoreStaff, setStoreStaff] = useState([]);
   const [UnassignedStaff, setUnassignedStaff] = useState([]);
 
+  const [tenantDomain, setTenantDomain] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
-  // Get Tenant from Cookies
-  const tenantDomain = Cookies.get("tenant"); 
-  const accessToken = Cookies.get("access_token");
+  useEffect(() => {
+    setTenantDomain(Cookies.get("tenant"));
+    setAccessToken(Cookies.get("access_token"));
+  }, []);
+
+  const getAuthHeaders = (isJson = true) => ({
+  ...(isJson && { "Content-Type": "application/json" }),
+  Authorization: `Bearer ${accessToken}`,
+  });
+
 
   const apiBase = `https://${tenantDomain}.pekingledger.store/api`;
   const categoriesUrl = `${apiBase}/categories/`;
@@ -30,10 +39,7 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await fetch(`${apiBase}/users/staff/`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: getAuthHeaders()
       });
 
       const raw = await response.text();
@@ -50,10 +56,7 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await fetch(`${storesUrl}${storeId}/list-staff/`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: getAuthHeaders()
       });
 
       const raw = await response.text();
@@ -70,10 +73,8 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await fetch(`${apiBase}/users/staff-unassigned/`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: getAuthHeaders()
+
       });
 
       const raw = await response.text();
@@ -90,11 +91,8 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await fetch(categoriesUrl, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // "X-CSRFToken": csrfToken,
-          "Authorization": `Bearer ${accessToken}`, // Manually add the access token
-        },
+        headers: getAuthHeaders()
+
       });
 
       if (!response.ok) throw new Error("Failed to fetch categories");
@@ -111,11 +109,7 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await fetch(categoriesUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // "X-CSRFToken": csrfToken,
-          "Authorization": `Bearer ${accessToken}`, // Manually add the access token
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(newCategory),
         // credentials: "include", // Sends cookies automatically
       });
@@ -137,10 +131,9 @@ export const ApiProvider = ({ children }) => {
   };
 
   // Add Product to API without image
-  const addProduct = async (formData, selectedCategory, selectedUnit, attributes, wholesaleDiscounts, retailDiscounts) => {
+  const addProduct = async (formData, selectedCategory, selectedUnit, attributes) => {
     const mappedData = {
       product_name: formData.product_name, // Required
-      description: formData.description, // Required
       category: parseInt(selectedCategory, 10), // Convert category to integer
       unit: selectedUnit, // Required
       threshold_value: parseInt(formData.threshold_value, 10), // Convert to integer
@@ -149,19 +142,14 @@ export const ApiProvider = ({ children }) => {
         value: attr.value,
       })), // Ensure attributes is an array
       lots: formData.lots.map(lot => ({
-        purchased_date: lot.purchased_date,
+        purchase_date: lot.purchased_date,
         quantity: parseInt(lot.quantity, 10),
         expired_date: lot.expired_date,
         wholesale_purchase_price: parseFloat(lot.wholesale_purchase_price),
         retail_purchase_price: parseFloat(lot.retail_purchase_price),
+        wholesale_quantity: parseFloat(lot.wholesale_quantity),
         wholesale_selling_price: parseFloat(lot.wholesale_selling_price),
         retail_selling_price: parseFloat(lot.retail_selling_price),
-        wholesale_discount_price: wholesaleDiscounts
-          .filter(discount => discount.price)
-          .map(discount => ({ value: parseFloat(discount.price) })),
-        retail_discount_price: retailDiscounts
-          .filter(discount => discount.price)
-          .map(discount => ({ value: parseFloat(discount.price) })),
       })), // Ensure lots is an array
     };
   
@@ -171,11 +159,7 @@ export const ApiProvider = ({ children }) => {
       const response = await fetch(productsUrl, {
         method: "POST",
         body: JSON.stringify(mappedData), // Send JSON, not FormData
-        headers: { 
-          "Content-Type": "application/json", // Required for JSON API
-          // "X-CSRFToken": csrfToken,
-          "Authorization": `Bearer ${accessToken}`,
-        },
+        headers: getAuthHeaders()
       });
   
       if (!response.ok) {
@@ -217,7 +201,6 @@ const uploadProductImage = async (productId, file) => {
     const response = await fetch(imageUploadUrl, {
       method: "POST",
       headers: {
-        // "X-CSRFToken": csrfToken,
         "Authorization": `Bearer ${accessToken}`,
       },
       body: formData,
@@ -247,12 +230,8 @@ const uploadProductImage = async (productId, file) => {
     try {
       const response = await fetch(productsListUrl, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // "X-CSRFToken": csrfToken,
-          "Authorization": `Bearer ${accessToken}`,
-        },
-         credentials: "include", 
+        headers: getAuthHeaders(),
+        credentials: "include", 
       });
   
       if (!response.ok) {
@@ -292,10 +271,7 @@ const uploadProductImage = async (productId, file) => {
   try {
     const response = await fetch(storesUrl, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers: getAuthHeaders()
     });
 
     const raw = await response.text(); // Read raw response body
@@ -319,10 +295,7 @@ const uploadProductImage = async (productId, file) => {
 
     const response = await fetch(`${storesUrl}create-store/`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(newStore),
     });
 
@@ -342,7 +315,6 @@ const uploadProductImage = async (productId, file) => {
   }
 };
 
-
   // ✅ Update an existing store
   const updateStore = async (id, updatedStore) => {
   try {
@@ -350,10 +322,7 @@ const uploadProductImage = async (productId, file) => {
 
     const response = await fetch(`${storesUrl}${id}/`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(updatedStore),
     });
 
@@ -373,10 +342,10 @@ const uploadProductImage = async (productId, file) => {
   }
 };
 
-
   return (
     <ApiContext.Provider 
       value={{ 
+        fetchCategories,
         categories, 
         addCategory, 
         addProduct,
