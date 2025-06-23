@@ -1,5 +1,4 @@
 :root {
- 
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
@@ -10,7 +9,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 
 body {
   margin: 0;

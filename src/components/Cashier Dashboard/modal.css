@@ -1,0 +1,260 @@
+/* modal.css */
+
+.modal-overlay {
+  position: fixed; /* Full-screen overlay */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(19, 9, 61, 0.4); /* translucent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* On top of all elements */
+}
+
+.modal-container {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  width: 90%;
+  max-width: 40%;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  cursor: pointer;
+  color: #000;
+}
+
+.modal-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modal-btn {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+}
+
+.modal-btn:hover {
+  background-color: #0066cc;
+}
+
+.modal-success {
+  text-align: center;
+  padding: 20px;
+}
+
+.modal-success h3 {
+  margin-top: 10px;
+  color: #2ecc71;
+}
+
+.currency-options {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.currency-summary {
+  font-weight: bold;
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+
+.modal-payment {
+  margin-bottom: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.split-btns{
+    display: flex;
+    gap: 20px;
+    justify-content: right;
+    padding-top: 10px;
+}
+.split-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  height: 50%;
+  width: 100%;
+}
+
+
+.split-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  width: 30%;
+}
+
+.split-entry  input::-webkit-outer-spin-button,
+.split-entry  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.split-entry  input[type=number] {
+    appearance: textfield;
+    background-color: transparent;
+    color: #000;
+}
+
+.split-entry  input:active{
+    border: none;
+    background-color: transparent;
+}
+
+.split-entry button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #e74c3c;
+}
+
+.split-add-btn,
+.split-process-btn {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #27ae60;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.split-process-btn {
+  background-color: #2980b9;
+}
+
+.split-add-btn:hover {
+  background-color: #219150;
+}
+
+.split-process-btn:hover {
+  background-color: #216394;
+}
+
+
+/* errors and validdation */
+.split-entry input.border-red-500,
+.split-entry select.border-red-500 {
+  border: 2px solid red;
+}
+
+.text-red-500 {
+  color: red;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+
+.split-total {
+  font-size: .9rem;
+}
+
+.split-warning {
+  font-size: 0.75rem;
+  color: red;
+}
+
+.split-list {
+  margin-top: 1rem;
+}
+
+
+
+.status-completed {
+  color: green;
+}
+
+.split-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+}
+
+.split-select,
+.split-input {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.split-select.invalid,
+.split-input.invalid {
+  border-color: red;
+}
+
+.split-error {
+  color: red;
+  font-size: 0.7rem;
+  margin-bottom: 0.25rem;
+}
+
+.error {
+  color: red;
+  margin-left: 0.25rem;
+}
+
+.split-process-btn:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+
+@media (max-width: 1024px) {
+ 
+.modal-container {
+ 
+  max-width: 65%;
+  
+}
+}
+
+@media (max-width: 768px) {
+ 
+.modal-container {
+  max-width: 100%;
+  
+}
+.split-entry-header {
+ font-size: .8rem;
+ width: 30%;
+}
+.split-select,
+.split-input {
+  flex: 1;
+}
+
+}
