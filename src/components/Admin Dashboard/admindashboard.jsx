@@ -6,6 +6,7 @@ import ManageStaff from "./Staff Dashboard/manageStaff";
 import InventoryDashboard from "../Inventory/inventoryDashboard";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+
 const logo = "/logo.jpg";
 
 export default function AdminDashboard() {
