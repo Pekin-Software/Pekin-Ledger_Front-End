@@ -97,6 +97,7 @@ export const ApiProvider = ({ children }) => {
 
       if (!response.ok) throw new Error("Failed to fetch categories");
       const data = await response.json();
+      console.log("Categories from API:", data); // ✅ debug log
       setCategories(data);
      
     } catch (error) {

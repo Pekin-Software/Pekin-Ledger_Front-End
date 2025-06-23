@@ -64,6 +64,9 @@ export default function ProductModal({ onClose, onProductAdded }) {
     fetchCategories(); // Fetch categories on mount
   }, [fetchCategories]);
   // react-hook-form setup
+
+  console.log("Fetched categories:", categories);
+
   const {
     register,
     control,
