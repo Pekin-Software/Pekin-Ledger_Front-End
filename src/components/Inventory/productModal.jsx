@@ -1,151 +1,10 @@
-// import React, { useState, useEffect } from "react";
-// import BarcodeScannerComponent from "react-qr-barcode-scanner";
-// import "./productModal.css";
-// import CategoryForm from "./categoryform";
-// import { useApi } from "../../ApiContext.jsx";
-// import { useNavigate } from "react-router-dom";
-
-// export default function ProductModal({ onClose, onProductAdded }) {
-//   const navigate = useNavigate();
 
 //   const { categories, addProduct } = useApi();
 //   const [selectedCategory, setSelectedCategory] = useState("");
-//   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
- 
-//   const [barcodeData, setBarcodeData] = useState("");
-//   const [showScanner, setShowScanner] = useState(false);
 //   const [selectedUnit, setSelectedUnit] = useState("");
 //   const [currency, setCurrency] = useState("USD");
- 
-//   // state variables for Wholesale GST Included/Excluded
-//   const [wholesaleGstIncluded, setwholesaleGstIncluded] = useState(false);
-//   const [wholesaleGstExcluded, setwholesaleGstExcluded] = useState(false);
-//   const [wholesaleGST, setWholesaleGST] = useState(""); //Wholesale GST Statee
 
-//   //  state variables for Retail GST Included/Excluded
-//   const [gstRetailIncluded, setGstRetailIncluded] = useState(false);
-//   const [gstRetailExcluded, setGstRetailExcluded] = useState(false);
-//   const [retailGST, setRetailGST] = useState(""); // Retail GST State
-
-
-
-//   const [attributes, setAttributes] = useState([{ name: "", value: "" }]);
- 
-//   // Ordered list of units
-//   const unitOptions = [
-//     "mm", "cm", "m", "in", "ft", "yd",
-//     "pc", "dozen", "pack", "ctn", "pallet", "Ream",
-//     "oz", "g", "kg", "lb", "ton",
-//     "l", "c", "pt", "qt", "gal", "bbl"
-//   ];
-
-
-//     // Handle barcode scan
-//   const handleScan = (err, result) => {
-//     if (result) {
-//       setBarcodeData(result.text); // Save barcode
-//       setShowScanner(false); // Hide scanner after scan
-//     }
-//   };
-
-//   // Price validation (ensures correct decimal formatting)
-//   const formatPrice = (value) => {
-//     if (!value) return "";
-//     if (!/^\d*\.?\d*$/.test(value)) return ""; // Allow only numbers and one decimal
-//     return value.includes(".") ? parseFloat(value).toFixed(2) : `${value}.00`;
-//   };
-
-
-//   // Handle dynamic addition of attributes (up to 5)
-//   const addAttribute = () => {
-//     // Check if both the Name and Value fields are filled in the last attribute before adding
-//     const lastAttribute = attributes[attributes.length - 1];
-//     if (lastAttribute.name !== "" && lastAttribute.value !== "") {
-//       if (attributes.length < 5) {
-//         setAttributes([...attributes, { name: "", value: "" }]);
-//       }
-//     }
-//   };
-
-//   const removeAttribute = (index) => {
-//     setAttributes(attributes.filter((_, i) => i !== index));
-//   };
-
-//   const handleAttributeChange = (index, e) => {
-//     const { name, value } = e.target;
-//     const updatedAttributes = [...attributes];
-//     updatedAttributes[index][name] = value;
-//     setAttributes(updatedAttributes);
-//   };
-
-//   // Handle price formatting on blur
-//   const handleBlur = (setter, value) => {
-//     setter(formatPrice(value));
-//   };
-
-//   const [formData, setFormData] = useState({
-//     product_name: '',
-//     category: '',
-//     unit: '',
-//     description: '',
-//     threshold_value: '',
-//     product_image: null,
-//     attributes: [],
-//     lots: [
-//       {
-//         purchased_date: "",
-//         quantity: "",
-//         expired_date: "",
-//         wholesale_purchase_price: "",
-//         retail_purchase_price: "",
-//         wholesale_selling_price: "",
-//         retail_selling_price: "",
-//       }
-//     ]
-//   });
-  
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData({ ...formData, [name]: value });
-//   };
-
-//   const handleLotChange = (index, e) => {
-//     const { name, value } = e.target;
-    
-//     setFormData((prevFormData) => {
-//       const newLots = [...prevFormData.lots];
-//       newLots[index][name] = value; // This updates wholesale_selling_price in the formData
-//       return { ...prevFormData, lots: newLots };
-//     });
-//   };
-
-//   // GST Calculation
-//   useEffect(() => {
-//     // GST Calculation for Wholesale Price
-//     if (wholesaleGstIncluded && formData.lots[0].wholesale_selling_price) {
-//       // GST is included in price, calculate GST amount
-//       setWholesaleGST((parseFloat(formData.lots[0].wholesale_selling_price) * 12) / 100); // GST portion when price includes GST
-//     } else if (wholesaleGstExcluded && formData.lots[0].wholesale_selling_price) {
-//       // Add 12% GST to the price if GST is excluded
-//       setWholesaleGST((parseFloat(formData.lots[0].wholesale_selling_price) * 12) / 100); // GST amount when price excludes GST
-//     } else {
-//       setWholesaleGST(""); // Clear GST if no price is available
-//     }
-  
-//     // GST Calculation for Retail Price
-//     if (gstRetailIncluded && formData.lots[0].retail_selling_price) {
-//       // GST is included in price, calculate GST amount
-//       setRetailGST((parseFloat(formData.lots[0].retail_selling_price) * 12) / 100); // GST portion when price includes GST
-//     } else if (gstRetailExcluded && formData.lots[0].retail_selling_price) {
-//       // Add 12% GST to the price if GST is excluded
-//       setRetailGST((parseFloat(formData.lots[0].retail_selling_price) * 12) / 100); // GST amount when price excludes GST
-//     } else {
-//       setRetailGST(""); // Clear GST if no price is available
-//     }
-//   }, [wholesaleGstIncluded, wholesaleGstExcluded, gstRetailIncluded, gstRetailExcluded, formData.lots[0].wholesale_selling_price, formData.lots[0].retail_selling_price]);
-  
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 
@@ -166,42 +25,7 @@
 //   };
 
 //   return (
-//     <div className="modal-overlay">
-//       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-//         <h2>New Product</h2>
-        
-//         <button className="open-modal-btn" onClick={() => setIsModalOpen(true)}>
-//         Create Category
-//         </button>
 
-//         {/* Category Modal */}
-//         {isModalOpen && <CategoryForm  closeModal={() => setIsModalOpen(false)} />}
-
-//         <label>Category:</label>
-      
-
-//         <form onSubmit={handleSubmit}>
-//           {/* Barcode */}
-//           <section>
-//             <label>
-//               Barcode:
-//               <input type="text" name="barcode" value={barcodeData} readOnly />
-//             </label>
-
-//             <div className="barcode-buttons">
-//               <button type="button" onClick={() => setShowScanner(true)}>Add Barcode</button>           
-//               <button type="button">Generate Barcode</button>
-//             </div>
-
-//             {showScanner && (
-//               <BarcodeScannerComponent width={300} height={100} onUpdate={handleScan} />
-//             )}
-        
-//             <div>
-//               <label>
-//                   Product Name:
-//                   <input type="text" name="product_name" value={formData.product_name} onChange={handleChange} required />
-//               </label>
               
 //               <label>
 //                   Category:
@@ -211,216 +35,6 @@
 //                       <option key={cat.id} value={cat.id}>{cat.name}</option>
 //                     ))}
 //                   </select>
-
-//               </label>
-
-//               <label>
-//                 Unit
-//                 <select name="unit" value={selectedUnit} onChange={(e) => setSelectedUnit(e.target.value)}>
-//                   <option value="">Select Unit</option>
-//                   {unitOptions.map((unit) => (
-//                     <option key={unit} value={unit}>{unit}</option>
-//                   ))}
-//                 </select>
-//               </label>
-
-//               <label>
-//                   Description:
-//                   <textarea name="description" value={formData.description} onChange={handleChange} required />
-//               </label>
-
-//               <label>
-//                   Threshold Value:
-//                   <input type="number" name="threshold_value" value={formData.threshold_value} onChange={handleChange} required />
-//               </label>
-//             </div>
-            
-                                 
-             
-              
-
-//           {/* Attributes */}
-//           <label>Specifications</label>
-//           {attributes.map((attribute, index) => (
-//             <div key={index} className="attribute-row">
-//               <input 
-//                 type="text" 
-//                 name="name" 
-//                 value={attribute.name}  
-//                 onChange={(e) => handleAttributeChange(index, e)} 
-//                 placeholder="Attribute Name"
-//                 required 
-//               />
-//               <input 
-//                           type="text" 
-//                           name="value" 
-//                           value={attribute.value} 
-//                           onChange={(e) => handleAttributeChange(index, e)} 
-//                           placeholder="Attribute Value" 
-//                           required 
-//                         />
-//               {index === attributes.length - 1 && attributes.length < 5 && (
-//                 <button type="button" onClick={addAttribute}>Add</button>
-//               )}
-//               {attributes.length > 1 && (
-//                 <button type="button" onClick={() => removeAttribute(index)}>Remove</button>
-//               )}
-//             </div>
-//           ))}
-//           </section>
-
-//           <section className="lot">
-//           <label>
-//               Purchased Date
-//               <input 
-//                 type="date" 
-//                 name="purchased_date"
-//                 value={formData.lots[0].purchased_date}
-//                 onChange={(e) => handleLotChange(0, e)}
-//                 required 
-//               />
-//             </label>
-//             <label>
-//               Quantity
-//               <input 
-//                 type="number" 
-//                 name="quantity"
-//                 value={formData.lots[0].quantity}
-//                 onChange={(e) => handleLotChange(0, e)}
-//                 required 
-//               />
-//             </label>
-
-//             <label>
-//               Expiry Date
-//               <input 
-//                 type="date" 
-//                 name="expired_date"
-//                 value={formData.lots[0].expired_date}
-//                 onChange={(e) => handleLotChange(0, e)}
-//                 required 
-//               />
-//             </label>
-//             {/* Prices */}
-//           <label>
-//             Wholesale Purchasing Price
-//             <input 
-//               type="text" 
-//               name="wholesale_purchase_price"
-//               value={formData.lots[0].wholesale_purchase_price}
-//               onChange={(e) => handleLotChange(0, e)}
-//               onBlur={(e) => handleBlur((value) => handleLotChange(0, { target: { name: 'wholesale_purchase_price', value } }), e.target.value)}
-//             />
-//             <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
-//               <option value="USD">USD</option>
-//               <option value="LRD">LRD</option>
-//             </select>
-//           </label>
-
-//           <label>
-//             Retail Purchasing Price
-//             <input 
-//               type="text" 
-//               name="retail_purchase_price"
-//               value={formData.lots[0].retail_purchase_price}
-//               onChange={(e) => handleLotChange(0, e)}
-//               onBlur={(e) => handleBlur((value) => handleLotChange(0, { target: { name: 'retail_purchase_price', value } }), e.target.value)}
-//             />
-//             <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
-//               <option value="USD">USD</option>
-//               <option value="LRD">LRD</option>
-//             </select>
-//           </label>
-
-//           <label>
-//             Wholesale Selling Price
-//             <input 
-//               type="text" 
-//               name="wholesale_selling_price"
-//               value={formData.lots[0].wholesale_selling_price}
-//               onChange={(e) => handleLotChange(0, e)}
-//               onBlur={(e) => handleBlur((value) => handleLotChange(0, { target: { name: 'wholesale_selling_price', value } }), e.target.value)}
-//             />
-//             <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
-//               <option value="USD">USD</option>
-//               <option value="LRD">LRD</option>
-//             </select>
-//             <div>
-//               <input 
-//                 type="checkbox" 
-//                 checked={wholesaleGstIncluded} 
-//                 onChange={() => {
-//                   setwholesaleGSTIncluded(true);
-//                   setwholesaleGstExcluded(false);
-//                 }} 
-//               /> GST Included
-//               <input 
-//                 type="checkbox" 
-//                 checked={wholesaleGstExcluded} 
-//                 onChange={() => {
-//                   setwholesaleGstExcluded(true);
-//                   setwholesaleGstIncluded(false);
-//                 }} 
-//               /> GST Excluded
-//             </div>
-//             {wholesaleGST && <span>GST: {wholesaleGST.toFixed(2)}</span>}
-//           </label>
-
-         
-//           <label>
-//   Retail Selling Price
-//   <input 
-//     type="text" 
-//     name="retail_selling_price" 
-//     value={formData.lots[0].retail_selling_price}
-//     onChange={(e) => handleLotChange(0, e)}
-//     onBlur={(e) => handleBlur((value) => handleLotChange(0, { target: { name: 'retail_selling_price', value } }), e.target.value)}
-//   />
-//   <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
-//     <option value="USD">USD</option>
-//     <option value="LRD">LRD</option>
-//   </select>
-//   <div>
-//     {/* Retail GST Included Checkbox */}
-//     <input 
-//       type="checkbox" 
-//       checked={gstRetailIncluded} 
-//       onChange={() => {
-//         setGstRetailIncluded(true);
-//         setGstRetailExcluded(false);
-//       }} 
-//     /> GST Included
-
-//     {/* Retail GST Excluded Checkbox */}
-//     <input 
-//       type="checkbox" 
-//       checked={gstRetailExcluded} 
-//       onChange={() => {
-//         setGstRetailExcluded(true);
-//         setGstRetailIncluded(false);
-//       }} 
-//     /> GST Excluded
-//   </div>
-
-//   {/* Display Retail GST calculation */}
-//   {retailGST && <span>Retail GST: {retailGST.toFixed(2)}</span>}
-// </label>
-//          
-
-
-//           </section>
-          
-//           {/* Submit Buttons */}
-          
-//         </form>
-//         <div className="modal-actions">
-//             <button type="button" onClick={onClose}>Discard</button>
-//             <button className="add-product" type="submit" onClick={handleSubmit}>Add Product</button>
-//           </div>
-//       </div>
-//     </div>
-//   );
-// }
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
@@ -433,7 +47,7 @@ import { X, Minus} from "lucide-react";
 
 export default function ProductModal({ onClose, onProductAdded }) {
   const navigate = useNavigate();
-  const { categories, addProduct } = useApi();
+  const { categories, fetchCategories, addProduct } = useApi();
 
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [barcodeData, setBarcodeData] = useState("");
@@ -446,6 +60,9 @@ export default function ProductModal({ onClose, onProductAdded }) {
   const [retailGstIncluded, setRetailGstIncluded] = useState(false);
   const [retailGstExcluded, setRetailGstExcluded] = useState(false);
 
+  useEffect(() => {
+    fetchCategories(); // Fetch categories on mount
+  }, [fetchCategories]);
   // react-hook-form setup
   const {
     register,
