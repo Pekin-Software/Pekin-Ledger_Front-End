@@ -33,6 +33,8 @@ function Card({ title, value, detail, color }) {
 //   }
 
 function ProductCard({ product, onProductClick }) {
+  const lots = Array.isArray(product.lots) ? product.lots : [];
+
   return (
     <div className="product-card" onClick={() => onProductClick(product)}>
       <div className="product-image-container">
@@ -46,7 +48,6 @@ function ProductCard({ product, onProductClick }) {
         {product.stock_status || "Unknown"}
       </span>
 
-      
       <h3>{product.product_name}</h3>
       <p>Quantity: {product.total_quantity}</p>
       {/* Optional: pick a price from lots */}
