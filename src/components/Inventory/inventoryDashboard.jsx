@@ -50,8 +50,8 @@ function ProductCard({ product, onProductClick }) {
       <h3>{product.product_name}</h3>
       <p>Quantity: {product.total_quantity}</p>
       {/* Optional: pick a price from lots */}
-      {product.lots.length > 0 && (
-        <p>${product.lots[0].retail_selling_price || "N/A"}</p>
+        {lots.length > 0 && (
+        <p>${lots[0]?.retail_selling_price || "N/A"}</p>
       )}
       <button className="update-product">Update</button>
     </div>
