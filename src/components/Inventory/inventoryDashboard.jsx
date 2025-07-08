@@ -43,7 +43,7 @@ function ProductCard({ product, onProductClick }) {
         />
       </div>
       
-      <span className={`availability ${product.stock_status.toLowerCase().replace(/\s/g, '-')}`}>
+      <span className={`availability ${product.stock_status.toLowerCase()|| 'unknown'}`}>
         {product.stock_status || "Unknown"}
       </span>
       
