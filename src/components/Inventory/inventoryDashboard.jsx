@@ -34,6 +34,8 @@ function Card({ title, value, detail, color }) {
 
 function ProductCard({ product, onProductClick }) {
   const lots = Array.isArray(product.lots) ? product.lots : [];
+  const stockStatus = product.stock_status || "Unknown";
+  const quantity = typeof product.total_quantity === "number" ? product.total_quantity : "N/A";
 
   return (
     <div className="product-card" onClick={() => onProductClick(product)}>
@@ -44,8 +46,8 @@ function ProductCard({ product, onProductClick }) {
           className="product-image"
         />
       </div>
-      <span className={`availability ${product.stock_status?.toLowerCase() || 'unknown'}`}>
-        {product.stock_status || "Unknown"}
+     <span className={`availability ${stockStatus.toLowerCase()}`}>
+        {stockStatus}
       </span>
 
       <h3>{product.product_name}</h3>
