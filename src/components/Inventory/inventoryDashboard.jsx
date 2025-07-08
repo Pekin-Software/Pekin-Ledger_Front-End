@@ -23,9 +23,9 @@ function ProductCard({ product, onProductClick}) {
         <div className="product-image-container">
           <img src={product.image || ""} alt={product.name} className="product-image" />
         </div>
-        <span className={`availability ${product.available.toLowerCase()}`}>{product.available}</span>
+        <span className={`availability ${product.available.toLowerCase()}`}>{product.stock_status}</span>
         <h3>{product.name}</h3>
-        <p>Quantity: {product.quantity}</p>
+        <p>Quantity: {product.total_quantity}</p>
         <p>${product.price}</p>
         <button className="update-product">Update</button>
       </div>
