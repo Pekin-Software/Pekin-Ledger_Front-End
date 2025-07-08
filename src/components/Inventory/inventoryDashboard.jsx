@@ -17,20 +17,47 @@ function Card({ title, value, detail, color }) {
   }
   
 
-function ProductCard({ product, onProductClick}) {
-    return (
-      <div className="product-card" onClick={() => onProductClick(product)}>
-        <div className="product-image-container">
-          <img src={product.image || ""} alt={product.name} className="product-image" />
-        </div>
-        <span className={`availability ${product.available.toLowerCase()}`}>{product.stock_status}</span>
-        <h3>{product.name}</h3>
-        <p>Quantity: {product.total_quantity}</p>
-        <p>${product.price}</p>
-        <button className="update-product">Update</button>
+// function ProductCard({ product, onProductClick}) {
+//     return (
+//       <div className="product-card" onClick={() => onProductClick(product)}>
+//         <div className="product-image-container">
+//           <img src={product.image || ""} alt={product.name} className="product-image" />
+//         </div>
+//         <span className={`availability ${product.available.toLowerCase()}`}>{product.stock_status}</span>
+//         <h3>{product.name}</h3>
+//         <p>Quantity: {product.total_quantity}</p>
+//         <p>${product.price}</p>
+//         <button className="update-product">Update</button>
+//       </div>
+//     );
+//   }
+
+function ProductCard({ product, onProductClick }) {
+  return (
+    <div className="product-card" onClick={() => onProductClick(product)}>
+      <div className="product-image-container">
+        <img
+          src={product.image_url || ""}
+          alt={product.product_name}
+          className="product-image"
+        />
       </div>
-    );
-  }
+      
+      <span className={`availability ${product.stock_status.toLowerCase().replace(/\s/g, '-')}`}>
+        {product.stock_status || "Unknown"}
+      </span>
+      
+      <h3>{product.product_name}</h3>
+      <p>Quantity: {product.total_quantity}</p>
+      {/* Optional: pick a price from lots */}
+      {product.lots.length > 0 && (
+        <p>${product.lots[0].retail_selling_price || "N/A"}</p>
+      )}
+      <button className="update-product">Update</button>
+    </div>
+  );
+}
+
   
 export default function InventoryDashboard() {
   const { fetchProducts, products, productsLoading, productsError } = useApi();
