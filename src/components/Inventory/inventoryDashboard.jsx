@@ -42,10 +42,10 @@ function ProductCard({ product, onProductClick }) {
           className="product-image"
         />
       </div>
-      
-      <span className={`availability ${product.stock_status.toLowerCase()|| 'unknown'}`}>
+      <span className={`availability ${product.stock_status?.toLowerCase() || 'unknown'}`}>
         {product.stock_status || "Unknown"}
       </span>
+
       
       <h3>{product.product_name}</h3>
       <p>Quantity: {product.total_quantity}</p>
