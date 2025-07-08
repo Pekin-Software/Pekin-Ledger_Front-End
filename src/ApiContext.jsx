@@ -15,13 +15,8 @@ export const ApiProvider = ({ children }) => {
   const [StoreStaff, setStoreStaff] = useState([]);
   const [UnassignedStaff, setUnassignedStaff] = useState([]);
 
-  const [tenantDomain, setTenantDomain] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
-
-  useEffect(() => {
-    setTenantDomain(Cookies.get("tenant"));
-    setAccessToken(Cookies.get("access_token"));
-  }, []);
+  const tenantDomain  = Cookies.get("tenant");
+  const accessToken =  Cookies.get("access_token");
 
   const getAuthHeaders = (isJson = true) => ({
   ...(isJson && { "Content-Type": "application/json" }),
