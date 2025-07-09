@@ -239,19 +239,40 @@ const uploadProductImage = async (productId, file) => {
         throw new Error(errorResponse?.detail || response.statusText);
       }
       const data = await response.json();
+      // setProducts(
+      //   data.map(product => ({
+      //     id: product.id,
+      //     product_name: product.product_name,
+      //     category: product.category,
+      //     image: product.image_url || "", // fallback if no image
+      //     stock_status: relevantLot.stock_status || "Unknown",
+      //     quantity: relevantLot.quantity || 0,
+      //     price: relevantLot.retail_selling_price || 0,
+      //     expired_date: relevantLot.expired_date || null,
+      //     threshold_value: product.threshold_value,
+      //   }))
+      // );
       setProducts(
-        data.map(product => ({
-          id: product.id,
-          product_name: product.product_name,
-          category: product.category,
-          image: product.image_url || "", // fallback if no image
-          available: product.available_status || "In-Stock", // adjust based on backend
-          quantity: product.lots?.reduce((sum, lot) => sum + lot.quantity, 0) || 0,
-          price: product.lots?.[0]?.retail_selling_price || 0, // or calculate average
-          expired_date: product.lots?.[0]?.expired_date || null,
-          threshold_value: product.threshold_value,
-        }))
+        data.map(product => {
+          const sortedLots = [...product.lots].sort(
+            (a, b) => new Date(b.expired_date) - new Date(a.expired_date)
+          );
+          const relevantLot = sortedLots[0] || {};
+
+          return {
+            id: product.id,
+            product_name: product.product_name,
+            category: product.category,
+            image: product.image_url || "",
+            stock_status: relevantLot.stock_status || "Unknown",
+            quantity: relevantLot.quantity || 0,
+            price: relevantLot.retail_selling_price || 0,
+            expired_date: relevantLot.expired_date || null,
+            threshold_value: product.threshold_value,
+          };
+        })
       );
+
       return data;
     } catch (error) {
       console.error("❌ Error fetching products:", error);

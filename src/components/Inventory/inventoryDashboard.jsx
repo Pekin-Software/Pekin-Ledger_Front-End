@@ -25,15 +25,38 @@ function Card({ title, value, detail, color }) {
 //         </div>
 //         <span className={`availability ${product.available.toLowerCase()}`}>{product.stock_status}</span>
 //         <h3>{product.name}</h3>
-//         <p>Quantity: {product.total_quantity}</p>
+//         <p>Quantity: {product.quantity}</p>
 //         <p>${product.price}</p>
 //         <button className="update-product">Update</button>
 //       </div>
 //     );
 //   }
+function ProductCard({ product, onProductClick }) {
+  return (
+    <div className="product-card" onClick={() => onProductClick(product)}>
+      <div className="product-image-container">
+        <img
+          src={product.image || ""}
+          alt={product.product_name}
+          className="product-image"
+        />
+      </div>
+
+      <span className={`availability ${product.stock_status.toLowerCase()}`}>
+        {product.stock_status}
+      </span>
+
+      <h3>{product.product_name}</h3>
+      <p>Quantity: {product.quantity}</p>
+      <p>${product.price}</p>
+
+      <button className="update-product">Update</button>
+    </div>
+  );
+}
 
 // function ProductCard({ product, onProductClick }) {
-//   const lots = Array.isArray(product.lots) ? product.lots : [];
+//   const relevantLot = product.lots && product.lots.length > 0 ? product.lots[0] : null;
 
 //   return (
 //     <div className="product-card" onClick={() => onProductClick(product)}>
@@ -44,48 +67,21 @@ function Card({ title, value, detail, color }) {
 //           className="product-image"
 //         />
 //       </div>
-//      <span className={`availability ${stockStatus.toLowerCase()}`}>
-//         {stockStatus}
+
+//       <span className={`availability ${relevantLot?.stock_status?.toLowerCase() || 'unknown'}`}>
+//         {relevantLot?.stock_status || "Unknown"}
 //       </span>
 
 //       <h3>{product.product_name}</h3>
-//       <p>Quantity: {product.total_quantity}</p>
-//       {/* Optional: pick a price from lots */}
-//         {lots.length > 0 && (
-//         <p>${lots[0]?.retail_selling_price || "N/A"}</p>
-//       )}
+
+//       <p>Quantity: {relevantLot?.quantity ?? "N/A"}</p>
+
+//       <p>${relevantLot?.retail_selling_price ?? "N/A"}</p>
+
 //       <button className="update-product">Update</button>
 //     </div>
 //   );
 // }
-
-function ProductCard({ product, onProductClick }) {
-  const relevantLot = product.lots && product.lots.length > 0 ? product.lots[0] : null;
-
-  return (
-    <div className="product-card" onClick={() => onProductClick(product)}>
-      <div className="product-image-container">
-        <img
-          src={product.image_url || ""}
-          alt={product.product_name}
-          className="product-image"
-        />
-      </div>
-
-      <span className={`availability ${relevantLot?.stock_status?.toLowerCase() || 'unknown'}`}>
-        {relevantLot?.stock_status || "Unknown"}
-      </span>
-
-      <h3>{product.product_name}</h3>
-
-      <p>Quantity: {relevantLot?.quantity ?? "N/A"}</p>
-
-      <p>${relevantLot?.retail_selling_price ?? "N/A"}</p>
-
-      <button className="update-product">Update</button>
-    </div>
-  );
-}
 
 
   
