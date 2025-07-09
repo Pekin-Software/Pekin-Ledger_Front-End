@@ -209,6 +209,10 @@
     background: rgba(200, 0, 0, 0.8); /* Red for out-of-stock */
   }
   
+    /* expired */
+  .availability.expired {
+    background: rgb(250, 250, 4);
+  }
   .update-product {
     background: #ffa500;
     color: white;
