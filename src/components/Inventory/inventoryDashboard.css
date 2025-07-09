@@ -205,7 +205,7 @@
   }
   
   /* Out of Stock Style */
-  .availability.out-stock {
+  .availability.out-of-stock {
     background: rgba(200, 0, 0, 0.8); /* Red for out-of-stock */
   }
   
