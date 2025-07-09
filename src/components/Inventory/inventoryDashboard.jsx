@@ -42,7 +42,7 @@ function ProductCard({ product, onProductClick }) {
         />
       </div>
 
-      <span className={`availability ${product.stock_status.toLowerCase()}`}>
+      <span className={`availability ${product.stock_status.toLowerCase().replace(/\s+/g, "-")}`}>
         {product.stock_status}
       </span>
 
