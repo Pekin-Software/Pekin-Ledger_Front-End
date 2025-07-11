@@ -1,12 +1,29 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  overflow: hidden;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 .inventory-container {
-    padding: 15px;
+    padding: .8rem;
+    gap: .8rem;
     font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
   
   .overview {
-    /* margin-bottom: ; */
     background-color: #ffffff;
+    flex: 0 0 auto;
     padding: 10px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.418);
     h2{
       color: #383E49;
       font-size: 12px;
@@ -45,14 +62,18 @@
   }
   
   .products {
-    margin-top: 15px;
     background-color: #fff;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.418);
   }
   .products-header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 10px 0 10px;
+    padding: 10px 0 10px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.267); 
     h2{
       color: #383E49;
       font-size: 12px;
@@ -62,6 +83,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    padding-right: 10px;
   }
   
   .add-product,
@@ -91,12 +113,14 @@
   position: relative;
   display: inline-block;
 }
-
+.download{
+  padding: 7px 16px;
+}
 .filter-button {
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 8px 16px;
+  padding: 5px 16px;
   transition: background 0.3s ease;
 }
 
@@ -113,7 +137,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
+  background: rgb(161, 77, 77);
   list-style: none;
   margin: 0 0;
   width: 175px;
@@ -134,19 +158,18 @@
   background: #f1f1f1;
 }
 
-  
-  .product-grid {
+.product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
-    margin-top: 10px;
-  }
+    padding: 10px;
+}
   
   .product-card {
+    display: flex;
     background: #fff;
-    padding: 10px;
     border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.514); 
     position: relative;
     text-align: center;
     h3{
@@ -160,23 +183,13 @@
   
   /* Default product image using CSS */
 .product-image-container {
-    width: 100%; /* Adjust size as needed */
-    height: 50px;
+    width: 45%;  
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f3f3f3; 
-    border-radius: 10px;
     position: relative;
     overflow: hidden;
-  }
-  
-  .product-image-container::before {
-    /*content: "🛍️"; /* Shopping bag emoji */
-    font-size: 50px;
-    color: #a0a0a0; /* Grayscale effect */
-    filter: grayscale(100%);
-    position: absolute;
   }
   
   /* Ensure image appears if available */
@@ -188,48 +201,44 @@
   }
   
   .product-image:not([src]) {
-    visibility: hidden; /* Hide broken image icon */
+    visibility: hidden; 
   }
   
+  .right-detail{
+    flex: 1;
+    text-align: left;
+    padding: 5px;
+  }
   /* Availability Badge on Top */
   .availability {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    /* background: rgba(0, 128, 0, 0.8);  */
-    color: white;
-    padding: 2px 5px;
-    border-radius: 5px;
-    font-size: 9px;
+    top: 0;
+    left: 0;
+    padding: 1px 3px;
+    font-size: 10px;
     font-weight: bold;
   }
 .availability.in-stock {
-  background: rgba(0, 128, 0, 0.8);
+  color: green;
 }
-  /* Out of Stock Style */
   .availability.out-of-stock {
-    background: rgba(200, 0, 0, 0.8); /* Red for out-of-stock */
+    color: rgb(255, 0, 179)
   }
-  
-    /* expired */
+
+.availability.low-stock {
+    color: red;
+}
+
   .availability.expired {
-    background: rgb(250, 250, 4);
-  }
-  .update-product {
-    background: #ffa500;
-    color: white;
-    padding: 4px 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 5px;
+    color: rgb(54, 12, 153);
   }
 /* Custom Scrollbar */
-.product-grid.scrollable {
-    max-height: 60vh; /* Adjust height as needed */
+.product-grid-scrollable {
+  flex: 1 1 auto;
+  min-height: 0;
     overflow-y: auto;
-    scrollbar-width: thin; /* For Firefox */
-    scrollbar-color: #ccc transparent; /* Thumb color, track transparent */
+    scrollbar-width: thin; 
+    scrollbar-color: #ccc transparent;
   }
   
   /* WebKit Browsers (Chrome, Safari, Edge) */
@@ -252,3 +261,76 @@
   }
   
   
+/* Skeleton styles */
+.skeleton {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+.product-grid-skeleton {
+    padding: 10px;
+    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+}
+  
+.product-card-skeleton{
+  width: 100%;
+  height: 75px;
+  display: flex;
+  background: #302f2f25;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.322); 
+  position: relative;
+}
+.skeleton-availability {
+  position: absolute;
+  height: 16px;
+  background-color: #9999995b;
+  width: 70%;
+  top: 0;
+  left: 0;
+  color: white;
+  padding: 1px 3px;
+  border-radius: 5px;
+}
+  /* Default product image using CSS */
+.skeleton-image-container {
+    width: 45%;  
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+.skeleton-icon{
+  color: #86868677;
+  opacity: 0.6;
+}
+.skeleton-right-detail{
+  flex: 1;
+  padding: 10px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  h3,p{
+    height: 16px;
+    background-color: #c4bdbd5d;
+    width: 100%;
+  }
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.error{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 20px;
+}
