@@ -14,6 +14,10 @@ export const ApiProvider = ({ children }) => {
   const [subaccounts, setSubaccounts] = useState([]);
   const [StoreStaff, setStoreStaff] = useState([]);
   const [UnassignedStaff, setUnassignedStaff] = useState([]);
+  const [overview, setOverview] = useState(null);
+  const [overviewLoading, setOverviewLoading] = useState(false);
+  const [overviewError, setOverviewError] = useState(null);
+
 
   const tenantDomain  = Cookies.get("tenant");
   const accessToken =  Cookies.get("access_token");
@@ -80,6 +84,38 @@ export const ApiProvider = ({ children }) => {
       console.error("Error fetching unassigned staff:", error);
     }
   };
+
+  const fetchOverview = async () => {
+  const overviewUrl = `${productsUrl}overview/`; // Adjust as needed
+
+  setOverviewLoading(true);
+  setOverviewError(null); // Reset error before request
+
+  try {
+    const response = await fetch(overviewUrl, {
+      method: "GET",
+      headers: getAuthHeaders(),
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse?.detail || response.statusText);
+    }
+
+    const data = await response.json();
+    setOverview(data);
+    return data;
+  } catch (error) {
+    console.error("❌ Error fetching overview:", error);
+    setOverview(null);
+    setOverviewError(error.message || "Unknown error occurred.");
+    return null;
+  } finally {
+    setOverviewLoading(false);
+  }
+};
+
 
   // Fetch Categories from API
   const fetchCategories = async () => {
@@ -225,8 +261,9 @@ const uploadProductImage = async (productId, file) => {
     const productsListUrl = `${productsUrl}list/`;
 
     setProductsLoading(true);
-    setProductsError(null); // Reset error before request
-  
+    setProductsError(null); 
+     setOverviewLoading(true);
+    setOverviewError(null);
     try {
       const response = await fetch(productsListUrl, {
         method: "GET",
@@ -387,6 +424,11 @@ const uploadProductImage = async (productId, file) => {
         fetchSubaccounts,
         fetchStoreStaff,
         fetchUnassignedStaff,
+
+        fetchOverview,
+        overview,
+        overviewError,
+        overviewLoading,
       }}
     >
       {children}

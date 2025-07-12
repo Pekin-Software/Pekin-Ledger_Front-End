@@ -64,7 +64,7 @@ function ProductCardSkeleton() {
 
 export default function InventoryDashboard() {
   const { fetchProducts, products, productsLoading, productsError } = useApi();
-  
+  const { fetchOverview, overview, overviewLoading, overviewError } = useApi();
   // Fallback test products for design/development
 
   // Simulated loading and error state (since we're not using real API)
@@ -447,6 +447,11 @@ export default function InventoryDashboard() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    fetchOverview();
+  }, []);
+
  
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -478,11 +483,11 @@ export default function InventoryDashboard() {
 
   return (
     <div className="inventory-container">
-      <section className="overview">
+      {/* <section className="overview">
         <h2>Inventory Overview</h2>
         <div className="card-container">
-          <Card title="Total Products" value={500} detail="All stocked items" color="blue" />
-          <Card title="Categories" value={20} detail="Product Group" color="red" />
+          <Card title="Total Products" value={overview.total_products} detail="All stocked items" color="blue" />
+          <Card title="Categories" value={overview.total_categories} detail="Product Group" color="red" />
           <Card title="Top Selling" value={500} detail="Highest sales volume" color="blue" />
           <Card title="In Stock" value={5} detail="Reorder soon" color="green" />
           <Card title="Out of Stock" value={5} detail="Reorder soon" color="orange" />
@@ -490,7 +495,30 @@ export default function InventoryDashboard() {
           <Card title="Expiring Soon" value={15} detail="Check expiry dates" color="purple" />
           <Card title="Total Value" value={150000} detail="Inventory worth" color="green" />
         </div>
-      </section>
+      </section> */}
+      <section className="overview">
+  <h2>Inventory Overview</h2>
+
+  {overviewLoading ? (
+    <p>Loading overview...</p>
+  ) : overviewError ? (
+    <p className="text-red-600">Error: {overviewError}</p>
+  ) : overview ? (
+    <div className="card-container">
+      <Card title="Total Products" value={overview.total_products} detail="All stocked items" color="blue" />
+      <Card title="Categories" value={overview.total_categories} detail="Product Group" color="red" />
+      <Card title="Top Selling" value={overview.top_selling || 0} detail="Highest sales volume" color="blue" />
+      <Card title="In Stock" value={overview.in_stock || 0} detail="Currently available" color="green" />
+      <Card title="Out of Stock" value={overview.out_of_stock || 0} detail="Reorder soon" color="orange" />
+      <Card title="Low Stock" value={overview.low_stock || 0} detail="Needs restocking" color="red" />
+      <Card title="Expiring Soon" value={overview.expiring_soon || 0} detail="Check expiry dates" color="purple" />
+      <Card title="Total Value" value={overview.total_value || 0} detail="Inventory worth" color="green" />
+    </div>
+  ) : (
+    <p>No overview data available.</p>
+  )}
+</section>
+
 
       <section className="products">
         <div className="products-header">
