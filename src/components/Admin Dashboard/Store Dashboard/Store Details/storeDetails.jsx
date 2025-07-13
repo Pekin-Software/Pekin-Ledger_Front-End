@@ -80,16 +80,16 @@ export default function StoreDetails({ store, onClose }) {
         <div className="product-nav">
           <ul>
             <li
-              className={activeTab === "product" ? "active" : ""}
-              onClick={() => setActiveTab("product")}
-            >
-              Product
-            </li>
-            <li
               className={activeTab === "Overview" ? "active" : ""}
               onClick={() => setActiveTab("Overview")}
             >
               Overview
+            </li>
+            <li
+              className={activeTab === "product" ? "active" : ""}
+              onClick={() => setActiveTab("product")}
+            >
+              Product
             </li>
             <li
               className={activeTab === "Order" ? "active" : ""}
