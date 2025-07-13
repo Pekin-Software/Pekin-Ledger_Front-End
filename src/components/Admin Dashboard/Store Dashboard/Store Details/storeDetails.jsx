@@ -36,6 +36,13 @@ export default function StoreDetails({ store, onClose }) {
 
           </section>
         );
+      
+      case "product":
+        return (
+          <section className="tab-content">
+            
+          </section>
+        );
       case "Order":
         return (
           <div className="tab-content">
@@ -72,6 +79,12 @@ export default function StoreDetails({ store, onClose }) {
         {/* Top Navigation Bar */}
         <div className="product-nav">
           <ul>
+            <li
+              className={activeTab === "product" ? "active" : ""}
+              onClick={() => setActiveTab("product")}
+            >
+              Product
+            </li>
             <li
               className={activeTab === "Overview" ? "active" : ""}
               onClick={() => setActiveTab("Overview")}
