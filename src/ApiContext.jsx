@@ -73,7 +73,6 @@ export const ApiProvider = ({ children }) => {
       const response = await fetch(`${apiBase}/users/staff-unassigned/`, {
         method: "GET",
         headers: getAuthHeaders()
-
       });
 
       const raw = await response.text();
@@ -86,35 +85,34 @@ export const ApiProvider = ({ children }) => {
   };
 
   const fetchOverview = async () => {
-  const overviewUrl = `${productsUrl}overview/`; // Adjust as needed
+    const overviewUrl = `${productsUrl}overview/`; // Adjust as needed
 
-  setOverviewLoading(true);
-  setOverviewError(null); // Reset error before request
+    setOverviewLoading(true);
+    setOverviewError(null); // Reset error before request
 
-  try {
-    const response = await fetch(overviewUrl, {
-      method: "GET",
-      headers: getAuthHeaders(),
-      credentials: "include",
-    });
+    try {
+      const response = await fetch(overviewUrl, {
+        method: "GET",
+        headers: getAuthHeaders(),
+      });
 
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(errorResponse?.detail || response.statusText);
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse?.detail || response.statusText);
+      }
+
+      const data = await response.json();
+      setOverview(data);
+      return data;
+    } catch (error) {
+      console.error("❌ Error fetching overview:", error);
+      setOverview(null);
+      setOverviewError(error.message || "Unknown error occurred.");
+      return null;
+    } finally {
+      setOverviewLoading(false);
     }
-
-    const data = await response.json();
-    setOverview(data);
-    return data;
-  } catch (error) {
-    console.error("❌ Error fetching overview:", error);
-    setOverview(null);
-    setOverviewError(error.message || "Unknown error occurred.");
-    return null;
-  } finally {
-    setOverviewLoading(false);
-  }
-};
+  };
 
 
   // Fetch Categories from API
@@ -259,16 +257,14 @@ const uploadProductImage = async (productId, file) => {
   //Fetching product from the API
   const fetchProducts = async () => {
     const productsListUrl = `${productsUrl}list/`;
-
+    
     setProductsLoading(true);
     setProductsError(null); 
-     setOverviewLoading(true);
-    setOverviewError(null);
+
     try {
       const response = await fetch(productsListUrl, {
         method: "GET",
         headers: getAuthHeaders(),
-        credentials: "include", 
       });
   
       if (!response.ok) {
@@ -276,19 +272,6 @@ const uploadProductImage = async (productId, file) => {
         throw new Error(errorResponse?.detail || response.statusText);
       }
       const data = await response.json();
-      // setProducts(
-      //   data.map(product => ({
-      //     id: product.id,
-      //     product_name: product.product_name,
-      //     category: product.category,
-      //     image: product.image_url || "", // fallback if no image
-      //     stock_status: relevantLot.stock_status || "Unknown",
-      //     quantity: relevantLot.quantity || 0,
-      //     price: relevantLot.retail_selling_price || 0,
-      //     expired_date: relevantLot.expired_date || null,
-      //     threshold_value: product.threshold_value,
-      //   }))
-      // );
       setProducts(
         data.map(product => {
           const sortedLots = [...product.lots].sort(
@@ -320,7 +303,6 @@ const uploadProductImage = async (productId, file) => {
     } finally {
       setProductsLoading(false);
     }
-    
   };
   
   //store request
