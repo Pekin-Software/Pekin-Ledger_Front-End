@@ -43,7 +43,7 @@ html, body {
   .inventory-card {
     padding: 5px;
     border-right: 2px solid #373d4733;
-    width: 132px;
+    flex: 1;
   }
   
   .inventory-card h3 {
