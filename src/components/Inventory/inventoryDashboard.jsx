@@ -19,8 +19,8 @@ export default function InventoryDashboard() {
   const { fetchProducts, products, productsLoading, productsError } = useApi();  
   const { mainInventoryOverview, overviewLoading, overviewError } = useInventory();
 
-    if (overviewLoading) return <p>Loading...</p>;
-    // if (overviewError) return <p>Error: </p>;
+    // if (overviewLoading) return <p>Loading...</p>;
+    if (overviewError) return <p>Error:{overviewError} </p>;
 
   // Fallback test products for design/development
   // Simulated loading and error state (since we're not using real API)
