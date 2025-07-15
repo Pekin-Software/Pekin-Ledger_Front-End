@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./storeDetails.css";
 import StaffCard from "./StaffCard";
-import { useApi } from "../../../../ApiContext";
+import { useApi } from "../../../../contexts/ApiContext";
 
 export default function StaffListModal({ onAddStaff, onClose }) {
   const { fetchUnassignedStaff, UnassignedStaff } = useApi();

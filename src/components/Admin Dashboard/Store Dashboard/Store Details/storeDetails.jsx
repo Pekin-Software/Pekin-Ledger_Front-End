@@ -1,11 +1,360 @@
 import React, { useState } from "react";
 import "./storeDetails.css"; 
 import StoreStaff from "./StoreStaff";
-import { useApi } from "../../../../ApiContext";
+import ProductSection from "../../../Inventory/ProductDetails/products";
+import UnassignedProduct from "./UnassignedProduct";
+import { useApi } from "../../../../contexts/ApiContext";
 
 export default function StoreDetails({ store, onClose }) {
+  // mock products for design
+  const productsLoading = false;
+  const productsError = null;
+  const products = [];
+  const fetchProducts = () => {};
+  const mockProducts = [
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+     id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 3,
+      product_name: "Pain Reliever",
+      image: "",
+      stock_status: "Expired",
+      quantity: 0,
+      price: 7.75,
+    },
+    {
+      id: 4,
+      product_name: "Cough Syrup",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 30,
+      price: 15.25,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+      {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+     id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 3,
+      product_name: "Pain Reliever",
+      image: "",
+      stock_status: "Expired",
+      quantity: 0,
+      price: 7.75,
+    },
+    {
+      id: 4,
+      product_name: "Cough Syrup",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 30,
+      price: 15.25,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+      {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+     id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 3,
+      product_name: "Pain Reliever",
+      image: "",
+      stock_status: "Expired",
+      quantity: 0,
+      price: 7.75,
+    },
+    {
+      id: 4,
+      product_name: "Cough Syrup",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 30,
+      price: 15.25,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+      {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+     id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 3,
+      product_name: "Pain Reliever",
+      image: "",
+      stock_status: "Expired",
+      quantity: 0,
+      price: 7.75,
+    },
+    {
+      id: 4,
+      product_name: "Cough Syrup",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 30,
+      price: 15.25,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+      {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+     id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 3,
+      product_name: "Pain Reliever",
+      image: "",
+      stock_status: "Expired",
+      quantity: 0,
+      price: 7.75,
+    },
+    {
+      id: 4,
+      product_name: "Cough Syrup",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 30,
+      price: 15.25,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+      {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+     id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 3,
+      product_name: "Pain Reliever",
+      image: "",
+      stock_status: "Expired",
+      quantity: 0,
+      price: 7.75,
+    },
+    {
+      id: 4,
+      product_name: "Cough Syrup",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 30,
+      price: 15.25,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+    {
+      id: 1,
+      product_name: "Vitamin C Tablets",
+      image: "",
+      stock_status: "In Stock",
+      quantity: 120,
+      price: 9.99,
+    },
+  ];
+  const displayProducts = products && products.length > 0 ? products : mockProducts;
+
+ 
   const back_btn = "/arrow.png";
   const [activeTab, setActiveTab] = useState("Overview"); // State to track active tab
+  const [showFullScreenModal, setShowFullScreenModal] = useState(false);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -39,9 +388,16 @@ export default function StoreDetails({ store, onClose }) {
       
       case "product":
         return (
-          <section className="tab-content">
-            
-          </section>
+           
+          <div className="store-content">
+            <ProductSection
+                    products={displayProducts}
+                    productsLoading={productsLoading}
+                    productsError={productsError}
+                    context="store-detail"
+                    onOpenFullScreenModal={() => setShowFullScreenModal(true)}
+                  />
+          </div>
         );
       case "Order":
         return (
@@ -77,7 +433,7 @@ export default function StoreDetails({ store, onClose }) {
         </section>
 
         {/* Top Navigation Bar */}
-        <div className="product-nav">
+        <div className="store-nav">
           <ul>
             <li
               className={activeTab === "Overview" ? "active" : ""}
@@ -115,6 +471,17 @@ export default function StoreDetails({ store, onClose }) {
        <section className="contents">
          {/* Tab Content */}
          {renderTabContent()}
+         {showFullScreenModal && (
+  <UnassignedProduct
+    products={displayProducts}
+    onClose={() => setShowFullScreenModal(false)}
+    onSubmit={() => {
+      // handle submit logic
+      setShowFullScreenModal(false);
+    }}
+  />
+)}
+
        </section>
       </div>
     </div>

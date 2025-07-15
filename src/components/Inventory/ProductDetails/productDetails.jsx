@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./productDetail.css"; // Ensure you have a CSS file for styling
-import { useApi } from "../../../ApiContext";
+// import { useApi } from "../../../ApiContext";
+import { useApi } from "../../../contexts/ApiContext";
 
 
 export default function ProductDetail({ product, onClose }) {

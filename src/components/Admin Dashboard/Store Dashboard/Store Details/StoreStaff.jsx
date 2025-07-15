@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./storeDetails.css";
 import StaffListModal from "./StaffModal";
 import StaffCard from "./StaffCard";
-import { useApi } from "../../../../ApiContext";
+import { useApi } from "../../../../contexts/ApiContext";
 import Cookies from "js-cookie";
 
 export default function StoreStaff({ storeID }) {

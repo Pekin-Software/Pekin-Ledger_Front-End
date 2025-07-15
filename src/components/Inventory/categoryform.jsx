@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import './category.css';
-import { useApi } from "../../ApiContext.jsx";
+import { useApi } from "../../contexts/ApiContext";
 
 export default function CategoryForm({ closeModal }) {
   const { addCategory } = useApi();

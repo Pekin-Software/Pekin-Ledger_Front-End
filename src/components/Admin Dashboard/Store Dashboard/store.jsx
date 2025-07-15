@@ -1,8 +1,32 @@
 import { useState, useEffect } from "react";
-import { useApi } from "../../../ApiContext";
+import { useApi } from "../../../contexts/ApiContext";
 import StoreProfile from "./storeProfile";
 import "./store.css";
 import StoreDetails from "./Store Details/storeDetails";
+
+// === Mock Store Data (local only) ===
+const initialMockStores = [
+  {
+    id: 1,
+    store_name: "Downtown Market",
+    address: "123 Main St",
+    city: "Metropolis",
+    country: "USA",
+    phone_number: "555-1234",
+    managerName: "John Doe",
+    managerContact: "john@example.com",
+  },
+  {
+    id: 2,
+    store_name: "Uptown Mart",
+    address: "456 High St",
+    city: "Gotham",
+    country: "USA",
+    phone_number: "555-5678",
+    managerName: "Jane Smith",
+    managerContact: "jane@example.com",
+  },
+];
 
 //Use when deploying
 // function StoreCard({ store, onEdit, onViewDetails }) {
@@ -55,13 +79,16 @@ function StoreCard({ store, onEdit, onViewDetails }) {
 
 export default function Stores() {
   const [viewingStore, setViewingStore] = useState(null);
-  const { storeData, fetchStores, addStore, updateStore } = useApi();
+  // const { storeData, fetchStores, addStore, updateStore } = useApi();
   const [selectedStore, setSelectedStore] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
 
-  useEffect(() => {
-    fetchStores();
-  }, []);
+  // design
+  const [storeData, setStoreData] = useState(initialMockStores);
+
+  // useEffect(() => {
+  //   fetchStores();
+  // }, []);
 
   const handleAddStore = () => {
     setSelectedStore(null);

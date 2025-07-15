@@ -41,7 +41,7 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
 import "./productModal.css";
 import CategoryForm from "./categoryform";
-import { useApi } from "../../ApiContext.jsx";
+import { useApi } from "../../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
 import { X, Minus} from "lucide-react";
 
