@@ -1,0 +1,48 @@
+.unassigned-product-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.unassigned-product-modal {
+  background: white;
+  width: 80%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: .2rem;
+  padding-right: .3rem;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.modal-body {
+  overflow-y: auto;
+  flex: 1;
+}
+.exit{
+  background-color: transparent;
+  border: none;
+  display: flex;
+  
+}
+
+.exit-icon{
+  color: rgb(46, 46, 46);
+}
+
+.exit-icon:hover{
+  color: red;
+}
