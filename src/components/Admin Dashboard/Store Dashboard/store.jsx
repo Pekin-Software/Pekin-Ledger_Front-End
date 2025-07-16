@@ -5,54 +5,29 @@ import "./store.css";
 import StoreDetails from "./Store Details/storeDetails";
 
 // === Mock Store Data (local only) ===
-const initialMockStores = [
-  {
-    id: 1,
-    store_name: "Downtown Market",
-    address: "123 Main St",
-    city: "Metropolis",
-    country: "USA",
-    phone_number: "555-1234",
-    managerName: "John Doe",
-    managerContact: "john@example.com",
-  },
-  {
-    id: 2,
-    store_name: "Uptown Mart",
-    address: "456 High St",
-    city: "Gotham",
-    country: "USA",
-    phone_number: "555-5678",
-    managerName: "Jane Smith",
-    managerContact: "jane@example.com",
-  },
-];
+// const initialMockStores = [
+//   {
+//     id: 1,
+//     store_name: "Downtown Market",
+//     address: "123 Main St",
+//     city: "Metropolis",
+//     country: "USA",
+//     phone_number: "555-1234",
+//     managerName: "John Doe",
+//     managerContact: "john@example.com",
+//   },
+//   {
+//     id: 2,
+//     store_name: "Uptown Mart",
+//     address: "456 High St",
+//     city: "Gotham",
+//     country: "USA",
+//     phone_number: "555-5678",
+//     managerName: "Jane Smith",
+//     managerContact: "jane@example.com",
+//   },
+// ];
 
-//Use when deploying
-// function StoreCard({ store, onEdit, onViewDetails }) {
-//   return (
-//     <div className="store-card"  onClick={() => onViewDetails(store)} >
-//       <div className="store-name">{store.store_name}</div>
-//       <div className="store-details">
-//         <p>{store.address}</p>
-//         <p>{store.city}, {store.country}</p>
-//         <p>{store.phone_number}</p>
-//         <p><strong>Manager:</strong> {store.managerName}</p>
-//         <p><strong>Manager Contact:</strong> {store.managerContact}</p>
-        
-
-//       <button className="edit-button" 
-//         onClick={(e) => {
-//         e.stopPropagation(); //Prevents card click while editing
-//         onEdit(store);
-//       }}>Edit</button>
-//      </div>
-//     </div>
-    
-//   );
-// }
-
-// Use when designing
 function StoreCard({ store, onEdit, onViewDetails }) {
   return (
     <div className="store-card" onClick={() => onViewDetails(store)}>
@@ -68,9 +43,8 @@ function StoreCard({ store, onEdit, onViewDetails }) {
           onClick={(e) => {
             e.stopPropagation();
             onEdit(store);
-          }}
-        >
-          Edit
+          }}>
+            Edit
         </button>
       </div>
     </div>
@@ -79,16 +53,16 @@ function StoreCard({ store, onEdit, onViewDetails }) {
 
 export default function Stores() {
   const [viewingStore, setViewingStore] = useState(null);
-  // const { storeData, fetchStores, addStore, updateStore } = useApi();
+  const { storeData, fetchStores, addStore, updateStore } = useApi();
   const [selectedStore, setSelectedStore] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
 
   // design
-  const [storeData, setStoreData] = useState(initialMockStores);
+  // const [storeData, setStoreData] = useState(initialMockStores);
 
-  // useEffect(() => {
-  //   fetchStores();
-  // }, []);
+  useEffect(() => {
+    fetchStores();
+  }, []);
 
   const handleAddStore = () => {
     setSelectedStore(null);
