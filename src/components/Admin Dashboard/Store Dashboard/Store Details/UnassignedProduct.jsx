@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import ProductSection from "../../../Inventory/ProductDetails/products";
 import "./unassignedProduct.css";
