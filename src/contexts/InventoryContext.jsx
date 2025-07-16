@@ -12,11 +12,16 @@ export const InventoryProvider = ({ children }) => {
       ...(isJson && { "Content-Type": "application/json" }),
       Authorization: `Bearer ${accessToken}`,
     });
-
+   
     const apiBase = `https://${tenantDomain}.pekingledger.store/api`
     const storesUrl = `${apiBase}/store/`
     const overviewUrl = `${storesUrl}overview/`
-    const mainInventoryUrl = `${apiBase}/store/main-inventory/` 
+    const mainInventoryUrl = `${storesUrl}main-inventory/` 
+    
+    console.log(storesUrl)
+    console.log(overviewUrl)
+    console.log(mainInventoryUrl)
+    console.log(tenantDomain, accessToken)
     
     const [mainInventoryOverview, setproductsOverview] = useState(null);   // General Inventory
     const [storeInventory, setStoreInventory] = useState(null); // Store Inventory  overview 
@@ -28,6 +33,12 @@ export const InventoryProvider = ({ children }) => {
     const [products, setproducts] = useState(null);  
 
     const fetchInventoryOverview = async () => {
+        if (!tenantDomain || !accessToken) {
+            setoverviewError("Missing tenant domain or access token.");
+            setoverviewLoading(false);
+            return;
+            }
+
         try {
             setoverviewLoading(true);
             const response = await fetch(overviewUrl, {
@@ -53,6 +64,12 @@ export const InventoryProvider = ({ children }) => {
     };
 
     const fetchProducts= async () => {
+        if (!tenantDomain || !accessToken) {
+            setoverviewError("Missing tenant domain or access token.");
+            setoverviewLoading(false);
+            return;
+            }
+
         try {
             setproductsLoading(true);
             const response = await fetch(mainInventoryUrl, {
