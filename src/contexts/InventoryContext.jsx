@@ -23,14 +23,14 @@ export const InventoryProvider = ({ children }) => {
     console.log(mainInventoryUrl)
     console.log(tenantDomain, accessToken)
     
-    const [mainInventoryOverview, setproductsOverview] = useState(null);   // General Inventory
-    const [storeInventory, setStoreInventory] = useState(null); // Store Inventory  overview 
+    const [mainInventoryOverview, setmainInventoryOverview] = useState([]);   // General Inventory
+    const [storeInventory, setStoreInventory] = useState([]); // Store Inventory  overview 
     const [overviewLoading, setoverviewLoading] = useState(true);
     const [overviewError, setoverviewError] = useState(null);
 
     const [productsLoading, setproductsLoading] = useState(false);
     const [productsError, setproductsError] = useState(null);
-    const [products, setproducts] = useState(null);  
+    const [products, setproducts] = useState([]);  
 
     const fetchInventoryOverview = async () => {
         if (!tenantDomain || !accessToken) {
@@ -54,7 +54,7 @@ export const InventoryProvider = ({ children }) => {
             const data = await response.json();
             const { general_inventory, store_inventory } = data.overview || {};
 
-            setproductsOverview(general_inventory || {});
+            setmainInventoryOverview(general_inventory || {});
             setStoreInventory(store_inventory || {});
         } catch (err) {
             setoverviewError(err.message || 'Failed to fetch inventory overview');
