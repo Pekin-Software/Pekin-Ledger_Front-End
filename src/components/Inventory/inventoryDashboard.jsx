@@ -17,7 +17,7 @@ function Card({ title, value, detail, color }) {
 export default function InventoryDashboard() {  
   const { mainInventoryOverview, overviewLoading, overviewError, 
           refreshAll,
-          fetchProducts, products, productsLoading, productsError,
+          products, productsLoading, productsError,
   } = useInventory();
   
   const isRefreshing = overviewLoading || productsLoading;

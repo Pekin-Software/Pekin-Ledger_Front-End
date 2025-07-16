@@ -1,16 +1,29 @@
-// contexts/InventoryContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {
-    overviewUrl,
-    mainInventoryUrl,
-    getAuthHeaders,
-    isAuthValid
-} from '../utils/apiConfig';
+// import {
+//     overviewUrl,
+//     mainInventoryUrl,
+//     getAuthHeaders,
+//     isAuthValid
+// } from '../utils/apiConfig';
+import Cookies from 'js-cookie';
 
 const InventoryContext = createContext();
 export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
+    const tenantDomain  = Cookies.get("tenant");
+    const accessToken =  Cookies.get("access_token");
+    
+    const getAuthHeaders = (isJson = true) => ({
+      ...(isJson && { "Content-Type": "application/json" }),
+      Authorization: `Bearer ${accessToken}`,
+    });
+
+    const apiBase = tenantDomain ? `https://${tenantDomain}.pekingledger.store/api`: null;
+    const storesUrl = apiBase ? `${apiBase}/store/` : null;
+    const overviewUrl = storesUrl ? `${storesUrl}overview/` : null;
+    const mainInventoryUrl = apiBase ? `${apiBase}/store/main-inventory/` : null;
+    
     const [mainInventoryOverview, setproductsOverview] = useState(null);   // General Inventory
     const [storeInventory, setStoreInventory] = useState(null); // Store Inventory  overview 
     const [overviewLoading, setoverviewLoading] = useState(true);
@@ -21,11 +34,11 @@ export const InventoryProvider = ({ children }) => {
     const [products, setproducts] = useState(null);  
 
     const fetchInventoryOverview = async () => {
-        if (!isAuthValid()) {
-            setoverviewError("Missing tenant or access token");
-            setoverviewLoading(false);
-            return;
-        }
+        // if (!isAuthValid()) {
+        //     setoverviewError("Missing tenant or access token");
+        //     setoverviewLoading(false);
+        //     return;
+        // }
 
         try {
             setoverviewLoading(true);
@@ -52,11 +65,11 @@ export const InventoryProvider = ({ children }) => {
     };
 
     const fetchProducts= async () => {
-        if (!isAuthValid()) {
-            setproductsError("Missing tenant or access token");
-            setproductsLoading(false);
-            return;
-        }
+        // if (!isAuthValid()) {
+        //     setproductsError("Missing tenant or access token");
+        //     setproductsLoading(false);
+        //     return;
+        // }
 
         try {
             setproductsLoading(true);

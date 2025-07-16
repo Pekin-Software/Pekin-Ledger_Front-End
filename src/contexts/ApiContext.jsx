@@ -7,16 +7,10 @@ const ApiContext = createContext();
 // Provider Component
 export const ApiProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
-  const [productsLoading, setProductsLoading] = useState(false);
-  const [productsError, setProductsError] = useState(null);
-  const [products, setProducts] = useState([]);
   const [storeData, setStoreData] = useState([]);
   const [subaccounts, setSubaccounts] = useState([]);
   const [StoreStaff, setStoreStaff] = useState([]);
   const [UnassignedStaff, setUnassignedStaff] = useState([]);
-  const [overview, setOverview] = useState(null);
-  const [overviewLoading, setOverviewLoading] = useState(false);
-  const [overviewError, setOverviewError] = useState(null);
 
 
   const tenantDomain  = Cookies.get("tenant");
@@ -83,37 +77,6 @@ export const ApiProvider = ({ children }) => {
       console.error("Error fetching unassigned staff:", error);
     }
   };
-
-  const fetchOverview = async () => {
-    const overviewUrl = `${productsUrl}overview/`; // Adjust as needed
-
-    setOverviewLoading(true);
-    setOverviewError(null); // Reset error before request
-
-    try {
-      const response = await fetch(overviewUrl, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
-
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse?.detail || response.statusText);
-      }
-
-      const data = await response.json();
-      setOverview(data);
-      return data;
-    } catch (error) {
-      console.error("❌ Error fetching overview:", error);
-      setOverview(null);
-      setOverviewError(error.message || "Unknown error occurred.");
-      return null;
-    } finally {
-      setOverviewLoading(false);
-    }
-  };
-
 
   // Fetch Categories from API
   const fetchCategories = async () => {
@@ -253,58 +216,6 @@ const uploadProductImage = async (productId, file) => {
     return null;
   }
 };
-
-  //Fetching product from the API
-  const fetchProducts = async () => {
-    const productsListUrl = `${productsUrl}list/`;
-    
-    setProductsLoading(true);
-    setProductsError(null); 
-
-    try {
-      const response = await fetch(productsListUrl, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
-  
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse?.detail || response.statusText);
-      }
-      const data = await response.json();
-      setProducts(
-        data.map(product => {
-          const sortedLots = [...product.lots].sort(
-            (a, b) => new Date(b.expired_date) - new Date(a.expired_date)
-          );
-          const relevantLot = sortedLots[0] || {};
-
-          return {
-            id: product.id,
-            product_name: product.product_name,
-            category: product.category,
-            image: product.image_url || "",
-            stock_status: product.stock_status || "Unknown",
-            quantity: product.total_quantity || 0,
-            price: relevantLot.retail_selling_price || 0,
-            expired_date: relevantLot.expired_date || null,
-            threshold_value: product.threshold_value,
-          };
-        })
-      );
-
-      return data;
-    } catch (error) {
-      console.error("❌ Error fetching products:", error);
-      setProducts([]);
-      
-      setProductsError(error.message || "Unknown error occurred.");
-      return [];
-    } finally {
-      setProductsLoading(false);
-    }
-  };
-  
   //store request
   // ✅ Fetch all stores
   const fetchStores = async () => {
@@ -389,10 +300,6 @@ const uploadProductImage = async (productId, file) => {
         categories, 
         addCategory, 
         addProduct,
-        fetchProducts,
-        products,
-        productsLoading,
-        productsError,
         uploadProductImage,
 
         storeData,
@@ -406,11 +313,6 @@ const uploadProductImage = async (productId, file) => {
         fetchSubaccounts,
         fetchStoreStaff,
         fetchUnassignedStaff,
-
-        fetchOverview,
-        overview,
-        overviewError,
-        overviewLoading,
       }}
     >
       {children}
