@@ -19,7 +19,7 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
 }, [storeId]);
 
 
-  console.log("Unassigned Products", products)
+  console.log("Unassigned Products", unassignedProducts)
 
     return (
     <div className="unassigned-product-modal-overlay">
