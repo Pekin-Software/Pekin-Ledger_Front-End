@@ -16,7 +16,7 @@ export default function StoreDetails({ store, onClose }) {
       fetchProducts({ storeId: store.id });
     }
   }, [store?.id]);
-  console.log(products)
+  console.log("Products in store", products)
 
   const back_btn = "/arrow.png";
   const [activeTab, setActiveTab] = useState("Overview"); // State to track active tab
