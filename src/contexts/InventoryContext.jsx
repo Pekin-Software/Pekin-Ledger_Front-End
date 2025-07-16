@@ -26,6 +26,7 @@ export const InventoryProvider = ({ children }) => {
     const [productsLoading, setproductsLoading] = useState(false);
     const [productsError, setproductsError] = useState(null);
     const [products, setproducts] = useState([]);  
+    const [unassignedProducts, setUnassignedProducts] = useState([]);
 
     const fetchInventoryOverview = async () => {
         if (!tenantDomain || !accessToken) {
@@ -152,7 +153,11 @@ export const InventoryProvider = ({ children }) => {
     //     }
     // };
 
-    const fetchProducts = async ({ excludeStoreId = null, storeId = null } = {}) => {
+    const fetchProducts = async ({
+        storeId = null,
+        excludeStoreId = null,
+        type = "store", // "store" or "unassigned"
+        } = {}) => {
         if (!tenantDomain || !accessToken) {
             setoverviewError("Missing tenant domain or access token.");
             setoverviewLoading(false);
@@ -160,51 +165,53 @@ export const InventoryProvider = ({ children }) => {
         }
 
         try {
-            setproductsLoading(true);
+            const setTarget = type === "unassigned" ? setUnassignedProducts : setproducts;
+            const setLoading = type === "unassigned" ? setproductsLoading : setproductsLoading;
+
+            setLoading(true);
 
             let url = mainInventoryUrl;
 
             if (storeId) {
-                // Fetch inventory specifically for a store
-                url = `${apiBase}/store/${storeId}/inventory/`;
+            url = `${apiBase}/store/${storeId}/inventory/`;
             } else if (excludeStoreId) {
-                // Fetch main inventory excluding items in the store
-                url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
+            url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
             }
 
             const response = await fetch(url, {
-                method: 'GET',
-                headers: getAuthHeaders(),
+            method: 'GET',
+            headers: getAuthHeaders(),
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.detail || `HTTP error: ${response.status}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.detail || `HTTP error: ${response.status}`);
             }
 
             const rawData = await response.json();
 
             const transformedData = rawData.map(item => {
-                const product = item.product || {};
-                const firstLot = (product.lots && product.lots[0]) || {};
+            const product = item.product || {};
+            const firstLot = (product.lots && product.lots[0]) || {};
 
-                return {
-                    id: product.id,
-                    product_name: product.product_name,
-                    image: product.product_image || "",
-                    stock_status: item.stock_status || "Unknown",
-                    quantity: item.total_quantity || 0,
-                    price: parseFloat(firstLot.retail_selling_price) || 0,
-                };
+            return {
+                id: product.id,
+                product_name: product.product_name,
+                image: product.product_image || "",
+                stock_status: item.stock_status || "Unknown",
+                quantity: item.total_quantity || 0,
+                price: parseFloat(firstLot.retail_selling_price) || 0,
+            };
             });
 
-            setproducts(transformedData);
+            setTarget(transformedData);
         } catch (err) {
             setproductsError(err.message || 'Failed to fetch inventory');
         } finally {
             setproductsLoading(false);
         }
-    };
+        };
+
 
     const refreshAll = async () => {
         await Promise.all([
@@ -225,6 +232,7 @@ export const InventoryProvider = ({ children }) => {
                 fetchInventoryOverview,
 
                 products,
+                unassignedProducts,
                 productsLoading,
                 productsError, 
                 fetchProducts,

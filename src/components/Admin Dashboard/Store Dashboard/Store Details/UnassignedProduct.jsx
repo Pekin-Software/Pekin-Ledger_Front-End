@@ -7,19 +7,20 @@ import { useInventory } from "../../../../contexts/InventoryContext";
 export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
   const {
     fetchProducts,
-    products,
+    unassignedProducts,
     productsLoading,
     productsError,
   } = useInventory();
 
   useEffect(() => {
-    if (storeId) {
-      fetchProducts({ excludeStoreId: storeId });
-    }
-  }, [storeId]);
+  if (storeId) {
+    fetchProducts({ excludeStoreId: storeId, type: "unassigned" });
+  }
+}, [storeId]);
+
 
   console.log("Unassigned Products", products)
-  
+
     return (
     <div className="unassigned-product-modal-overlay">
       <div className="unassigned-product-modal">
@@ -31,7 +32,7 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
 
         <div className="modal-body">
           <ProductSection
-            products={products}
+            products={unassignedProducts}
             productsLoading={productsLoading}
             productsError={productsError}
             context="store-modal"

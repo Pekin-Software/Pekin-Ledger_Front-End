@@ -11,11 +11,12 @@ export default function StoreDetails({ store, onClose }) {
           fetchProducts, products, productsLoading, productsError,
   } = useInventory();
 
-  useEffect(() => {
-    if (store?.id) {
-      fetchProducts({ storeId: store.id });
-    }
-  }, [store?.id]);
+ useEffect(() => {
+  if (store?.id) {
+    fetchProducts({ storeId: store.id, type: "store" });
+  }
+}, [store?.id]);
+
   console.log("Products in store", products)
 
   const back_btn = "/arrow.png";
