@@ -1,357 +1,366 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./storeDetails.css"; 
 import StoreStaff from "./StoreStaff";
 import ProductSection from "../../../Inventory/ProductDetails/products";
 import UnassignedProduct from "./UnassignedProduct";
-import { useApi } from "../../../../contexts/ApiContext";
+import { useInventory } from "../../../../contexts/InventoryContext";
 
 export default function StoreDetails({ store, onClose }) {
   // mock products for design
-  const productsLoading = false;
-  const productsError = null;
-  const products = [];
-  const fetchProducts = () => {};
-  const mockProducts = [
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-     id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 3,
-      product_name: "Pain Reliever",
-      image: "",
-      stock_status: "Expired",
-      quantity: 0,
-      price: 7.75,
-    },
-    {
-      id: 4,
-      product_name: "Cough Syrup",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 30,
-      price: 15.25,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-      {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-     id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 3,
-      product_name: "Pain Reliever",
-      image: "",
-      stock_status: "Expired",
-      quantity: 0,
-      price: 7.75,
-    },
-    {
-      id: 4,
-      product_name: "Cough Syrup",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 30,
-      price: 15.25,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-      {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-     id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 3,
-      product_name: "Pain Reliever",
-      image: "",
-      stock_status: "Expired",
-      quantity: 0,
-      price: 7.75,
-    },
-    {
-      id: 4,
-      product_name: "Cough Syrup",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 30,
-      price: 15.25,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-      {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-     id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 3,
-      product_name: "Pain Reliever",
-      image: "",
-      stock_status: "Expired",
-      quantity: 0,
-      price: 7.75,
-    },
-    {
-      id: 4,
-      product_name: "Cough Syrup",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 30,
-      price: 15.25,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-      {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-     id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 3,
-      product_name: "Pain Reliever",
-      image: "",
-      stock_status: "Expired",
-      quantity: 0,
-      price: 7.75,
-    },
-    {
-      id: 4,
-      product_name: "Cough Syrup",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 30,
-      price: 15.25,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-      {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-     id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 3,
-      product_name: "Pain Reliever",
-      image: "",
-      stock_status: "Expired",
-      quantity: 0,
-      price: 7.75,
-    },
-    {
-      id: 4,
-      product_name: "Cough Syrup",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 30,
-      price: 15.25,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-    {
-      id: 1,
-      product_name: "Vitamin C Tablets",
-      image: "",
-      stock_status: "In Stock",
-      quantity: 120,
-      price: 9.99,
-    },
-  ];
-  const displayProducts = products && products.length > 0 ? products : mockProducts;
+  // const productsLoading = false;
+  // const productsError = null;
+  // const products = [];
+  // const fetchProducts = () => {};
+  // const mockProducts = [
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //    id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 3,
+  //     product_name: "Pain Reliever",
+  //     image: "",
+  //     stock_status: "Expired",
+  //     quantity: 0,
+  //     price: 7.75,
+  //   },
+  //   {
+  //     id: 4,
+  //     product_name: "Cough Syrup",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 30,
+  //     price: 15.25,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //     {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //    id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 3,
+  //     product_name: "Pain Reliever",
+  //     image: "",
+  //     stock_status: "Expired",
+  //     quantity: 0,
+  //     price: 7.75,
+  //   },
+  //   {
+  //     id: 4,
+  //     product_name: "Cough Syrup",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 30,
+  //     price: 15.25,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //     {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //    id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 3,
+  //     product_name: "Pain Reliever",
+  //     image: "",
+  //     stock_status: "Expired",
+  //     quantity: 0,
+  //     price: 7.75,
+  //   },
+  //   {
+  //     id: 4,
+  //     product_name: "Cough Syrup",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 30,
+  //     price: 15.25,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //     {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //    id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 3,
+  //     product_name: "Pain Reliever",
+  //     image: "",
+  //     stock_status: "Expired",
+  //     quantity: 0,
+  //     price: 7.75,
+  //   },
+  //   {
+  //     id: 4,
+  //     product_name: "Cough Syrup",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 30,
+  //     price: 15.25,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //     {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //    id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 3,
+  //     product_name: "Pain Reliever",
+  //     image: "",
+  //     stock_status: "Expired",
+  //     quantity: 0,
+  //     price: 7.75,
+  //   },
+  //   {
+  //     id: 4,
+  //     product_name: "Cough Syrup",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 30,
+  //     price: 15.25,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //     {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //    id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 3,
+  //     product_name: "Pain Reliever",
+  //     image: "",
+  //     stock_status: "Expired",
+  //     quantity: 0,
+  //     price: 7.75,
+  //   },
+  //   {
+  //     id: 4,
+  //     product_name: "Cough Syrup",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 30,
+  //     price: 15.25,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  //   {
+  //     id: 1,
+  //     product_name: "Vitamin C Tablets",
+  //     image: "",
+  //     stock_status: "In Stock",
+  //     quantity: 120,
+  //     price: 9.99,
+  //   },
+  // ];
+  // const displayProducts = products && products.length > 0 ? products : mockProducts;
+  const { fetchInventoryOverview, mainInventoryOverview, overviewLoading, overviewError, 
+          refreshAll,
+          fetchProducts, products, productsLoading, productsError,
+  } = useInventory();
 
- 
+  useEffect(() => {
+    if (store?.id) {
+      fetchProducts({ storeId: store.id });
+    }
+  }, [store?.id]);
+
   const back_btn = "/arrow.png";
   const [activeTab, setActiveTab] = useState("Overview"); // State to track active tab
   const [showFullScreenModal, setShowFullScreenModal] = useState(false);
@@ -391,7 +400,7 @@ export default function StoreDetails({ store, onClose }) {
            
           <div className="store-content">
             <ProductSection
-                    products={displayProducts}
+                    products={products}
                     productsLoading={productsLoading}
                     productsError={productsError}
                     context="store-detail"
@@ -472,15 +481,14 @@ export default function StoreDetails({ store, onClose }) {
          {/* Tab Content */}
          {renderTabContent()}
          {showFullScreenModal && (
-  <UnassignedProduct
-    products={displayProducts}
-    onClose={() => setShowFullScreenModal(false)}
-    onSubmit={() => {
-      // handle submit logic
-      setShowFullScreenModal(false);
-    }}
-  />
-)}
+            <UnassignedProduct
+              storeId={store.id}
+              onClose={() => setShowFullScreenModal(false)}
+              onSubmit={() => {
+                setShowFullScreenModal(false);
+              }}
+            />
+          )}
 
        </section>
       </div>
