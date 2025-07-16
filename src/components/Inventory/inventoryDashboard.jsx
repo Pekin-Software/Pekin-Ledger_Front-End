@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "./inventoryDashboard.css";
 import ProductSection from "./ProductDetails/products.jsx";
-import { useApi } from "../../contexts/ApiContext.jsx";
 import { useInventory } from "../../contexts/InventoryContext.jsx";
 import { AlertCircle } from "lucide-react";
 
@@ -15,12 +14,16 @@ function Card({ title, value, detail, color }) {
     );
   }
 
-export default function InventoryDashboard() {
-  const { fetchProducts, products, productsLoading, productsError } = useApi();  
-  const { mainInventoryOverview, overviewLoading, overviewError } = useInventory();
+export default function InventoryDashboard() {  
+  const { mainInventoryOverview, overviewLoading, overviewError, 
+          refreshAll,
+          fetchProducts, products, productsLoading, productsError,
+  } = useInventory();
+  
+  const isRefreshing = overviewLoading || productsLoading;
 
     // if (overviewLoading) return <p>Loading...</p>;
-    if (overviewError) return <p>Error:{overviewError} </p>;
+    if (productsError) return <p>Error:{productsError} </p>;
 
   // Fallback test products for design/development
   // Simulated loading and error state (since we're not using real API)
@@ -399,10 +402,6 @@ export default function InventoryDashboard() {
   //   },
   // ];
   // const displayProducts = products && products.length > 0 ? products : mockProducts;
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   return (
     <div className="inventory-container">
