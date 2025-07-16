@@ -1,10 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-// import {
-//     overviewUrl,
-//     mainInventoryUrl,
-//     getAuthHeaders,
-//     isAuthValid
-// } from '../utils/apiConfig';
 import Cookies from 'js-cookie';
 
 const InventoryContext = createContext();
@@ -19,10 +13,10 @@ export const InventoryProvider = ({ children }) => {
       Authorization: `Bearer ${accessToken}`,
     });
 
-    const apiBase = tenantDomain ? `https://${tenantDomain}.pekingledger.store/api`: null;
-    const storesUrl = apiBase ? `${apiBase}/store/` : null;
-    const overviewUrl = storesUrl ? `${storesUrl}overview/` : null;
-    const mainInventoryUrl = apiBase ? `${apiBase}/store/main-inventory/` : null;
+    const apiBase = `https://${tenantDomain}.pekingledger.store/api`
+    const storesUrl = `${apiBase}/store/`
+    const overviewUrl = `${storesUrl}overview/`
+    const mainInventoryUrl = `${apiBase}/store/main-inventory/` 
     
     const [mainInventoryOverview, setproductsOverview] = useState(null);   // General Inventory
     const [storeInventory, setStoreInventory] = useState(null); // Store Inventory  overview 
@@ -34,12 +28,6 @@ export const InventoryProvider = ({ children }) => {
     const [products, setproducts] = useState(null);  
 
     const fetchInventoryOverview = async () => {
-        // if (!isAuthValid()) {
-        //     setoverviewError("Missing tenant or access token");
-        //     setoverviewLoading(false);
-        //     return;
-        // }
-
         try {
             setoverviewLoading(true);
             const response = await fetch(overviewUrl, {
@@ -65,12 +53,6 @@ export const InventoryProvider = ({ children }) => {
     };
 
     const fetchProducts= async () => {
-        // if (!isAuthValid()) {
-        //     setproductsError("Missing tenant or access token");
-        //     setproductsLoading(false);
-        //     return;
-        // }
-
         try {
             setproductsLoading(true);
             const response = await fetch(mainInventoryUrl, {
