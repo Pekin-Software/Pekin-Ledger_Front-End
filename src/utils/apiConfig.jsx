@@ -10,6 +10,7 @@ export const apiBase = tenantDomain
 // Common endpoints
 export const storesUrl = apiBase ? `${apiBase}/store/` : null;
 export const overviewUrl = storesUrl ? `${storesUrl}overview/` : null;
+export const mainInventoryUrl = apiBase ? `${apiBase}/store/main-inventory/` : null;
 
 // Auth headers generator
 export const getAuthHeaders = (isJson = true) => {
