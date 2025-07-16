@@ -23,7 +23,7 @@ export default function InventoryDashboard() {
   const isRefreshing = overviewLoading || productsLoading;
 
     // if (overviewLoading) return <p>Loading...</p>;
-    if (productsError) return <p>Error:{productsError} </p>;
+    // if (productsError) return <p>Error:{productsError} </p>;
 
   // Fallback test products for design/development
   // Simulated loading and error state (since we're not using real API)
