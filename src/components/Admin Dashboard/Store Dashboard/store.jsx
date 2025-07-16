@@ -4,30 +4,6 @@ import StoreProfile from "./storeProfile";
 import "./store.css";
 import StoreDetails from "./Store Details/storeDetails";
 
-// === Mock Store Data (local only) ===
-// const initialMockStores = [
-//   {
-//     id: 1,
-//     store_name: "Downtown Market",
-//     address: "123 Main St",
-//     city: "Metropolis",
-//     country: "USA",
-//     phone_number: "555-1234",
-//     managerName: "John Doe",
-//     managerContact: "john@example.com",
-//   },
-//   {
-//     id: 2,
-//     store_name: "Uptown Mart",
-//     address: "456 High St",
-//     city: "Gotham",
-//     country: "USA",
-//     phone_number: "555-5678",
-//     managerName: "Jane Smith",
-//     managerContact: "jane@example.com",
-//   },
-// ];
-
 function StoreCard({ store, onEdit, onViewDetails }) {
   return (
     <div className="store-card" onClick={() => onViewDetails(store)}>
@@ -50,19 +26,16 @@ function StoreCard({ store, onEdit, onViewDetails }) {
     </div>
   );
 }
-
 export default function Stores() {
   const [viewingStore, setViewingStore] = useState(null);
   const { storeData, fetchStores, addStore, updateStore } = useApi();
   const [selectedStore, setSelectedStore] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
 
-  // design
-  // const [storeData, setStoreData] = useState(initialMockStores);
-
   useEffect(() => {
     fetchStores();
   }, []);
+  console.log(storeData)
 
   const handleAddStore = () => {
     setSelectedStore(null);
