@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { X } from "lucide-react";
 import ProductSection from "../../../Inventory/ProductDetails/products";
 import "./unassignedProduct.css";
 import { useInventory } from "../../../../contexts/InventoryContext";
-import { useEffect } from "react";
+
 
 
 export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
