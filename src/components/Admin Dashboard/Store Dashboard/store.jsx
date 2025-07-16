@@ -35,7 +35,6 @@ export default function Stores() {
   useEffect(() => {
     fetchStores();
   }, []);
-  console.log(storeData)
 
   const handleAddStore = () => {
     setSelectedStore(null);

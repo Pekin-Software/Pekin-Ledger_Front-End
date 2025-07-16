@@ -13,13 +13,10 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
   } = useInventory();
 
   useEffect(() => {
-  if (storeId) {
-    fetchProducts({ excludeStoreId: storeId, type: "unassigned" });
-  }
-}, [storeId]);
-
-
-  console.log("Unassigned Products", unassignedProducts)
+    if (storeId) {
+      fetchProducts({ excludeStoreId: storeId, type: "unassigned" });
+    }
+  }, [storeId]);
 
     return (
     <div className="unassigned-product-modal-overlay">

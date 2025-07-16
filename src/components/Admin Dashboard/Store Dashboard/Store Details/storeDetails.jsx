@@ -17,8 +17,6 @@ export default function StoreDetails({ store, onClose }) {
   }
 }, [store?.id]);
 
-  console.log("Products in store", products)
-
   const back_btn = "/arrow.png";
   const [activeTab, setActiveTab] = useState("Overview"); // State to track active tab
   const [showFullScreenModal, setShowFullScreenModal] = useState(false);
