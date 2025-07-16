@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { X } from "lucide-react";
 import ProductSection from "../../../Inventory/ProductDetails/products";
 import "./unassignedProduct.css";
 import { useInventory } from "../../../../contexts/InventoryContext";
+import { useEffect } from "react";
 
 
 export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
@@ -357,7 +358,7 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
     productsLoading,
     productsError,
   } = useInventory();
-  
+
   useEffect(() => {
       if (storeId) {
         fetchProducts(storeId); 
