@@ -15,15 +15,21 @@ function Card({ title, value, detail, color }) {
   }
 
 export default function InventoryDashboard() {  
-  const { mainInventoryOverview, overviewLoading, overviewError, 
+  const { fetchInventoryOverview, mainInventoryOverview, overviewLoading, overviewError, 
           refreshAll,
-          products, productsLoading, productsError,
+          fetchProducts, products, productsLoading, productsError,
   } = useInventory();
   
-  const isRefreshing = overviewLoading || productsLoading;
+  useEffect(() => {
+    (async () => {
+      await Promise.all([
+        fetchInventoryOverview(),
+        fetchProducts()
+      ]);
+    })();
+  }, []);
 
-    // if (overviewLoading) return <p>Loading...</p>;
-    // if (productsError) return <p>Error:{productsError} </p>;
+  const isRefreshing = overviewLoading || productsLoading;
 
   // Fallback test products for design/development
   // Simulated loading and error state (since we're not using real API)

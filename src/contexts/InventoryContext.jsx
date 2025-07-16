@@ -18,11 +18,6 @@ export const InventoryProvider = ({ children }) => {
     const overviewUrl = `${storesUrl}overview/`
     const mainInventoryUrl = `${storesUrl}main-inventory/` 
     
-    console.log(storesUrl)
-    console.log(overviewUrl)
-    console.log(mainInventoryUrl)
-    console.log(tenantDomain, accessToken)
-    
     const [mainInventoryOverview, setmainInventoryOverview] = useState([]);   // General Inventory
     const [storeInventory, setStoreInventory] = useState([]); // Store Inventory  overview 
     const [overviewLoading, setoverviewLoading] = useState(true);
@@ -108,14 +103,8 @@ export const InventoryProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        (async () => {
-            await Promise.all([
-                fetchInventoryOverview(),
-                fetchProducts()
-                ]);
-            })();
-        }, []);
+
+
 
     const refreshAll = async () => {
         await Promise.all([
