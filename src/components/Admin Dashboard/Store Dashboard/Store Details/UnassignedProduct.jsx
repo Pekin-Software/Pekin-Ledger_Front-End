@@ -360,10 +360,10 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
   } = useInventory();
 
   useEffect(() => {
-      if (storeId) {
-        fetchProducts(storeId); 
-      }
-    }, [storeId]);
+    if (storeId) {
+      fetchProducts({ excludeStoreId: storeId });
+    }
+  }, [storeId]);
 
     return (
     <div className="unassigned-product-modal-overlay">
