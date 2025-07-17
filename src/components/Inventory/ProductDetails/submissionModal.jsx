@@ -36,7 +36,7 @@ export default function SubmissionModal({ status, message, count, onClose }) {
 
         {status === "error" && (
           <div className="modal-content error">
-            <button className="close-btn" onClick={onClose}>
+            <button className="modal-exit" onClick={onClose}>
               <X size={14} />
             </button>
             <XCircle size={20} color="red" />

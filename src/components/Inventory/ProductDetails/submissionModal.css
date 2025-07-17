@@ -35,15 +35,15 @@
   }
 }
 
-.close-btn {
+.modal-exit {
   background: transparent;
   border: none;
   position: absolute;
-  /* top: 8px; */
+  top: 2px;
   right: 8px;
   cursor: pointer;
 }
 
-.close-btn :hover{
+.modal-exit :hover{
     background-color: transparent;
 }
