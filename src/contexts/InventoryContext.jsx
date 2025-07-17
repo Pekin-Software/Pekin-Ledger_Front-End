@@ -8,17 +8,17 @@ export const InventoryProvider = ({ children }) => {
     const tenantDomain  = Cookies.get("tenant");
     const accessToken =  Cookies.get("access_token");
     
-    // const getAuthHeaders = (isJson = true) => ({
-    //   ...(isJson && { "Content-Type": "application/json" }),
-    //   Authorization: `Bearer ${accessToken}`,
-    // });
-   const getAuthHeaders = (isJson = true) => {
-    const token = Cookies.get("access_token"); // Always up to date
-    return {
-        ...(isJson && { "Content-Type": "application/json" }),
-        ...(token && { Authorization: `Bearer ${token}` }),
-    };
-};
+    const getAuthHeaders = (isJson = true) => ({
+      ...(isJson && { "Content-Type": "application/json" }),
+      Authorization: `Bearer ${accessToken}`,
+    });
+//    const getAuthHeaders = (isJson = true) => {
+//     const token = Cookies.get("access_token"); // Always up to date
+//     return {
+//         ...(isJson && { "Content-Type": "application/json" }),
+//         ...(token && { Authorization: `Bearer ${token}` }),
+//     };
+// };
 
     const apiBase = `https://${tenantDomain}.pekingledger.store/api`
     const storesUrl = `${apiBase}/store/`
@@ -131,7 +131,6 @@ export const InventoryProvider = ({ children }) => {
         if (!tenantDomain || !accessToken) {
             throw new Error("Missing tenant domain or access token.");
         }
-        console.log(accessToken)
         try {
             const response = await fetch(
             `${apiBase}/store/${storeId}/add-inventory/`,

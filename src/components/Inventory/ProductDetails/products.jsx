@@ -167,12 +167,17 @@ export default function ProductSection({
         
         setSubmissionStatus("loading");
 
-addInventory(storeId, submissionData).then((res) => {
-  if (res.success) {
-    setSubmissionStatus("success");
-    setSubmissionMessage("Inventory added successfully");
-    setSubmittedCount(submissionData.length);
-    setQuantities({});
+ addInventory(storeId, submissionData).then(async (res) => {
+      if (res.success) {
+        setSubmissionStatus("success");
+        setSubmissionMessage("Inventory added successfully");
+        setSubmittedCount(submissionData.length);
+        setQuantities({});
+
+        // ✅ Refresh inventory and close modal
+        await refreshAll(); 
+        onClose?.();
+
   } else {
     setSubmissionStatus("error");
     setSubmissionMessage(res.error);
