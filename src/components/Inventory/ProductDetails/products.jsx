@@ -158,8 +158,8 @@ export default function ProductSection({
       const submissionData = products
         .filter((p) => quantities[p.id] && quantities[p.id] > 0)
         .map((p) => ({
-          product: p.id,
-          lot: p.lot_id,
+          product_id: p.id,
+          lot_id: p.lot_id,
           quantity: quantities[p.id],
         }));
 
