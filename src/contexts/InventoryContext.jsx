@@ -59,100 +59,6 @@ export const InventoryProvider = ({ children }) => {
         }
     };
 
-    // const fetchProducts= async () => {
-    //     if (!tenantDomain || !accessToken) {
-    //         setoverviewError("Missing tenant domain or access token.");
-    //         setoverviewLoading(false);
-    //         return;
-    //         }
-
-    //     try {
-    //         setproductsLoading(true);
-    //         const response = await fetch(mainInventoryUrl, {
-    //             method: 'GET',
-    //             headers: getAuthHeaders(),
-    //         });
-
-    //         if (!response.ok) {
-    //             const errorData = await response.json().catch(() => ({}));
-    //             throw new Error(errorData.detail || `HTTP error: ${response.status}`);
-    //         }
-
-    //         const rawData = await response.json();
-
-    //         // 🔄 Transform the raw inventory list
-    //         const transformedData = rawData.map(item => {
-    //             const product = item.product || {};
-    //             const firstLot = (product.lots && product.lots[0]) || {};
-
-    //             return {
-    //                 id: product.id,
-    //                 product_name: product.product_name,
-    //                 image: product.product_image || "",
-    //                 stock_status: item.stock_status || "Unknown",
-    //                 quantity: item.total_quantity || 0,
-    //                 price: parseFloat(firstLot.retail_selling_price) || 0,
-    //             };
-    //         });
-
-    //         // ✅ Store transformed data in state
-    //         setproducts(transformedData);
-    //     } catch (err) {
-    //         setproductsError(err.message || 'Failed to fetch main inventory');
-    //     } finally {
-    //         setproductsLoading(false);
-    //     }
-    // };
-
-    // const fetchProducts = async (excludeStoreId = null) => {
-    //     if (!tenantDomain || !accessToken) {
-    //         setoverviewError("Missing tenant domain or access token.");
-    //         setoverviewLoading(false);
-    //         return;
-    //     }
-
-    //     try {
-    //         setproductsLoading(true);
-
-    //         // Append ?exclude_store_id=ID if passed
-    //         const url = excludeStoreId 
-    //             ? `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`
-    //             : mainInventoryUrl;
-
-    //         const response = await fetch(url, {
-    //             method: 'GET',
-    //             headers: getAuthHeaders(),
-    //         });
-
-    //         if (!response.ok) {
-    //             const errorData = await response.json().catch(() => ({}));
-    //             throw new Error(errorData.detail || `HTTP error: ${response.status}`);
-    //         }
-
-    //         const rawData = await response.json();
-
-    //         const transformedData = rawData.map(item => {
-    //             const product = item.product || {};
-    //             const firstLot = (product.lots && product.lots[0]) || {};
-
-    //             return {
-    //                 id: product.id,
-    //                 product_name: product.product_name,
-    //                 image: product.product_image || "",
-    //                 stock_status: item.stock_status || "Unknown",
-    //                 quantity: item.total_quantity || 0,
-    //                 price: parseFloat(firstLot.retail_selling_price) || 0,
-    //             };
-    //         });
-
-    //         setproducts(transformedData);
-    //     } catch (err) {
-    //         setproductsError(err.message || 'Failed to fetch main inventory');
-    //     } finally {
-    //         setproductsLoading(false);
-    //     }
-    // };
-
     const fetchProducts = async ({
         storeId = null,
         excludeStoreId = null,
@@ -211,7 +117,35 @@ export const InventoryProvider = ({ children }) => {
         } finally {
             setproductsLoading(false);
         }
-        };
+    };
+
+    // Add this inside InventoryProvider
+    const addInventory = async (storeId, inventoryItems = []) => {
+  if (!tenantDomain || !accessToken) {
+    throw new Error("Missing tenant domain or access token.");
+  }
+
+  try {
+    const response = await fetch(
+      `${apiBase}/store/${storeId}/add-inventory/`,
+      {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(inventoryItems),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `HTTP error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return { success: false, error: error.message || "Failed to add inventory." };
+  }
+};
 
 
     const refreshAll = async () => {
@@ -237,6 +171,8 @@ export const InventoryProvider = ({ children }) => {
                 productsLoading,
                 productsError, 
                 fetchProducts,
+
+                addInventory,
             }}
         >
             {children}

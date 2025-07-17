@@ -3,6 +3,7 @@ import ProductModal from "../productModal";
 import ProductDetail from "../ProductDetails/productDetails";
 import { Filter,AlertCircle, Package} from "lucide-react";
 import SubmissionModal from "./submissionModal";
+import { useInventory } from "../../../contexts/InventoryContext";
 
 function ProductCard({ product, onProductClick, context, quantity, onQuantityChange }) {
   const increase = () => onQuantityChange(quantity + 1);
@@ -97,7 +98,10 @@ export default function ProductSection({
   context = "inventory",
   onAddProductFromModal,
   onOpenFullScreenModal,
+  storeId,
 }) {
+  const { addInventory } = useInventory();
+
   const [submissionStatus, setSubmissionStatus] = useState(null); // 'loading' | 'success' | 'error'
   const [submissionMessage, setSubmissionMessage] = useState("");
   const [submittedCount, setSubmittedCount] = useState(0);
@@ -152,31 +156,32 @@ export default function ProductSection({
       onAddProductFromModal?.();
     } else if (context === "unassigned") {
       const submissionData = products
-        .filter(p => quantities[p.id] && quantities[p.id] > 0)
-        .map(p => ({
-          product_id: p.id,
-          lot_id: p.lot_id,
-          quantity: quantities[p.id]
+        .filter((p) => quantities[p.id] && quantities[p.id] > 0)
+        .map((p) => ({
+          product: p.id,
+          lot: p.lot_id,
+          quantity: quantities[p.id],
         }));
 
-      if (submissionData.length === 0) return;
+        if (!storeId || submissionData.length === 0) return;
+        
+        setSubmissionStatus("loading");
 
-      setSubmissionStatus("loading");
-      try {
-        // Simulate async API call here if needed
-        // await new Promise((res) => setTimeout(res, 1000));
+addInventory(storeId, submissionData).then((res) => {
+  if (res.success) {
+    setSubmissionStatus("success");
+    setSubmissionMessage("Inventory added successfully");
+    setSubmittedCount(submissionData.length);
+    setQuantities({});
+  } else {
+    setSubmissionStatus("error");
+    setSubmissionMessage(res.error);
+  }
+});
 
-        setSubmissionStatus("success");
-        setSubmittedCount(submissionData.length);
-        setQuantities({});
-      } catch (error) {
-        setSubmissionStatus("error");
-        setSubmissionMessage(error.message || "Something went wrong");
-      }
-
-      console.log("Submitting:", submissionData);
-    }
-};
+            console.log("Submitting:", submissionData);
+            }
+    };
 
 
   const filteredProducts = products.filter((product) => {
@@ -221,9 +226,16 @@ export default function ProductSection({
           <div className="actions">
             <button className="add-product" 
               onClick={handleAddProductClick}
-              disabled={context === "unassigned" && isSendDisabled}>
-                {context === "unassigned" ? "Send Product" : "Add Product"}
+              disabled={
+                (context === "unassigned" && (isSendDisabled || submissionStatus === "loading"))
+              }>
+              {context === "unassigned"
+                ? submissionStatus === "loading"
+                  ? "Sending..."
+                  : "Send Product"
+                : "Add Product"}
             </button>
+
             <div className="filter-container" ref={filterRef}>
               <button
                 className="filter-button"

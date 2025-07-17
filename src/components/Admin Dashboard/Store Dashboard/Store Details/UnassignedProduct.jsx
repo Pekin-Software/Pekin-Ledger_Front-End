@@ -408,6 +408,7 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
             productsLoading={productsLoading}
             productsError={productsError}
             context="unassigned"
+            storeId={storeId}
             onAddProductFromModal={onSubmit}
           />
         </div>
