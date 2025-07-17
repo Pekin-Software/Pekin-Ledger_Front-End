@@ -39,7 +39,7 @@
   background: transparent;
   border: none;
   position: absolute;
-  top: 8px;
+  /* top: 8px; */
   right: 8px;
   cursor: pointer;
 }

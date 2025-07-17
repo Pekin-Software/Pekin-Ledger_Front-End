@@ -39,7 +39,7 @@ export default function SubmissionModal({ status, message, count, onClose }) {
             <button className="close-btn" onClick={onClose}>
               <X size={14} />
             </button>
-            <XCircle size={48} color="red" />
+            <XCircle size={20} color="red" />
             <p>{message}</p>
           </div>
         )}
