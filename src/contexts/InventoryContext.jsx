@@ -201,6 +201,7 @@ export const InventoryProvider = ({ children }) => {
                 stock_status: item.stock_status || "Unknown",
                 quantity: item.total_quantity || 0,
                 price: parseFloat(firstLot.retail_selling_price) || 0,
+                lot_id: firstLot.id,
             };
             });
 
