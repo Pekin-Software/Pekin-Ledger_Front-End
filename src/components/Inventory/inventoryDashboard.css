@@ -1,13 +1,14 @@
 *{
   box-sizing: border-box;
   margin: 0;
-  overflow: hidden;
+  
 }
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .inventory-container {
@@ -85,7 +86,16 @@ html, body {
     gap: 8px;
     padding-right: 10px;
   }
-  
+  .add-product:disabled {
+  background-color: #1366d9;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.download-placeholder {
+  width: 95px;  /* match actual .download button width */
+  display: inline-block;
+}
   .add-product,
   .download, .filter-button{
     background: #1366D9;
@@ -130,21 +140,38 @@ html, body {
   justify-content: center;
 }
 
-
-
 /* Filter Options Dropdown */
 .filter-options {
   position: absolute;
   top: 100%;
   left: 0;
-  background: rgb(161, 77, 77);
+  background: rgb(255, 251, 251);
   list-style: none;
-  margin: 0 0;
+  margin: 0;
   width: 175px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.767);
+  z-index: 9999;
+}
+.active-filter-label {
+  font-size: 11px;
+  color: #333;
+  background: #302f2f56;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.clear-filter {
+  margin-left: 6px;
+  background: transparent;
+  border: none;
+  color: #e20505;
+  font-size: 9px;
+  cursor: pointer;
+}
+.clear-filter:hover {
+  color: #050505;
 }
 
 .filter-options li {
@@ -158,6 +185,16 @@ html, body {
   background: #f1f1f1;
 }
 
+.empty-message {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: rgba(53, 50, 50, 0.795);
+}
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -167,9 +204,11 @@ html, body {
   
   .product-card {
     display: flex;
+    flex-direction: column;
+    height: 100%;
     background: #fff;
     border-radius: 8px;
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.514); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.514); 
     position: relative;
     text-align: center;
     h3{
@@ -180,9 +219,10 @@ html, body {
       font-size: 10px;
     }
   }
-  
+
   /* Default product image using CSS */
 .product-image-container {
+  /* background-color: #383E49; */
     width: 45%;  
     height: 100%;
     display: flex;
@@ -203,18 +243,53 @@ html, body {
   .product-image:not([src]) {
     visibility: hidden; 
   }
-  
+.context-unassigned .card-top{
+  height: 80%;
+}
   .right-detail{
     flex: 1;
     text-align: left;
     padding: 5px;
   }
+  .card-top{
+    display: flex;
+  }
+.qty {
+  display: none;
+}
+
+.context-unassigned .qty{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex: 1;
+  background-color: #383E49;
+  padding: 3px 0;
+  gap: .4rem;
+  }
+.qty label{
+  font-size: .8rem;
+  color: #ffffff9a;
+}
+.qty button{
+  border-radius: 0;
+  background-color: transparent;
+  border: none;
+  font-size: .9rem;
+}
+.qty input{
+  width: 55px;
+  border-radius: 0;
+  border-color: #abaeb434;
+  color: #abaeb4de;
+  text-align: center;
+}
   /* Availability Badge on Top */
   .availability {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 1px 3px;
+    padding: 3px 10px;
     font-size: 10px;
     font-weight: bold;
   }
