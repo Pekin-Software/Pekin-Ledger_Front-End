@@ -118,6 +118,17 @@ export default function ProductSection({
   const [quantities, setQuantities] = useState({});
   const isSendDisabled = Object.values(quantities).every(q => q === 0 || q === undefined);
 
+  useEffect(() => {
+    if (submissionStatus === "success") {
+        const timer = setTimeout(() => {
+        setSubmissionStatus(null);
+        onClose?.();
+      }, 2000);
+
+      return () => clearTimeout(timer); // cleanup if unmounted
+    }
+  }, [submissionStatus, onClose]);
+
   const updateQuantity = (productId, value) => {
     setQuantities((prev) => ({
       ...prev,
@@ -168,33 +179,21 @@ export default function ProductSection({
         
         setSubmissionStatus("loading");
 
- addInventory(storeId, submissionData).then(async (res) => {
+    addInventory(storeId, submissionData).then(async (res) => {
       if (res.success) {
         setSubmissionStatus("success");
         setSubmissionMessage("Inventory added successfully");
         setSubmittedCount(submissionData.length);
         setQuantities({});
         
-        // ✅ Refresh inventory and close modal
+        // ✅ Refresh inventory
         await fetchProducts({ storeId: storeId, type: "store" });
-        useEffect(() => {
-          if (submissionStatus === "success") {
-            const timer = setTimeout(() => {
-              setSubmissionStatus(null);
-              onClose?.();
-            }, 2000);
-
-            return () => clearTimeout(timer); // cleanup if unmounted
+          } else {
+            setSubmissionStatus("error");
+            setSubmissionMessage(res.error);
           }
-        }, [submissionStatus, onClose]);
-
-
-  } else {
-    setSubmissionStatus("error");
-    setSubmissionMessage(res.error);
-  }
-});
-            }
+        });
+      }
     };
 
 
