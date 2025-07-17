@@ -6,12 +6,16 @@ export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
     const tenantDomain  = Cookies.get("tenant");
-    const accessToken =  Cookies.get("access_token");
+    // const accessToken =  Cookies.get("access_token");
     
-    const getAuthHeaders = (isJson = true) => ({
-      ...(isJson && { "Content-Type": "application/json" }),
-      Authorization: `Bearer ${accessToken}`,
-    });
+const getAuthHeaders = (isJson = true) => {
+  const accessToken = Cookies.get("access_token"); // move here
+  return {
+    ...(isJson && { "Content-Type": "application/json" }),
+    Authorization: `Bearer ${accessToken}`,
+  };
+};
+
    
     const apiBase = `https://${tenantDomain}.pekingledger.store/api`
     const storesUrl = `${apiBase}/store/`
@@ -121,31 +125,31 @@ export const InventoryProvider = ({ children }) => {
 
     // Add this inside InventoryProvider
     const addInventory = async (storeId, inventoryItems = []) => {
-  if (!tenantDomain || !accessToken) {
-    throw new Error("Missing tenant domain or access token.");
-  }
+        if (!tenantDomain || !accessToken) {
+            throw new Error("Missing tenant domain or access token.");
+        }
 
-  try {
-    const response = await fetch(
-      `${apiBase}/store/${storeId}/add-inventory/`,
-      {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(inventoryItems),
-      }
-    );
+        try {
+            const response = await fetch(
+            `${apiBase}/store/${storeId}/add-inventory/`,
+            {
+                method: "POST",
+                headers: getAuthHeaders(),
+                body: JSON.stringify(inventoryItems),
+            }
+            );
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || `HTTP error: ${response.status}`);
-    }
+            if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.detail || `HTTP error: ${response.status}`);
+            }
 
-    const data = await response.json();
-    return { success: true, data };
-  } catch (error) {
-    return { success: false, error: error.message || "Failed to add inventory." };
-  }
-};
+            const data = await response.json();
+            return { success: true, data };
+        } catch (error) {
+            return { success: false, error: error.message || "Failed to add inventory." };
+        }
+        };
 
 
     const refreshAll = async () => {
