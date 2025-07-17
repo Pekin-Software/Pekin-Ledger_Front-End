@@ -3,7 +3,7 @@ import ProductModal from "../productModal";
 import ProductDetail from "../ProductDetails/productDetails";
 import { Filter,AlertCircle, Package} from "lucide-react";
 import SubmissionModal from "./submissionModal";
-import { useInventory, refreshAll } from "../../../contexts/InventoryContext";
+import { useInventory } from "../../../contexts/InventoryContext";
 
 function ProductCard({ product, onProductClick, context, quantity, onQuantityChange }) {
   const increase = () => onQuantityChange(quantity + 1);
@@ -100,7 +100,7 @@ export default function ProductSection({
   onOpenFullScreenModal,
   storeId,
 }) {
-  const { addInventory } = useInventory();
+  const { addInventory, refreshAll } = useInventory();
 
   const [submissionStatus, setSubmissionStatus] = useState(null); // 'loading' | 'success' | 'error'
   const [submissionMessage, setSubmissionMessage] = useState("");
