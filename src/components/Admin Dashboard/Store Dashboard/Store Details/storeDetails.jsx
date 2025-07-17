@@ -630,9 +630,7 @@ export default function StoreDetails({ store, onClose }) {
             <UnassignedProduct
               storeId={store.id}
               onClose={() => setShowFullScreenModal(false)}
-              onSubmit={() => {
-                setShowFullScreenModal(false);
-              }}
+             onSubmit={async () => {}}
             />
           )}
 

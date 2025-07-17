@@ -410,6 +410,7 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
             context="unassigned"
             storeId={storeId}
             onAddProductFromModal={onSubmit}
+            onClose={onClose} 
           />
         </div>
       </div>

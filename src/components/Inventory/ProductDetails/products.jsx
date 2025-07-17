@@ -99,8 +99,9 @@ export default function ProductSection({
   onAddProductFromModal,
   onOpenFullScreenModal,
   storeId,
+  onClose,
 }) {
-  const { addInventory, refreshAll } = useInventory();
+  const { addInventory, fetchProducts } = useInventory();
 
   const [submissionStatus, setSubmissionStatus] = useState(null); // 'loading' | 'success' | 'error'
   const [submissionMessage, setSubmissionMessage] = useState("");
@@ -175,7 +176,7 @@ export default function ProductSection({
         setQuantities({});
 
         // ✅ Refresh inventory and close modal
-        await refreshAll(); 
+        await fetchProducts({ storeId: storeId, type: "store" });
         onClose?.();
 
   } else {
