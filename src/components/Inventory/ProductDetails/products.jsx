@@ -177,7 +177,17 @@ export default function ProductSection({
         
         // ✅ Refresh inventory and close modal
         await fetchProducts({ storeId: storeId, type: "store" });
-        onClose?.();
+        useEffect(() => {
+          if (submissionStatus === "success") {
+            const timer = setTimeout(() => {
+              setSubmissionStatus(null);
+              onClose?.();
+            }, 2000);
+
+            return () => clearTimeout(timer); // cleanup if unmounted
+          }
+        }, [submissionStatus, onClose]);
+
 
   } else {
     setSubmissionStatus("error");
