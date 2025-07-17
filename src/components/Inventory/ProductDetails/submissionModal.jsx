@@ -8,7 +8,7 @@ export default function SubmissionModal({ status, message, count, onClose }) {
     if (status === "success") {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [status, onClose]);
