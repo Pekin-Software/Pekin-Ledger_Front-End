@@ -1,35 +1,75 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Package } from "lucide-react";
 import ProductModal from "../productModal";
 import ProductDetail from "../ProductDetails/productDetails";
-import { Filter,AlertCircle } from "lucide-react";
+import { Filter,AlertCircle, Package} from "lucide-react";
+import SubmissionModal from "./submissionModal";
 
-function ProductCard({ product, onProductClick }) {
+function ProductCard({ product, onProductClick, context, quantity, onQuantityChange }) {
+  const increase = () => onQuantityChange(quantity + 1);
+
+  const decrease = () => {
+    if (quantity > 0) {
+      onQuantityChange(quantity - 1);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const val = Number(e.target.value);
+    if (!isNaN(val)) {
+      onQuantityChange(Math.max(0, val)); 
+    }
+  };
+
   return (
-    <div className="product-card" onClick={() => onProductClick(product)}>
-      <div className="product-image-container">
-        <span
-          className={`availability ${product.stock_status
-            .toLowerCase()
-            .replace(/\s+/g, "-")}`}
-        >
-          {product.stock_status}
-        </span>
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={product.product_name}
-            className="product-image"
+    <div
+      className={`product-card ${context === "unassigned" ? "context-unassigned" : ""}`}
+      onClick={() => onProductClick(product)}
+    >
+      <div className="card-top">
+        <div className="product-image-container">
+          <span
+            className={`availability ${product.stock_status.toLowerCase().replace(/\s+/g, "-")}`}
+          >
+            {product.stock_status}
+          </span>
+          {product.image ? (
+            <img
+              src={product.image}
+              alt={product.product_name}
+              className="product-image"
+            />
+          ) : (
+            <Package size={48} className="fallback-icon" />
+          )}
+        </div>
+        <div className="right-detail">
+          <h3>{product.product_name}</h3>
+          <p>Quantity: {product.quantity}</p>
+          <p>${product.price}</p>
+        </div>
+      </div>
+
+      {context === "unassigned" && (
+        <div className="qty" onClick={(e) => e.stopPropagation()}>
+          <label htmlFor="quantity">Disburse</label>
+
+          {/* ✅ Correctly allows reducing to 0 */}
+          <button type="button" onClick={decrease} disabled={quantity === 0}>
+            –
+          </button>
+
+          <input
+            type="number"
+            min={0}
+            value={quantity}
+            onChange={handleInputChange}
           />
-        ) : (
-          <Package size={48} className="fallback-icon" />
-        )}
-      </div>
-      <div className="right-detail">
-        <h3>{product.product_name}</h3>
-        <p>Quantity: {product.quantity}</p>
-        <p>${product.price}</p>
-      </div>
+
+          <button type="button" onClick={increase}>
+            +
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -54,20 +94,40 @@ export default function ProductSection({
   products,
   productsLoading,
   productsError,
-  context = "inventory", // default context
-  onAddProductFromModal, // only used in "store-modal" context
-  onOpenFullScreenModal, // only used in "store-detail" context
+  context = "inventory",
+  onAddProductFromModal,
+  onOpenFullScreenModal,
 }) {
+  const [submissionStatus, setSubmissionStatus] = useState(null); // 'loading' | 'success' | 'error'
+  const [submissionMessage, setSubmissionMessage] = useState("");
+  const [submittedCount, setSubmittedCount] = useState(0);
+
+  const [activeFilter, setActiveFilter] = useState(null);
+
+
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const filterRef = useRef(null);
 
+  const [quantities, setQuantities] = useState({});
+  const isSendDisabled = Object.values(quantities).every(q => q === 0 || q === undefined);
+
+  const updateQuantity = (productId, value) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: value < 0 ? 0 : value, // enforce min 1
+    }));
+  };
+
   const handleProductClick = (product) => {
-    setSelectedProduct(product);
+    if (context === "inventory") {
+      setSelectedProduct(product);
+    }
   };
 
   const handleFilterClick = (option) => {
+    setActiveFilter(option);
     setShowFilter(false);
   };
 
@@ -87,62 +147,114 @@ export default function ProductSection({
     if (context === "inventory") {
       setShowModal(true);
     } else if (context === "store-detail") {
-      onOpenFullScreenModal?.(); // callback to open full-screen modal
+      onOpenFullScreenModal?.();
     } else if (context === "store-modal") {
-      onAddProductFromModal?.(); // handle product submission
+      onAddProductFromModal?.();
+    } else if (context === "unassigned") {
+      const submissionData = products
+        .filter(p => quantities[p.id] && quantities[p.id] > 0)
+        .map(p => ({
+          product_id: p.id,
+          lot_id: p.lot_id,
+          quantity: quantities[p.id]
+        }));
+
+      if (submissionData.length === 0) return;
+
+      setSubmissionStatus("loading");
+      try {
+        // Simulate async API call here if needed
+        // await new Promise((res) => setTimeout(res, 1000));
+
+        setSubmissionStatus("success");
+        setSubmittedCount(submissionData.length);
+        setQuantities({});
+      } catch (error) {
+        setSubmissionStatus("error");
+        setSubmissionMessage(error.message || "Something went wrong");
+      }
+
+      console.log("Submitting:", submissionData);
     }
-  };
+};
+
+
+  const filteredProducts = products.filter((product) => {
+    if (!activeFilter) return true;
+
+    switch (activeFilter) {
+      case "In-Stock":
+        return product.stock_status === "In Stock";
+      case "Out-of-Stock":
+        return product.stock_status === "Out of Stock";
+      case "Low Stock":
+        return product.stock_status === "Low Stock";
+      case "Prices: Low to High":
+      case "Prices: High to Low":
+      case "Expiring Date":
+        return true; // sorting handled separately
+      default:
+        return true;
+    }
+  });
+  if (activeFilter === "Prices: Low to High") {
+    filteredProducts.sort((a, b) => a.price - b.price);
+  }
+  if (activeFilter === "Prices: High to Low") {
+    filteredProducts.sort((a, b) => b.price - a.price);
+  }
 
   return (
     <>
       <section className="products">
         <div className="products-header">
           <h2>Products</h2>
+          {activeFilter && (
+            <div className="active-filter-label">
+              🔍 <strong>Filter:</strong> {activeFilter}
+              <button className="clear-filter" onClick={() => setActiveFilter(null)}>
+                ✖
+              </button>
+            </div>
+          )}
+
           <div className="actions">
-            <button className="add-product" onClick={handleAddProductClick}>
-              Add Product
+            <button className="add-product" 
+              onClick={handleAddProductClick}
+              disabled={context === "unassigned" && isSendDisabled}>
+                {context === "unassigned" ? "Send Product" : "Add Product"}
             </button>
-
-         
-              <div className="filter-container" ref={filterRef}>
-                <button
-                  className="filter-button"
-                  onClick={() => setShowFilter(!showFilter)}
-                >
-                  <span className="filter-icon">
-                    <Filter size={16} />
-                  </span>
-                  <span className="filter-text">Filter</span>
-                </button>
-                {showFilter && (
-                  <ul className="filter-options">
-                    <li onClick={() => handleFilterClick("In-Stock")}>
-                      In-Stock
-                    </li>
-                    <li onClick={() => handleFilterClick("Out-of-Stock")}>
-                      Out-of-Stock
-                    </li>
-                    <li onClick={() => handleFilterClick("Low Stock")}>
-                      Low Stock
-                    </li>
-                    <li onClick={() => handleFilterClick("Prices: Low to High")}>
-                      Prices: Low to High
-                    </li>
-                    <li onClick={() => handleFilterClick("Prices: High to Low")}>
-                      Prices: High to Low
-                    </li>
-                    <li onClick={() => handleFilterClick("Expiring Date")}>
-                      Expiring Date
-                    </li>
-                  </ul>
-                )}
-              </div>
+            <div className="filter-container" ref={filterRef}>
+              <button
+                className="filter-button"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent outside click from closing
+                  setShowFilter((prev) => !prev);
+                }}
+              >
+                <span className="filter-icon">
+                  <Filter size={16} />
+                </span>
+                <span className="filter-text">Filter</span>
+              </button>
             
+              {showFilter && (
+                <ul className="filter-options" onClick={(e) => e.stopPropagation()}>
+                  <li onClick={() => handleFilterClick("In-Stock")}>In-Stock</li>
+                  <li onClick={() => handleFilterClick("Out-of-Stock")}>Out-of-Stock</li>
+                  <li onClick={() => handleFilterClick("Low Stock")}>Low Stock</li>
+                  <li onClick={() => handleFilterClick("Prices: Low to High")}>Prices: Low to High</li>
+                  <li onClick={() => handleFilterClick("Prices: High to Low")}>Prices: High to Low</li>
+                  <li onClick={() => handleFilterClick("Expiring Date")}>Expiring Date</li>
+                </ul>
+              )}
+            </div>
 
-            {/* Download button hidden in modal context */}
-            {context !== "store-modal" && (
-              <button className="download">Download All</button>
-            )}
+            { context !== "unassigned" ? (
+                <button className="download">Download All</button>
+              ) : (
+                <span className="download-placeholder" />
+            )}    
           </div>
         </div>
 
@@ -166,19 +278,25 @@ export default function ProductSection({
           />
         ) : (
           <div className="product-grid-scrollable">
-            <div className="product-grid">
-              {products.length > 0 ? (
-                products.map((product) => (
+            {filteredProducts.length > 0 ? (
+              <div className="product-grid">
+                {filteredProducts.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
                     onProductClick={handleProductClick}
+                    context={context}
+                    quantity={quantities[product.id] || 0}
+                    onQuantityChange={(value) => updateQuantity(product.id, value)}
                   />
-                ))
-              ) : (
-                <p className="empty-message">No products available.</p>
-              )}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-message">
+                <Package size={48} />
+                <p>No products available.</p>
+              </div>
+            )}
           </div>
         )}
       </section>
@@ -191,6 +309,15 @@ export default function ProductSection({
             setSelectedProduct(newProduct);
             setShowModal(false);
           }}
+        />
+      )}
+
+      {submissionStatus && (
+        <SubmissionModal
+          status={submissionStatus}
+          message={submissionMessage}
+          count={submittedCount}
+          onClose={() => setSubmissionStatus(null)}
         />
       )}
     </>
