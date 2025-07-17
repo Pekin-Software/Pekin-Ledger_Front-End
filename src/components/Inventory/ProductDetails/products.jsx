@@ -174,18 +174,16 @@ export default function ProductSection({
         setSubmissionMessage("Inventory added successfully");
         setSubmittedCount(submissionData.length);
         setQuantities({});
-
+        onClose?.();
         // ✅ Refresh inventory and close modal
         await fetchProducts({ storeId: storeId, type: "store" });
-        onClose?.();
+        
 
   } else {
     setSubmissionStatus("error");
     setSubmissionMessage(res.error);
   }
 });
-
-            console.log("Submitting:", submissionData);
             }
     };
 
