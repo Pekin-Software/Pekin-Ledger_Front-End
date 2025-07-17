@@ -18,7 +18,7 @@ export default function SubmissionModal({ status, message, count, onClose }) {
       <div className="submission-modal">
         {status === "loading" && (
           <div className="modal-content loading">
-            <Loader2 size={48} className="loader spinning" />
+            <Loader2 size={30} className="loader spinning" />
             <p>Sending products...</p>
           </div>
         )}
@@ -37,10 +37,9 @@ export default function SubmissionModal({ status, message, count, onClose }) {
         {status === "error" && (
           <div className="modal-content error">
             <button className="close-btn" onClick={onClose}>
-              <X size={20} />
+              <X size={14} />
             </button>
             <XCircle size={48} color="red" />
-            <p className="error-text">Error sending products</p>
             <p>{message}</p>
           </div>
         )}

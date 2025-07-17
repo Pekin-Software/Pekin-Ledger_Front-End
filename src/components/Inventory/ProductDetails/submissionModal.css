@@ -35,16 +35,15 @@
   }
 }
 
-.error-text {
-  font-weight: bold;
-  color: red;
-}
-
 .close-btn {
   background: transparent;
   border: none;
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 8px;
+  right: 8px;
   cursor: pointer;
+}
+
+.close-btn :hover{
+    background-color: transparent;
 }
