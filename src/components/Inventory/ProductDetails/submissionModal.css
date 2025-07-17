@@ -1,0 +1,50 @@
+.submission-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.submission-modal {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  min-width: 300px;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-content p {
+  margin-top: 1rem;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-text {
+  font-weight: bold;
+  color: red;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  cursor: pointer;
+}
