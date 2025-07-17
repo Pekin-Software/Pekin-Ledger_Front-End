@@ -3,7 +3,7 @@ import ProductModal from "../productModal";
 import ProductDetail from "../ProductDetails/productDetails";
 import { Filter,AlertCircle, Package} from "lucide-react";
 import SubmissionModal from "./submissionModal";
-import { useInventory } from "../../../contexts/InventoryContext";
+import { useInventory, refreshAll } from "../../../contexts/InventoryContext";
 
 function ProductCard({ product, onProductClick, context, quantity, onQuantityChange }) {
   const increase = () => onQuantityChange(quantity + 1);
