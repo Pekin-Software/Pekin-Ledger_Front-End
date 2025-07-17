@@ -131,7 +131,7 @@ export const InventoryProvider = ({ children }) => {
         if (!tenantDomain || !accessToken) {
             throw new Error("Missing tenant domain or access token.");
         }
-        console,log(accessToken)
+        console.log(accessToken)
         try {
             const response = await fetch(
             `${apiBase}/store/${storeId}/add-inventory/`,
