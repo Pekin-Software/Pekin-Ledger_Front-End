@@ -510,7 +510,7 @@ export default function StoreDetails({ store, onClose }) {
   const back_btn = "/arrow.png";
   const [activeTab, setActiveTab] = useState("Overview"); 
   const [showFullScreenModal, setShowFullScreenModal] = useState(false);
-
+  
   const renderTabContent = () => {
     switch (activeTab) {
       case "Overview":

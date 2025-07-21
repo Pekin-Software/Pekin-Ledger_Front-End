@@ -1,51 +1,31 @@
 import React, { useState,  useEffect, useCallback } from 'react';
-import { UserCircle, ChevronUp,ChevronDown, X, LogOutIcon} from 'lucide-react';
+import { UserCircle, ChevronUp,ChevronDown, X, LogOutIcon, Package} from 'lucide-react';
 import "./cashierdashboard.css";
 import Receipt from './cart';
 import ItemCard from './ItemCard';
 import SignOutModal from '../Authentications/LogOutModal';
+import { useInventory } from '../../contexts/InventoryContext';
+import Cookies from 'js-cookie';
+
+// const store_id = Cookies.get(store_id)
 
 const logo = "/logo.jpg";
 const ScreenSaver = "/POS-Screensaver.png"
 const userImageUrl = null; // or a real URL string if available
-const item1 = '/item1.jpg'
-const item2 = '/items2.jpeg'
-const item3 = '/items3.jpeg'
+// const item1 = '/item1.jpg'
+// const item2 = '/items2.jpeg'
+// const item3 = '/items3.jpeg'
 
 const SCREEN_SAVER_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 // const SCREEN_SAVER_TIMEOUT = 10 * 1000; // 10 seconds for testing
-const dummyItems = [
-  { id: 1, name: 'Grilled Chicken', price: 12.99, image: item1},
-  { id: 2, name: 'Fried Rice', price: 10.99, image: item2 },
-  { id: 3, name: 'Veggie Pizza', price: 15.49, image: item3 },
-  { id: 4, name: 'Burger', price: 8.99, image: '/images/burger.jpg' },
-  { id: 5, name: 'Fries', price: 4.50, image: item3 },
-  { id: 6, name: 'Pasta Alfredo', price: 11.75, image: '/images/pasta.jpg' },
-  { id: 7, name: 'Salad Bowl', price: 7.99, image: '/images/salad.jpg' },
-  { id: 8, name: 'Steak', price: 19.99, image: '/images/steak.jpg' },
-  { id: 9, name: 'Tacos', price: 9.49, image: '/images/tacos.jpg' },
-  { id: 11, name: 'Smoothie', price: 6.00, image: '/images/smoothie.jpg' },
-  { id: 100, name: 'Grilled Chicken', price: 12.99, image: '/images/grilled-chicken.jpg' },
-  { id: 12, name: 'Fried Rice', price: 10.99, image: '/images/fried-rice.jpg' },
-  { id: 13, name: 'Veggie Pizza', price: 15.49, image: '/images/veggie-pizza.jpg' },
-  { id: 14, name: 'Burger', price: 8.99, image: '/images/burger.jpg' },
-  { id: 15, name: 'Fries', price: 4.50, image: '/images/fries.jpg' },
-  { id: 16, name: 'Pasta Alfredo', price: 11.75, image: '/images/pasta.jpg' },
-  { id: 17, name: 'Salad Bowl', price: 7.99, image: '/images/salad.jpg' },
-  { id: 18, name: 'Steak', price: 19.99, image: '/images/steak.jpg' },
-  { id: 19, name: 'Tacos', price: 9.49, image: '/images/tacos.jpg' },
-  { id: 20, name: 'Smoothie', price: 6.00, image: '/images/smoothie.jpg' },
-  { id: 21, name: 'Grilled Chicken', price: 12.99, image: '/images/grilled-chicken.jpg' },
-  { id: 22, name: 'Fried Rice', price: 10.99, image: '/images/fried-rice.jpg' },
-  { id: 23, name: 'Veggie Pizza', price: 15.49, image: '/images/veggie-pizza.jpg' },
-  { id: 24, name: 'Burger', price: 8.99, image: '/images/burger.jpg' },
-  { id: 25, name: 'Fries', price: 4.50, image: '/images/fries.jpg' },
-  { id: 26, name: 'Pasta Alfredo', price: 11.75, image: '/images/pasta.jpg' },
-  { id: 27, name: 'Salad Bowl', price: 7.99, image: '/images/salad.jpg' },
-  { id: 28, name: 'Steak', price: 19.99, image: '/images/steak.jpg' },
-  { id: 29, name: 'Tacos', price: 9.49, image: '/images/tacos.jpg' },
-  { id: 30, name: 'Smoothie', price: 6.00, image: '/images/smoothie.jpg' },
-];
+
+// const dummyItems = [
+//   { id: 1, name: 'Grilled Chicken', price: 12.99, image: item1},
+//   { id: 2, name: 'Fried Rice', price: 10.99, image: item2 },
+//   { id: 3, name: 'Veggie Pizza', price: 15.49, image: item3 },
+//   { id: 4, name: 'Burger', price: 8.99, image: '/images/burger.jpg' },
+//   { id: 5, name: 'Fries', price: 4.50, image: item3 },
+// ];
 
 const CashierDashboard = () => {
   const [showModal, setShowModal] = useState(false);
@@ -53,7 +33,10 @@ const CashierDashboard = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const {refreshAll,fetchProducts, products, productsLoading, productsError} = useInventory();
+  const store_id = Cookies.get("store_id");
 
+  
   const handleSignOut = () => {
     // Add your sign-out logic here
     alert("Signed out!");
@@ -88,6 +71,11 @@ const CashierDashboard = () => {
     }
   };
 
+   useEffect(() => {
+    if (store_id) {
+      fetchProducts({ storeId: store_id, type: "store" });
+    }
+  }, [store_id]);
 
   const resetTimer = useCallback(() => {
     setIsIdle(false);
@@ -179,21 +167,41 @@ const CashierDashboard = () => {
         <section className='main-section'>
           <div  className="items-scroll-container"  tabIndex={0} >
             <div className="items-grid">
-              {dummyItems.map(item => {
-                const cartItem = cartItems.find(ci => ci.id === item.id);
-                return (
-                  <ItemCard
-                    key={item.id}
-                    itemName={item.name}
-                    price={item.price}
-                    imageSrc={item.image}
-                    selected={!!cartItem}
-                    quantity={cartItem?.quantity || 0}
-                    onSelect={(selected) => handleSelectItem(item, selected)}
-                    onQuantityChange={(q) => updateQuantity(item.id, q)}
-                  />
-                );
-              })}
+              {productsLoading ? (
+                <div className="product-grid-scrollable">
+                  <div className="product-grid-skeleton">
+                    {Array.from({ length: 28 }).map((_, idx) => (
+                      <ProductCardSkeleton key={idx} />
+                    ))}
+                  </div>
+                </div>
+              ) : productsError ? (
+                <div className="error">
+                  <AlertCircle size={48} className="error-icon" />
+                  <p>Error: {productsError}</p>
+                </div>
+              ) : products.length > 0 ? (
+                products.map(item => {
+                  const cartItem = cartItems.find(ci => ci.id === item.id);
+                  return (
+                    <ItemCard
+                      key={item.id}
+                      itemName={item.product_name}
+                      price={item.price}
+                      imageSrc={item.image}
+                      selected={!!cartItem}
+                      quantity={cartItem?.quantity || 0}
+                      onSelect={(selected) => handleSelectItem(item, selected)}
+                      onQuantityChange={(q) => updateQuantity(item.id, q)}
+                    />
+                  );
+                })
+              ) : (
+                <div className="empty-message">
+                  <Package size={48} />
+                  <p>No products available.</p>
+                </div>
+              )}
             </div>
           </div>
         </section>

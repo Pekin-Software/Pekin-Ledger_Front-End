@@ -58,7 +58,7 @@ function SignInForm({ navigate }) {
         console.log("Login Successful")
   
       const data = await response.json();
-      const { role, tenant_domain, user, access_token} = data;
+      const { role, tenant_domain, user, access_token, store_id} = data;
   
       if (!role || !tenant_domain || !user) {
         throw new Error("Invalid login response: Missing role, tenant_domain, or user data");
@@ -68,7 +68,7 @@ function SignInForm({ navigate }) {
       Cookies.set("role", role, { path: "/" });
       Cookies.set("tenant", tenant_domain.split('.')[0], { path: "/" });
       Cookies.set("user", user, { path: "/" });
-
+      Cookies.set("store_id", store_id)
       // Redirect user to the appropriate dashboard based on the role
       navigate(`/${role.toLowerCase()}`);
   
