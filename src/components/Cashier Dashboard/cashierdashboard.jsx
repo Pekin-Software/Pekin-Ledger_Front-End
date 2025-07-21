@@ -169,11 +169,11 @@ const CashierDashboard = () => {
             <div className="items-grid">
               {productsLoading ? (
                 <div className="product-grid-scrollable">
-                  <div className="product-grid-skeleton">
+                  {/* <div className="product-grid-skeleton">
                     {Array.from({ length: 28 }).map((_, idx) => (
                       <ProductCardSkeleton key={idx} />
                     ))}
-                  </div>
+                  </div> */}
                 </div>
               ) : productsError ? (
                 <div className="error">
