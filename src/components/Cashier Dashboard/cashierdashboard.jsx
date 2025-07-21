@@ -163,25 +163,25 @@ const CashierDashboard = () => {
             </div>
           </div>
         </div>
-
+        
         <section className='main-section'>
-          <div  className="items-scroll-container"  tabIndex={0} >
-            <div className="items-grid">
-                {productsLoading ? (
-                <div>
-                  {/* <div className="product-grid-skeleton">
-                    {Array.from({ length: 28 }).map((_, idx) => (
-                      <ProductCardSkeleton key={idx} />
-                    ))}
-                  </div> */}
-                </div>
-              ) : productsError ? (
-                <div className="error">
-                  <AlertCircle size={48} className="error-icon" />
-                  <p>Error: {productsError}</p>
-                </div>
-              ) : products.length > 0 ? (
-                products.map(item => {
+          {productsLoading ? (
+            <div className="product-grid-scrollable">
+              <div className="product-grid-skeleton">
+                {Array.from({ length: 28 }).map((_, idx) => (
+                  <ProductCardSkeleton key={idx} />
+                ))}
+              </div>
+            </div>
+          ) : productsError ? (
+            <div className="error">
+              <AlertCircle size={48} className="error-icon" />
+              <p>Error: {productsError}</p>
+            </div>
+          ) : products.length > 0 ? (
+            <div className="product-grid-scrollable">
+              <div className="product-grid">
+                {products.map(item => {
                   const cartItem = cartItems.find(ci => ci.id === item.id);
                   return (
                     <ItemCard
@@ -195,17 +195,17 @@ const CashierDashboard = () => {
                       onQuantityChange={(q) => updateQuantity(item.id, q)}
                     />
                   );
-                })
-              ) : (
-                <div className="empty-message">
-                  <Package size={48} />
-                  <p>No products available.</p>
-                </div>
-              )}
+                })}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="empty-message">
+              <Package size={48} />
+              <p>No products available.</p>
+            </div>
+          )}
         </section>
-
+        
         {/* Only shown on desktop */}
         <section className='business-info desktop-layout'>
           <div className='user-info'>
