@@ -1,13 +1,13 @@
 import React, { useState,  useEffect, useCallback } from 'react';
 import { UserCircle, ChevronUp,ChevronDown, X, LogOutIcon, Package} from 'lucide-react';
 import "./cashierdashboard.css";
+import "../Inventory/inventoryDashboard.css"
 import Receipt from './cart';
 import ItemCard from './ItemCard';
 import SignOutModal from '../Authentications/LogOutModal';
 import { useInventory } from '../../contexts/InventoryContext';
 import Cookies from 'js-cookie';
 
-// const store_id = Cookies.get(store_id)
 
 const logo = "/logo.jpg";
 const ScreenSaver = "/POS-Screensaver.png"
@@ -167,8 +167,8 @@ const CashierDashboard = () => {
         <section className='main-section'>
           <div  className="items-scroll-container"  tabIndex={0} >
             <div className="items-grid">
-              {productsLoading ? (
-                <div className="product-grid-scrollable">
+                {productsLoading ? (
+                <div>
                   {/* <div className="product-grid-skeleton">
                     {Array.from({ length: 28 }).map((_, idx) => (
                       <ProductCardSkeleton key={idx} />
