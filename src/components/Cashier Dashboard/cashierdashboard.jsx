@@ -9,6 +9,22 @@ import { useInventory } from '../../contexts/InventoryContext';
 import Cookies from 'js-cookie';
 
 
+function ProductCardSkeleton() {
+  return (
+    <div className="product-card-skeleton skeleton">
+      <div className="skeleton-image-container">
+        <span className="skeleton-availability"></span>
+        <Package size={48} className="skeleton-icon" />
+      </div>
+      <div className="skeleton-right-detail">
+        <h3></h3>
+        <p></p>
+        <p></p>
+      </div>
+    </div>
+  );
+}
+
 const logo = "/logo.jpg";
 const ScreenSaver = "/POS-Screensaver.png"
 const userImageUrl = null; // or a real URL string if available
@@ -205,7 +221,7 @@ const CashierDashboard = () => {
             </div>
           )}
         </section>
-        
+
         {/* Only shown on desktop */}
         <section className='business-info desktop-layout'>
           <div className='user-info'>
