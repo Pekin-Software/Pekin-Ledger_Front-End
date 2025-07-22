@@ -28,20 +28,20 @@ function ProductCardSkeleton() {
 const logo = "/logo.jpg";
 const ScreenSaver = "/POS-Screensaver.png"
 const userImageUrl = null; // or a real URL string if available
-const item1 = '/item1.jpg'
-const item2 = '/items2.jpeg'
-const item3 = '/items3.jpeg'
+// const item1 = '/item1.jpg'
+// const item2 = '/items2.jpeg'
+// const item3 = '/items3.jpeg'
 
 const SCREEN_SAVER_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 // const SCREEN_SAVER_TIMEOUT = 10 * 1000; // 10 seconds for testing
 
-const dummyItems = [
-  { id: 1, name: 'Liberian Grilled Chicken', price: 12.99, image: item1},
-  { id: 2, name: 'Fried Rice', price: 10.99, image: item2 },
-  { id: 3, name: 'Veggie Pizza', price: 15.49, image: item3 },
-  { id: 4, name: 'Burger', price: 8.99, image: '/images/burger.jpg' },
-  { id: 5, name: 'Fries', price: 4.50, image: item3 },
-];
+// const dummyItems = [
+//   { id: 1, name: 'Grilled Chicken', price: 12.99, image: item1},
+//   { id: 2, name: 'Fried Rice', price: 10.99, image: item2 },
+//   { id: 3, name: 'Veggie Pizza', price: 15.49, image: item3 },
+//   { id: 4, name: 'Burger', price: 8.99, image: '/images/burger.jpg' },
+//   { id: 5, name: 'Fries', price: 4.50, image: item3 },
+// ];
 
 const CashierDashboard = () => {
   const [showModal, setShowModal] = useState(false);
@@ -87,11 +87,11 @@ const CashierDashboard = () => {
     }
   };
 
-  //  useEffect(() => {
-  //   if (store_id) {
-  //     fetchProducts({ storeId: store_id, type: "store" });
-  //   }
-  // }, [store_id]);
+   useEffect(() => {
+    if (store_id) {
+      fetchProducts({ storeId: store_id, type: "store" });
+    }
+  }, [store_id]);
 
   const resetTimer = useCallback(() => {
     setIsIdle(false);
@@ -194,15 +194,15 @@ const CashierDashboard = () => {
               <AlertCircle size={48} className="error-icon" />
               <p>Error: {productsError}</p>
             </div>
-          ) : dummyItems.length > 0 ? (
+          ) : products.length > 0 ? (
             <div className="product-grid-scrollable">
               <div className="product-grid">
-                {dummyItems.map(item => {
+                {products.map(item => {
                   const cartItem = cartItems.find(ci => ci.id === item.id);
                   return (
                     <ItemCard
                       key={item.id}
-                      itemName={item.name}
+                      itemName={item.product_name}
                       price={item.price}
                       imageSrc={item.image}
                       selected={!!cartItem}
