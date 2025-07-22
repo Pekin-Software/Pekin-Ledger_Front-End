@@ -66,8 +66,10 @@ export default function ItemCard({
       </div>
 
       <div className="item-details">
-        <div className="item-name">{itemName}</div>
-        <div className="item-price">${price.toFixed(2)}</div>
+        <div>
+          <div className="item-name">{itemName}</div>
+          <div className="item-price">${price.toFixed(2)}</div>
+        </div>
 
         {/* Always show quantity control */}
         <div className="quantity-ctrl">

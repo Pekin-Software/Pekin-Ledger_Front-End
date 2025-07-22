@@ -140,12 +140,12 @@
   flex: 1;
   background-color: #fff;
   position: relative;
+  display: flex;
 }
 
 .desktop-billing-content {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 
@@ -194,6 +194,7 @@
     }
 
     .mobile-toggle {
+      width: 100%;
         display: flex;
         justify-content: space-between;
         padding: .5rem;

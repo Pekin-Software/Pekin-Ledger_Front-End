@@ -33,8 +33,13 @@
 
 .item-details {
   flex-grow: 1;
-}
+  padding: 5px;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
 
+}
 .item-name {
   font-weight: bold;
 }
@@ -47,26 +52,34 @@
 
 .quantity-ctrl {
   display: flex;
-  gap: 2px;
-  padding-bottom: 5px;
+  gap: 5px;
+  justify-content: center;
 }
 
 .quantity-ctrl input {
-  width: 35px;
+  width: 2.5rem;
   text-align: center;
   border: none;
   -moz-appearance: textfield;
   appearance: textfield;
+  border: 1px solid rgba(128, 128, 128, 0.233);
+  border-radius: 0;
+  color: #6b6e70;
 }
 
 .quantity-ctrl button {
   padding: 2px 6px;
   cursor: pointer;
   border: none;
-  background-color: #054bac;
-  color: white;
+  font-size: 18px;
+  background-color: rgba(7, 7, 247, 0.87);
+  color: rgb(252, 251, 251);
 }
 
+.quantity-ctrl button:nth-child(1){
+  padding-left: 8px;
+  padding-right: 8px;
+}
 /* Remove arrows in inputs */
 .quantity-ctrl input::-webkit-outer-spin-button,
 .quantity-ctrl input::-webkit-inner-spin-button {
