@@ -25,8 +25,10 @@ function App() {
       navigate("/point-of-sale");
     } else if (role === "Manager") {
       navigate("/store-inventory");
-    } else {
+    } else if (role === "Admin") {
       navigate("/general-inventory");
+    } else {
+      navigate("/")
     }
 
   }, [navigate]);

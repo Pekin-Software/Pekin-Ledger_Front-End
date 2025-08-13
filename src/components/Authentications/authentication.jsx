@@ -72,15 +72,17 @@ function SignInForm({ navigate }) {
       Cookies.set("store_id", store_id, { path: "/" });
       Cookies.set("exchange_rate", exchange_rate, { path: "/" });
       Cookies.set("business_name", business_name, { path: "/" });
-      Cookies.set("tenant", tenant_domain, { path: "/" });
+      // Cookies.set("tenant", tenant_domain, { path: "/" });
 
       setUserData({ role, user, store_id, exchange_rate, business_name });
        if (role === "Cashier") {
         navigate("/point-of-sale");
       } else if (role === "Manager") {
         navigate("/store-inventory");
-      } else {
+      } else if (role === "Admin") {
         navigate("/general-inventory");
+      } else {
+        navigate("/")
       }
   
     } catch (error) {
