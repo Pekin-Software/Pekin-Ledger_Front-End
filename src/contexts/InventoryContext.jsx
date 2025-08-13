@@ -63,7 +63,77 @@ export const InventoryProvider = ({ children }) => {
         }
     };
 
+    const fetchProducts = async ({
+        storeId = null,
+        excludeStoreId = null,
+        type = "store", // "store" or "unassigned"
+        } = {}) => {
+        if (!tenantDomain || !accessToken) {
+            setoverviewError("Missing tenant domain or access token.");
+            setoverviewLoading(false);
+            return;
+        }
 
+        try {
+            const setTarget = type === "unassigned" ? setUnassignedProducts : setproducts;
+            const setLoading = type === "unassigned" ? setproductsLoading : setproductsLoading;
+
+            setLoading(true);
+
+            let url = mainInventoryUrl;
+
+            if (storeId) {
+            url = `${apiBase}/inventory/${storeId}/inventory/`;
+            } else if (excludeStoreId) {
+            url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
+            }
+
+            const response = await fetch(url, {
+            method: 'GET',
+            headers: getAuthHeaders(),
+            });
+
+            if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.detail || `HTTP error: ${response.status}`);
+            }
+
+            const rawData = await response.json();
+
+            const posProductData = rawData.map(item => {
+                const product = item.product || {};
+                const variants = (item.variants || []).map((variant, index) => {
+                    const newestLot = (variant.lots || [])
+                    .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
+
+                    // Assign unique string ID for each variant: '1a', '1b', ...
+                    const variantId = variant.id;
+
+                    return {
+                    id: variantId,
+                    name: variant.attributes.map(attr => attr.value).join(' '), // e.g., "Brown M"
+                    price: parseFloat(newestLot.retail_selling_price) || 0,
+                    image: variant.barcode_image || ""
+                    };
+            });
+
+            return {
+                id: product.id,
+                product_name: product.product_name,
+                image: product.product_image_url || "",
+                currency: product.currency,
+                variants: variants
+            };
+            });
+
+           setPOS_Product_data(posProductData);
+            setproducts(rawData);   
+        } catch (err) {
+            setproductsError(err.message || 'Failed to fetch inventory');
+        } finally {
+            setproductsLoading(false);
+        }
+    };
 
     // Add this inside InventoryProvider
     const addInventory = async (storeId, inventoryItems = []) => {
