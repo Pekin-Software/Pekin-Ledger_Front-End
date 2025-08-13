@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
 import "./authentication.css";
 import { getCountries, getCountryCallingCode } from "libphonenumber-js";
 import Cookies from "js-cookie";
@@ -37,7 +38,7 @@ export default function Authentication({ defaultSignIn, setShowAuth }) {
 function SignInForm({ navigate }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
+  const { setUserData } = useContext(UserContext);
 
   const handleLogin = async (e) => {
     e.preventDefault(); 
@@ -50,31 +51,42 @@ function SignInForm({ navigate }) {
         body: JSON.stringify({ username, password }),
         credentials: 'include',  // Include cookies with the request
       });
-  
-      if (!response.ok) {
+  if (!response.ok) {
         throw new Error("Login failed: " + response.statusText);
       }
       else
         console.log("Login Successful")
   
       const data = await response.json();
-      const { role, tenant_domain, user, access_token, store_id} = data;
-  
-      if (!role || !tenant_domain || !user) {
-        throw new Error("Invalid login response: Missing role, tenant_domain, or user data");
+      const { role, user, tenant_domain,store_id, exchange_rate, business_name} = data;
+
+      if (!role || !user) {
+        throw new Error("Invalid login response: Missing role, or user data");
       }
   
-      // Optionally store non-sensitive data (like role, tenant, or user info)
+      // // Optionally store non-sensitive data (like role, tenant, or user info)
+      // Cookies.set("access_token", data.access_token, { path: "/" });
+      // Cookies.set("refresh_token", data.refresh_token, { path: "/" });
       Cookies.set("role", role, { path: "/" });
-      Cookies.set("tenant", tenant_domain.split('.')[0], { path: "/" });
-      Cookies.set("user", user, { path: "/" });
-      Cookies.set("store_id", store_id)
-      // Redirect user to the appropriate dashboard based on the role
-      navigate(`/${role.toLowerCase()}`);
+      Cookies.set("user", JSON.stringify(user), { path: "/" });  
+      Cookies.set("store_id", store_id, { path: "/" });
+      Cookies.set("exchange_rate", exchange_rate, { path: "/" });
+      Cookies.set("business_name", business_name, { path: "/" });
+      Cookies.set("tenant", tenant_domain, { path: "/" });
+
+      setUserData({ role, user, store_id, exchange_rate, business_name });
+       if (role === "Cashier") {
+        navigate("/point-of-sale");
+      } else if (role === "Manager") {
+        navigate("/store-inventory");
+      } else {
+        navigate("/general-inventory");
+      }
   
     } catch (error) {
       console.error("Login failed", error);
     }
+  
   const handleSignUp = (e) => {
     e.preventDefault(); // Prevent form submission behavior
     navigate("/signup"); // Navigate to the signup page
