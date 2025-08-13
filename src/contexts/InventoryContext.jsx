@@ -137,80 +137,66 @@ export const InventoryProvider = ({ children }) => {
 
     // Add this inside InventoryProvider
     
-    const fetchProducts = async ({
-    storeId = null,
-    excludeStoreId = null,
-    type = "store", // "store" or "unassigned"
-} = {}) => {
-    if (!tenantDomain) {
-        setoverviewError("Missing tenant domain.");
-        setoverviewLoading(false);
-        return;
+const fetchProducts = async ({ storeId = null, excludeStoreId = null, type = "store" } = {}) => {
+  if (!tenantDomain) {
+    setoverviewError("Missing tenant domain.");
+    setoverviewLoading(false);
+    return;
+  }
+
+  try {
+    const setTarget = type === "unassigned" ? setUnassignedProducts : setproducts;
+    const setLoading = type === "unassigned" ? setproductsLoading : setproductsLoading;
+
+    setLoading(true);
+
+    let url = storeId ? `${apiBase}/inventory/${storeId}/inventory/` : 
+              excludeStoreId ? `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}` : mainInventoryUrl;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include', // use HttpOnly cookie
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `HTTP error: ${response.status}`);
     }
 
-    try {
-        const setTarget = type === "unassigned" ? setUnassignedProducts : setproducts;
-        const setLoading = type === "unassigned" ? setproductsLoading : setproductsLoading;
+    const rawData = await response.json();
 
-        setLoading(true);
+    const posProductData = rawData.map(item => {
+      const product = item.product || {};
+      const variants = (item.variants || []).map(variant => {
+        const newestLot = (variant.lots || [])
+          .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
 
-        let url = mainInventoryUrl;
+        return {
+          id: variant.id,
+          name: variant.attributes.map(attr => attr.value).join(' '),
+          price: parseFloat(newestLot.retail_selling_price) || 0,
+          image: variant.barcode_image || ""
+        };
+      });
 
-        if (storeId) {
-            url = `${apiBase}/inventory/${storeId}/inventory/`;
-        } else if (excludeStoreId) {
-            url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
-        }
+      return {
+        id: product.id,
+        product_name: product.product_name,
+        image: product.product_image_url || "",
+        currency: product.currency,
+        variants
+      };
+    });
 
-        const response = await fetch(url, {
-            method: 'GET',
-            credentials: 'include', // send cookies automatically
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.detail || `HTTP error: ${response.status}`);
-        }
-
-        const rawData = await response.json();
-
-        const posProductData = rawData.map(item => {
-            const product = item.product || {};
-            const variants = (item.variants || []).map(variant => {
-                const newestLot = (variant.lots || [])
-                    .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
-
-                const variantId = variant.id;
-
-                return {
-                    id: variantId,
-                    name: variant.attributes.map(attr => attr.value).join(' '), // e.g., "Brown M"
-                    price: parseFloat(newestLot.retail_selling_price) || 0,
-                    image: variant.barcode_image || ""
-                };
-            });
-
-            return {
-                id: product.id,
-                product_name: product.product_name,
-                image: product.product_image_url || "",
-                currency: product.currency,
-                variants: variants
-            };
-        });
-
-        setPOS_Product_data(posProductData);
-        setproducts(rawData);
-    } catch (err) {
-        setproductsError(err.message || 'Failed to fetch inventory');
-    } finally {
-        setproductsLoading(false);
-    }
+    setPOS_Product_data(posProductData);
+    setTarget(rawData);
+  } catch (err) {
+    setproductsError(err.message || 'Failed to fetch inventory');
+  } finally {
+    setproductsLoading(false);
+  }
 };
-
     const addInventory = async (storeId, inventoryItems = []) => {
         if (!tenantDomain || !accessToken) {
             throw new Error("Missing tenant domain or access token.");
