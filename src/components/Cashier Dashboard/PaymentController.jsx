@@ -4,14 +4,17 @@ import {
   CurrencyPaymentModal,
   EPaymentModal,
   BankPaymentModal,
-  SuccessModal,
-  SplitPaymentModal,
+  StatusModal,
+  PaymentModal,
 } from './payment';
-
+import { useContext } from "react";
+import { UserContext } from '../../contexts/UserContext';
 import usePrintReceipt from '../../utils/reciept';
 
-export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, method, onClearCart, showSuccessModal }) {
-    
+export function PaymentController({  cartItems, selectedCurrency, totalLRD, totalUSD, grandTotal, onClose, method, onClearCart,
+                                     showStatusModal}) {
+      const { userData } = useContext(UserContext);
+  const storeId = userData?.store_id;
     const printReceipt = usePrintReceipt();
 
     const [queue, setQueue] = useState([]); // All payments with status
@@ -21,6 +24,10 @@ export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, met
     const [queueDone, setQueueDone] = useState(false);
     const [finalSuccess, setFinalSuccess] = useState(false);
     const [isSinglePayment, setIsSinglePayment] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
+
+    const [error, setError] = useState(null); // To handle submission errors
+    const [submitting, setSubmitting] = useState(false);  
 
     const resetState = () => {
         setQueue([]);
@@ -30,6 +37,8 @@ export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, met
         setQueueDone(false);
         setFinalSuccess(false);
         setIsSinglePayment(false);
+        setError(null);
+        setSubmitting(false);
     };
 
  useEffect(() => {
@@ -52,8 +61,8 @@ export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, met
         const singlePayment = {
         id: Date.now(),
         method,
-        amount: totalUSD,
-        currency: 'USD$ ',
+        amount: grandTotal,
+        currency: selectedCurrency,
         status: 'pending',
         };
 
@@ -84,9 +93,8 @@ export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, met
         };
         });
 
-        // Remove any duplicate pending payments by ID
         const deduped = updatedPending.filter(
-        up => !completed.some(c => c.id === up.id)
+            up => !completed.some(c => c.id === up.id)
         );
 
         return [...completed, ...deduped];
@@ -119,7 +127,6 @@ export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, met
         setCurrent({ type, data: next });
         } else {
         setQueueDone(true);
-        setFinalSuccess(true);
         }
     };
 
@@ -179,23 +186,109 @@ export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, met
         setQueue(updatedPayments);
     };
 
+    const submitSale = async (payload) => {
+    // const access_token = Cookies.get('access_token');
+
+    try {
+        const response = await fetch(
+        'http://testing022.client1.localhost:8000/api/sales/sale/',
+        {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${access_token}`, // Add token here
+            },
+            body: JSON.stringify(payload),
+            credentials: 'include',
+        }
+        );
+
+        if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server error response:', errorData);
+        throw new Error(errorData.message || 'Network response was not ok');
+        }
+
+        return response.json();
+    } catch (err) {
+        throw new Error(err.message || 'Sale submission failed');
+    }
+    };
+
+const submitPaymentData = async () => {
+  setSubmitting(true);
+  setError(null);
+
+  try {
+    const currency = selectedCurrency;
+
+    // Build products array
+    const products = cartItems.map(item => ({
+      product_id: item.product_id,
+      quantity_sold: item.quantity,
+      variant_id: item.id,
+    }));
+
+    // Build payments array
+    const payments = queue.map(p => ({
+      method: p.method,
+      amount: parseFloat(
+        p.amount.toString().replace(/[^0-9.-]+/g, '') 
+        ),
+      currency,
+    }));
+
+    const payload = {
+      store_id:Number(storeId),
+      currency,
+      products,
+      payments,
+    };
+
+    console.log('Submitting payload:', JSON.stringify(payload, null, 2));
+
+    const response = await submitSale(payload);
+
+    if (response.success) {
+      setFinalSuccess(true);
+    } else {
+      setError(response.message || 'Payment failed');
+      setShowErrorModal(true);
+      setFinalSuccess(false);
+    }
+  } catch (err) {
+    setError(err.message || 'Payment submission failed');
+    setShowErrorModal(true);
+    setFinalSuccess(false);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+
+    useEffect(() => {
+        if (queueDone) {
+            submitPaymentData();
+        }
+        }, [queueDone]);
+
+
     return (
         <>
             {showSplit && (
-                <SplitPaymentModal
-                totalUSD={totalUSD}
-                totalLRD={totalLRD}
+                <PaymentModal
+                grandTotal={grandTotal}
                 payments={queue}
                 onUpdatePayments={handleUpdateQueue}
                 onClose={onClose}
                 onProcess={handleSplitProcess}
+                onSingleMethodSelect={startSinglePayment}
                 />
             )}
 
             {current?.type === 'cash' && (
                 <CurrencyPaymentModal
-                totalUSD={totalUSD}
-                totalLRD={totalLRD}
+                grandTotal={grandTotal}
                 onClose={handleReturnToSplit}
                 onProceed={handleComplete}
                 />
@@ -218,8 +311,16 @@ export function PaymentController({  cartItems, totalUSD, totalLRD, onClose, met
                 />
             )}
 
-            {showIntermediateSuccess && <SuccessModal onClose={() => {}} />}
-            {finalSuccess && <SuccessModal onClose={handleFinalSuccessClose} />}
+         
+
+            {finalSuccess && (
+                <StatusModal type="success" message="Sale completed" onClose={handleFinalSuccessClose} />
+            )}
+
+            {error && (
+                <StatusModal type="error" message={error} onClose={() => {setShowErrorModal(false); setError(null); resetState(); }} />
+            )}
+
         </>
     );
 }

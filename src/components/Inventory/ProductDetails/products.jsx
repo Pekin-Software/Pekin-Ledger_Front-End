@@ -4,7 +4,7 @@ import ProductDetail from "../ProductDetails/productDetails";
 import { Filter,AlertCircle, Package} from "lucide-react";
 import SubmissionModal from "./submissionModal";
 import { useInventory } from "../../../contexts/InventoryContext";
-
+import "./products.css";
 function ProductCard({ product, onProductClick, context, quantity, onQuantityChange }) {
   const increase = () => onQuantityChange(quantity + 1);
 
@@ -75,21 +75,6 @@ function ProductCard({ product, onProductClick, context, quantity, onQuantityCha
   );
 }
 
-function ProductCardSkeleton() {
-  return (
-    <div className="product-card-skeleton skeleton">
-      <div className="skeleton-image-container">
-        <span className="skeleton-availability"></span>
-        <Package size={48} className="skeleton-icon" />
-      </div>
-      <div className="skeleton-right-detail">
-        <h3></h3>
-        <p></p>
-        <p></p>
-      </div>
-    </div>
-  );
-}
 
 export default function ProductSection({
   products,

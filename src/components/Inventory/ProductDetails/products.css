@@ -1,0 +1,32 @@
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.product-grid-scrollable {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin; 
+    scrollbar-color: #ccc transparent;
+} 
+  
+.product-grid.scrollable::-webkit-scrollbar {
+    width: 8px; 
+}
+  
+.product-grid.scrollable::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3); 
+    border-radius: 10px;
+    transition: background 0.3s ease-in-out;
+}
+  
+.product-grid.scrollable::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5); 
+}
+  
+.product-grid.scrollable::-webkit-scrollbar-track {
+    background: transparent; 
+}
