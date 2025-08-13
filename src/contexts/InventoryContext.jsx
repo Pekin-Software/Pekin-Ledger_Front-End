@@ -6,6 +6,9 @@ export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
     const tenantDomain  = Cookies.get("tenant");
+    console.log(Cookies.get("access_token"));
+    console.log(tenantDomain)
+
     // const accessToken =  Cookies.get("access_token");
     
     // console.log(accessToken)
