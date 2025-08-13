@@ -275,7 +275,8 @@
 import React, { createContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
-export const InventoryContext = createContext();
+const InventoryContext = createContext();
+export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
     // Get cookies
