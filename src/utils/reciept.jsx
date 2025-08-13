@@ -111,8 +111,8 @@ export default function usePrintReceipt() {
                 .join('')}
             </tbody>
           </table>
-          <p><strong>Total USD:</strong> $${totalUSD.toFixed(2)}</p>
-          <p><strong>Total LRD:</strong> $${totalLRD.toFixed(2)}</p>
+          <p><strong>Total USD:</strong> $${totalUSD}</p>
+          <p><strong>Total LRD:</strong> $${totalLRD}</p>
         </body>
       </html>
     `;
