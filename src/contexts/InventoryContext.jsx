@@ -6,12 +6,12 @@ export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
     const tenantDomain  = Cookies.get("tenant");
-    const accessToken =  Cookies.get("access_token");
+    // const accessToken =  Cookies.get("access_token");
     
-    console.log(accessToken)
+    // console.log(accessToken)
     const getAuthHeaders = (isJson = true) => ({
       ...(isJson && { "Content-Type": "application/json" }),
-      Authorization: `Bearer ${accessToken}`,
+
     });
 
     const apiBase = `https://${tenantDomain}/api`
@@ -33,8 +33,8 @@ export const InventoryProvider = ({ children }) => {
     const [unassignedProducts, setUnassignedProducts] = useState([]);
 
     const fetchInventoryOverview = async () => {
-        if (!tenantDomain || !accessToken) {
-            setoverviewError("Missing tenant domain or access token.");
+        if (!tenantDomain) {
+            setoverviewError("Missing tenant domain");
             setoverviewLoading(false);
             return;
             }
@@ -68,8 +68,8 @@ export const InventoryProvider = ({ children }) => {
         excludeStoreId = null,
         type = "store", // "store" or "unassigned"
         } = {}) => {
-        if (!tenantDomain || !accessToken) {
-            setoverviewError("Missing tenant domain or access token.");
+        if (!tenantDomain) {
+            setoverviewError("Missing tenant domain");
             setoverviewLoading(false);
             return;
         }
@@ -91,6 +91,7 @@ export const InventoryProvider = ({ children }) => {
             const response = await fetch(url, {
             method: 'GET',
             headers: getAuthHeaders(),
+            credentials: "include"
             });
 
             if (!response.ok) {
@@ -137,8 +138,8 @@ export const InventoryProvider = ({ children }) => {
 
     // Add this inside InventoryProvider
     const addInventory = async (storeId, inventoryItems = []) => {
-        if (!tenantDomain || !accessToken) {
-            throw new Error("Missing tenant domain or access token.");
+        if (!tenantDomain) {
+            throw new Error("Missing tenant domain");
         }
         try {
             const response = await fetch(
