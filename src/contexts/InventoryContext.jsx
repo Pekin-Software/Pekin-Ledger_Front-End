@@ -6,24 +6,19 @@ export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
     const tenantDomain  = Cookies.get("tenant");
-    const accessToken =  Cookies.get("access_token");
+    // const accessToken =  Cookies.get("access_token");
     
+    console.log(tenantDomain)
     const getAuthHeaders = (isJson = true) => ({
       ...(isJson && { "Content-Type": "application/json" }),
       Authorization: `Bearer ${accessToken}`,
     });
-//    const getAuthHeaders = (isJson = true) => {
-//     const token = Cookies.get("access_token"); // Always up to date
-//     return {
-//         ...(isJson && { "Content-Type": "application/json" }),
-//         ...(token && { Authorization: `Bearer ${token}` }),
-//     };
-// };
 
-    const apiBase = `https://${tenantDomain}.pekingledger.store/api`
-    const storesUrl = `${apiBase}/store/`
-    const overviewUrl = `${storesUrl}overview/`
-    const mainInventoryUrl = `${storesUrl}main-inventory/` 
+    const apiBase = `https://${tenantDomain}/api`
+    //  const apiBase = `http://${tenantDomain}:8000/api`
+    const inventory = `${apiBase}/inventory/`
+    const overviewUrl = `${inventory}overview/`
+    const mainInventoryUrl = `${inventory}main-inventory/` 
     
     const [mainInventoryOverview, setmainInventoryOverview] = useState([]);   // General Inventory
     const [storeInventory, setStoreInventory] = useState([]); // Store Inventory  overview 
@@ -33,6 +28,8 @@ export const InventoryProvider = ({ children }) => {
     const [productsLoading, setproductsLoading] = useState(false);
     const [productsError, setproductsError] = useState(null);
     const [products, setproducts] = useState([]);  
+    const [POS_Product_data, setPOS_Product_data] =useState([])
+
     const [unassignedProducts, setUnassignedProducts] = useState([]);
 
     const fetchInventoryOverview = async () => {
@@ -86,7 +83,7 @@ export const InventoryProvider = ({ children }) => {
             let url = mainInventoryUrl;
 
             if (storeId) {
-            url = `${apiBase}/store/${storeId}/inventory/`;
+            url = `${apiBase}/inventory/${storeId}/inventory/`;
             } else if (excludeStoreId) {
             url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
             }
@@ -103,22 +100,34 @@ export const InventoryProvider = ({ children }) => {
 
             const rawData = await response.json();
 
-            const transformedData = rawData.map(item => {
-            const product = item.product || {};
-            const firstLot = (product.lots && product.lots[0]) || {};
+            const posProductData = rawData.map(item => {
+                const product = item.product || {};
+                const variants = (item.variants || []).map((variant, index) => {
+                    const newestLot = (variant.lots || [])
+                    .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
+
+                    // Assign unique string ID for each variant: '1a', '1b', ...
+                    const variantId = variant.id;
+
+                    return {
+                    id: variantId,
+                    name: variant.attributes.map(attr => attr.value).join(' '), // e.g., "Brown M"
+                    price: parseFloat(newestLot.retail_selling_price) || 0,
+                    image: variant.barcode_image || ""
+                    };
+            });
 
             return {
                 id: product.id,
                 product_name: product.product_name,
-                image: product.product_image || "",
-                stock_status: item.stock_status || "Unknown",
-                quantity: item.total_quantity || 0,
-                price: parseFloat(firstLot.retail_selling_price) || 0,
-                lot_id: firstLot.id,
+                image: product.product_image_url || "",
+                currency: product.currency,
+                variants: variants
             };
             });
 
-            setTarget(transformedData);
+           setPOS_Product_data(posProductData);
+            setproducts(rawData);   
         } catch (err) {
             setproductsError(err.message || 'Failed to fetch inventory');
         } finally {
@@ -173,6 +182,7 @@ export const InventoryProvider = ({ children }) => {
                 fetchInventoryOverview,
 
                 products,
+                POS_Product_data,
                 unassignedProducts,
                 productsLoading,
                 productsError, 
