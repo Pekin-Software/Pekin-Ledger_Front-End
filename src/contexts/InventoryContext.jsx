@@ -159,6 +159,7 @@ export const InventoryProvider = ({ children }) => {
             let url = `${inventoryBase}/main-inventory/`;
             if (storeId) {
                 url = `${apiBase}/inventory/${storeId}/inventory/`;
+                console.log(url)
             } else if (excludeStoreId) {
                 url = `${url}?exclude_store_id=${excludeStoreId}`;
             }
