@@ -58,14 +58,14 @@ function SignInForm({ navigate }) {
         console.log("Login Successful")
   
       const data = await response.json();
-      const { role, user, tenant_domain,store_id, exchange_rate, business_name} = data;
+      const { role, user, tenant_domain, access_token, store_id, exchange_rate, business_name} = data;
 
       if (!role || !user) {
         throw new Error("Invalid login response: Missing role, or user data");
       }
   
       // // Optionally store non-sensitive data (like role, tenant, or user info)
-      // Cookies.set("access_token", data.access_token, { path: "/" });
+      Cookies.set("access_token", data.access_token, { path: "/" });
       // Cookies.set("refresh_token", data.refresh_token, { path: "/" });
       Cookies.set("role", role, { path: "/" });
       Cookies.set("user", JSON.stringify(user), { path: "/" });  
