@@ -21,9 +21,14 @@ function App() {
     setTenant(tenant);
   
     // If userRole exists, redirect to the appropriate dashboard
-    if (role) {
-      navigate(`/${role.toLowerCase()}`);
+    if (role === "Cashier") {
+      navigate("/point-of-sale");
+    } else if (role === "Manager") {
+      navigate("/store-inventory");
+    } else {
+      navigate("/general-inventory");
     }
+
   }, [navigate]);
 
   
@@ -34,9 +39,9 @@ function App() {
         <Route path="/login" element={<Authentication defaultSignIn={true} navigate={useNavigate()} />} />
         <Route path="/signup" element={<Authentication defaultSignIn={false} />} />
 
-        <Route path="/admin" element={userRole === "Admin" ? <AdminDashboard /> : <Authentication defaultSignIn={true} />} />
-        <Route path="/manager" element={userRole === "Manager" ? <ManagerDashboard /> : <Authentication defaultSignIn={true} />} />
-        <Route path="/cashier" element={userRole === "Cashier" ? <CashierDashboard /> : <Authentication defaultSignIn={true} />} />
+        <Route path="/general-inventory" element={userRole === "Admin" ? <AdminDashboard /> : <Authentication defaultSignIn={true} />} />
+        <Route path="/store-inventory" element={userRole === "Manager" ? <ManagerDashboard /> : <Authentication defaultSignIn={true} />} />
+        <Route path="/point-of-sale" element={userRole === "Cashier" ? <CashierDashboard /> : <Authentication defaultSignIn={true} />} />
         
         {/* Landing Page */}
         <Route path="/" element={<LandingPage />}/>
