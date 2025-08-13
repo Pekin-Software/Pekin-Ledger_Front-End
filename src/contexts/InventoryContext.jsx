@@ -9,10 +9,13 @@ export const InventoryProvider = ({ children }) => {
     // const accessToken =  Cookies.get("access_token");
     
     // console.log(accessToken)
-    const getAuthHeaders = (isJson = true) => ({
-      ...(isJson && { "Content-Type": "application/json" }),
-
-    });
+   const getAuthHeaders = (isJson = true) => {
+        const accessToken = Cookies.get("access_token"); // get JWT from cookie
+        return {
+            ...(isJson && { "Content-Type": "application/json" }),
+            ...(accessToken && { "Authorization": `Bearer ${accessToken}` })
+        };
+    };
 
     const apiBase = `https://${tenantDomain}/api`
     //  const apiBase = `http://${tenantDomain}:8000/api`
