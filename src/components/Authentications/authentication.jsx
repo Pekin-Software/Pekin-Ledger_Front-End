@@ -40,94 +40,61 @@ function SignInForm({ navigate }) {
   const [password, setPassword] = useState("");
   const { setUserData } = useContext(UserContext);
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault(); 
-  //   try {
-  //     // const response = await fetch("http://client1.localhost:8000/api/auth/login/", {
-  //     const response = await fetch("https://pekingledger.store/api/auth/login/", {
-      
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ username, password }),
-  //       credentials: "include"
-  //     });
-  // if (!response.ok) {
-  //       throw new Error("Login failed: " + response.statusText);
-  //     }
-  //     else
-  //       console.log("Login Successful")
-  
-  //     const data = await response.json();
-  //     const { role, user, tenant_domain, access_token, store_id, exchange_rate, business_name} = data;
-
-  //     if (!role || !user) {
-  //       throw new Error("Invalid login response: Missing role, or user data");
-  //     }
-  
-  //     // // Optionally store non-sensitive data (like role, tenant, or user info)
-  //     // Cookies.set("access_token", data.access_token, { path: "/" });
-  //     // Cookies.set("refresh_token", data.refresh_token, { path: "/" });
-  //     Cookies.set("role", role, { path: "/" });
-  //     Cookies.set("user", JSON.stringify(user), { path: "/" });  
-  //     Cookies.set("store_id", store_id, { path: "/" });
-  //     Cookies.set("exchange_rate", exchange_rate, { path: "/" });
-  //     Cookies.set("business_name", business_name, { path: "/" });
-  //     Cookies.set("tenant", tenant_domain, { path: "/" });
-
-  //     setUserData({ role, user, store_id, exchange_rate, business_name });
-  //      if (role === "Cashier") {
-  //       navigate("/point-of-sale");
-  //     } else if (role === "Manager") {
-  //       navigate("/store-inventory");
-  //     } else if (role === "Admin") {
-  //       navigate("/general-inventory");
-  //     } else {
-  //       navigate("/")
-  //     }
-  
-  //   } catch (error) {
-  //     console.error("Login failed", error);
-  //   }
-  
-  // const handleSignUp = (e) => {
-  //   e.preventDefault(); // Prevent form submission behavior
-  //   navigate("/signup"); // Navigate to the signup page
-  // };
-  // };
   const handleLogin = async (e) => {
-  e.preventDefault(); 
-  try {
-    const response = await fetch("https://pekingledger.store/api/auth/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-      credentials: "include" // crucial for cookies
-    });
+    e.preventDefault(); 
+    try {
+      // const response = await fetch("http://client1.localhost:8000/api/auth/login/", {
+      const response = await fetch("https://pekingledger.store/api/auth/login/", {
+      
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+        credentials: 'include',  // Include cookies with the request
+      });
+  if (!response.ok) {
+        throw new Error("Login failed: " + response.statusText);
+      }
+      else
+        console.log("Login Successful")
+  
+      const data = await response.json();
+      const { role, user, tenant_domain, access_token, store_id, exchange_rate, business_name} = data;
 
-    if (!response.ok) throw new Error("Login failed: " + response.statusText);
+      if (!role || !user) {
+        throw new Error("Invalid login response: Missing role, or user data");
+      }
+  
+      // // Optionally store non-sensitive data (like role, tenant, or user info)
+      Cookies.set("access_token", data.access_token, { path: "/" });
+      // Cookies.set("refresh_token", data.refresh_token, { path: "/" });
+      Cookies.set("role", role, { path: "/" });
+      Cookies.set("user", JSON.stringify(user), { path: "/" });  
+      Cookies.set("store_id", store_id, { path: "/" });
+      Cookies.set("exchange_rate", exchange_rate, { path: "/" });
+      Cookies.set("business_name", business_name, { path: "/" });
+      Cookies.set("tenant", tenant_domain, { path: "/" });
 
-    const data = await response.json();
-    const { role, user, tenant_domain, store_id, exchange_rate, business_name } = data;
-
-    // store only non-sensitive data in JS-accessible cookies
-    Cookies.set("role", role, { path: "/" });
-    Cookies.set("user", JSON.stringify(user), { path: "/" });
-    Cookies.set("store_id", store_id, { path: "/" });
-    Cookies.set("exchange_rate", exchange_rate, { path: "/" });
-    Cookies.set("business_name", business_name, { path: "/" });
-    Cookies.set("tenant", tenant_domain, { path: "/" });
-
-    setUserData({ role, user, store_id, exchange_rate, business_name });
-
-    if (role === "Cashier") navigate("/point-of-sale");
-    else if (role === "Manager") navigate("/store-inventory");
-    else if (role === "Admin") navigate("/general-inventory");
-    else navigate("/");
-
-  } catch (error) {
-    console.error("Login failed", error);
-  }
-};
+      setUserData({ role, user, store_id, exchange_rate, business_name });
+       if (role === "Cashier") {
+        navigate("/point-of-sale");
+      } else if (role === "Manager") {
+        navigate("/store-inventory");
+      } else if (role === "Admin") {
+        navigate("/general-inventory");
+      } else {
+        navigate("/")
+      }
+  
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  
+  const handleSignUp = (e) => {
+    e.preventDefault(); // Prevent form submission behavior
+    navigate("/signup"); // Navigate to the signup page
+  };
+  };
+  
   return (
     <form className="auth-form" >
       <h2 className="form-title">Login to your account</h2>
