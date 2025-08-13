@@ -5,15 +5,12 @@ const InventoryContext = createContext();
 export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
-    const tenantDomain  = Cookies.get("tenant");
-    console.log(Cookies.get("access_token"));
+    const accessToken = Cookies.get('access_token');
+    const tenantDomain = Cookies.get('tenant');
+    console.log(accessToken);
     console.log(tenantDomain)
 
-    // const accessToken =  Cookies.get("access_token");
-    
-    // console.log(accessToken)
    const getAuthHeaders = (isJson = true) => {
-        const accessToken = Cookies.get("access_token"); // get JWT from cookie
         return {
             ...(isJson && { "Content-Type": "application/json" }),
             ...(accessToken && { "Authorization": `Bearer ${accessToken}` })
@@ -69,80 +66,152 @@ export const InventoryProvider = ({ children }) => {
         }
     };
 
-    const fetchProducts = async ({
-        storeId = null,
-        excludeStoreId = null,
-        type = "store", // "store" or "unassigned"
-        } = {}) => {
+    // const fetchProducts = async ({
+    //     storeId = null,
+    //     excludeStoreId = null,
+    //     type = "store", // "store" or "unassigned"
+    //     } = {}) => {
+    //     if (!tenantDomain) {
+    //         setoverviewError("Missing tenant domain");
+    //         setoverviewLoading(false);
+    //         return;
+    //     }
+
+    //     try {
+    //         const setTarget = type === "unassigned" ? setUnassignedProducts : setproducts;
+    //         const setLoading = type === "unassigned" ? setproductsLoading : setproductsLoading;
+
+    //         setLoading(true);
+
+    //         let url = mainInventoryUrl;
+
+    //         if (storeId) {
+    //         url = `${apiBase}/inventory/${storeId}/inventory/`;
+    //         } else if (excludeStoreId) {
+    //         url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
+    //         }
+
+    //         const response = await fetch(url, {
+    //         method: 'GET',
+    //         headers: getAuthHeaders(),
+    //         credentials: "include"
+    //         });
+
+    //         if (!response.ok) {
+    //         const errorData = await response.json().catch(() => ({}));
+    //         throw new Error(errorData.detail || `HTTP error: ${response.status}`);
+    //         }
+
+    //         const rawData = await response.json();
+
+    //         const posProductData = rawData.map(item => {
+    //             const product = item.product || {};
+    //             const variants = (item.variants || []).map((variant, index) => {
+    //                 const newestLot = (variant.lots || [])
+    //                 .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
+
+    //                 // Assign unique string ID for each variant: '1a', '1b', ...
+    //                 const variantId = variant.id;
+
+    //                 return {
+    //                 id: variantId,
+    //                 name: variant.attributes.map(attr => attr.value).join(' '), // e.g., "Brown M"
+    //                 price: parseFloat(newestLot.retail_selling_price) || 0,
+    //                 image: variant.barcode_image || ""
+    //                 };
+    //         });
+
+    //         return {
+    //             id: product.id,
+    //             product_name: product.product_name,
+    //             image: product.product_image_url || "",
+    //             currency: product.currency,
+    //             variants: variants
+    //         };
+    //         });
+
+    //        setPOS_Product_data(posProductData);
+    //         setproducts(rawData);   
+    //     } catch (err) {
+    //         setproductsError(err.message || 'Failed to fetch inventory');
+    //     } finally {
+    //         setproductsLoading(false);
+    //     }
+    // };
+
+    // Add this inside InventoryProvider
+    
+    const fetchProducts = async ({ storeId = null, excludeStoreId = null, type = "store" } = {}) => {
+        const tenantDomain = getTenantDomain();
         if (!tenantDomain) {
-            setoverviewError("Missing tenant domain");
-            setoverviewLoading(false);
+            setProductsError("Missing tenant domain");
+            setProductsLoading(false);
             return;
         }
 
-        try {
-            const setTarget = type === "unassigned" ? setUnassignedProducts : setproducts;
-            const setLoading = type === "unassigned" ? setproductsLoading : setproductsLoading;
+        const setTarget = type === "unassigned" ? setUnassignedProducts : setProducts;
+        const setLoading = type === "unassigned" ? setUnassignedLoading : setProductsLoading;
+        const setError = type === "unassigned" ? setProductsError : setProductsError;
 
+        try {
             setLoading(true);
 
-            let url = mainInventoryUrl;
-
+            let url = `${inventoryBase}/main-inventory/`;
             if (storeId) {
-            url = `${apiBase}/inventory/${storeId}/inventory/`;
+                url = `${apiBase}/inventory/${storeId}/inventory/`;
             } else if (excludeStoreId) {
-            url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
+                url = `${url}?exclude_store_id=${excludeStoreId}`;
             }
 
             const response = await fetch(url, {
-            method: 'GET',
-            headers: getAuthHeaders(),
-            credentials: "include"
+                method: "GET",
+                headers: getAuthHeaders(),
+                credentials: "include",
             });
 
             if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.detail || `HTTP error: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.detail || `HTTP error: ${response.status}`);
             }
 
             const rawData = await response.json();
 
-            const posProductData = rawData.map(item => {
+            // Map POS product data
+            const posProductData = rawData.map((item) => {
                 const product = item.product || {};
-                const variants = (item.variants || []).map((variant, index) => {
+                const variants = (item.variants || []).map((variant) => {
                     const newestLot = (variant.lots || [])
-                    .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
-
-                    // Assign unique string ID for each variant: '1a', '1b', ...
-                    const variantId = variant.id;
+                        .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
 
                     return {
-                    id: variantId,
-                    name: variant.attributes.map(attr => attr.value).join(' '), // e.g., "Brown M"
-                    price: parseFloat(newestLot.retail_selling_price) || 0,
-                    image: variant.barcode_image || ""
+                        id: variant.id,
+                        name: variant.attributes.map((attr) => attr.value).join(" "),
+                        price: parseFloat(newestLot.retail_selling_price) || 0,
+                        image: variant.barcode_image || "",
                     };
+                });
+
+                return {
+                    id: product.id,
+                    product_name: product.product_name,
+                    image: product.product_image_url || "",
+                    currency: product.currency,
+                    variants,
+                };
             });
 
-            return {
-                id: product.id,
-                product_name: product.product_name,
-                image: product.product_image_url || "",
-                currency: product.currency,
-                variants: variants
-            };
-            });
-
-           setPOS_Product_data(posProductData);
-            setproducts(rawData);   
+            if (type === "unassigned") setUnassignedProducts(rawData);
+            else {
+                setProducts(rawData);
+                setPOS_Product_data(posProductData);
+            }
         } catch (err) {
-            setproductsError(err.message || 'Failed to fetch inventory');
+            setError(err.message || "Failed to fetch products");
         } finally {
-            setproductsLoading(false);
+            setLoading(false);
         }
     };
-
-    // Add this inside InventoryProvider
+    
     const addInventory = async (storeId, inventoryItems = []) => {
         if (!tenantDomain) {
             throw new Error("Missing tenant domain");
