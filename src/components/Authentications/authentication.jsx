@@ -65,7 +65,7 @@ function SignInForm({ navigate }) {
       }
   
       // // Optionally store non-sensitive data (like role, tenant, or user info)
-      Cookies.set("access_token", data.access_token, { path: "/" });
+      // Cookies.set("access_token", data.access_token, { path: "/" });
       // Cookies.set("refresh_token", data.refresh_token, { path: "/" });
       Cookies.set("role", role, { path: "/" });
       Cookies.set("user", JSON.stringify(user), { path: "/" });  
