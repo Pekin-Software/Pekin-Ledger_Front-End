@@ -49,7 +49,7 @@ function SignInForm({ navigate }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-        credentials: 'include',  // Include cookies with the request
+        credentials: "include"
       });
   if (!response.ok) {
         throw new Error("Login failed: " + response.statusText);
