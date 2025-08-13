@@ -75,15 +75,15 @@ function SignInForm({ navigate }) {
       // Cookies.set("tenant", tenant_domain, { path: "/" });
 
       setUserData({ role, user, store_id, exchange_rate, business_name });
-       if (role === "Cashier") {
-        navigate("/point-of-sale");
-      } else if (role === "Manager") {
-        navigate("/store-inventory");
-      } else if (role === "Admin") {
-        navigate("/general-inventory");
-      } else {
-        navigate("/")
-      }
+      //  if (role === "Cashier") {
+      //   navigate("/point-of-sale");
+      // } else if (role === "Manager") {
+      //   navigate("/store-inventory");
+      // } else if (role === "Admin") {
+      //   navigate("/general-inventory");
+      // } else {
+      //   navigate("/")
+      // }
   
     } catch (error) {
       console.error("Login failed", error);
