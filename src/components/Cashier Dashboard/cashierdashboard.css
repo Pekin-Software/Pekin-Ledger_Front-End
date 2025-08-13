@@ -74,11 +74,10 @@
 }
 
 .desktop-layout {
-  gap: 20px;
+  gap: 15px;
 }
 .user-info{
     display: flex;
-    /* flex: 1; */
     height: 100%;
     gap: 10px;
     padding-right: 30px;
@@ -90,6 +89,8 @@
 }
 .business-data{
     flex: 1;
+    display: flex;
+    gap: 10px;
 }
 .date{
     padding-right: 20px;
@@ -144,8 +145,8 @@
 }
 
 .desktop-billing-content {
+  flex: 1;
   display: flex;
-  flex-direction: column;
 }
 
 
@@ -234,33 +235,6 @@
   .mobile-layout  {
     display: none;
   }
-}
-
-
-.items-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: .5rem;
-  padding: 1rem;
-  flex: 1 1 auto;
-}
-
-.items-scroll-container {
-  flex: 1;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  padding: 0.5rem;
-  outline: none;
-}
-
-/* Hide scrollbar in all major browsers */
-.items-scroll-container::-webkit-scrollbar {
-  display: none;
-}
-
-.items-scroll-container {
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
 @media (max-width: 1024px) {

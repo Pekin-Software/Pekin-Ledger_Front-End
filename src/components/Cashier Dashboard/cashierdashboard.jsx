@@ -1,91 +1,184 @@
-import React, { useState,  useEffect, useCallback } from 'react';
-import { UserCircle, ChevronUp,ChevronDown, X, LogOutIcon, Package} from 'lucide-react';
+import React, { useState,  useEffect, useCallback, useContext } from 'react';
+import { UserCircle, ChevronUp,ChevronDown, X, LogOutIcon, Package, AlertCircle} from 'lucide-react';
 import "./cashierdashboard.css";
-import "../Inventory/inventoryDashboard.css"
+import { UserContext } from '../../contexts/UserContext';
+import ProductCard from '../ProductCard/productCard';
+import VariantCard from '../ProductCard/variantCard';
+import {ProductCardSkeleton} from '../ProductCard/skeletons';
 import Receipt from './cart';
-import ItemCard from './ItemCard';
 import SignOutModal from '../Authentications/LogOutModal';
 import { useInventory } from '../../contexts/InventoryContext';
 import Cookies from 'js-cookie';
 
 
-function ProductCardSkeleton() {
-  return (
-    <div className="product-card-skeleton skeleton">
-      <div className="skeleton-image-container">
-        <span className="skeleton-availability"></span>
-        <Package size={48} className="skeleton-icon" />
-      </div>
-      <div className="skeleton-right-detail">
-        <h3></h3>
-        <p></p>
-        <p></p>
-      </div>
-    </div>
-  );
-}
-
 const logo = "/logo.jpg";
 const ScreenSaver = "/POS-Screensaver.png"
 const userImageUrl = null; // or a real URL string if available
-// const item1 = '/item1.jpg'
-// const item2 = '/items2.jpeg'
-// const item3 = '/items3.jpeg'
+const item1 = '/item1.jpg'
+const item2 = '/items2.jpeg'
+const item3 = '/items3.jpeg'
 
 const SCREEN_SAVER_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 // const SCREEN_SAVER_TIMEOUT = 10 * 1000; // 10 seconds for testing
 
+
 // const dummyItems = [
-//   { id: 1, name: 'Grilled Chicken', price: 12.99, image: item1},
-//   { id: 2, name: 'Fried Rice', price: 10.99, image: item2 },
-//   { id: 3, name: 'Veggie Pizza', price: 15.49, image: item3 },
-//   { id: 4, name: 'Burger', price: 8.99, image: '/images/burger.jpg' },
-//   { id: 5, name: 'Fries', price: 4.50, image: item3 },
+  // { 
+  //   id: 1, 
+  //   product_name: 'Grilled Chicken', 
+  //   price: 12.99, 
+  //   image: item1,
+  //   currency: "LRD",
+  //   variants: [
+  //     { id: '1', name: 'Spicy', price: 13.99, image: '/images/variant-spicy-chicken.jpg' },
+  //     { id: '1', name: 'BBQ', price: 14.49, image: '/images/variant-bbq-chicken.jpg' }
+  //   ]
+  // },
+//   { 
+//     id: 2, 
+//     product_name: 'Fried Rice', 
+//     price: 10.99, 
+//     image: item2,
+//       currency: "LRD",
+//     variants: [
+//       { id: '2b', name: 'Shrimp Fried Rice', price: 12.99, image: item2 },
+//       { id: '2a', name: 'Chicken Fried Rice', price: 11.49, image: item3},
+//       { id: '2c', name: 'Shrimp Fried Rice', price: 12.99, image: item2 },
+//       { id: '2d', name: 'Chicken Fried Rice', price: 11.49, image: item3},
+//       { id: '2e', name: 'Shrimp Fried Rice', price: 12.99, image: item2 },
+//       { id: '2f', name: 'Chicken Fried Rice', price: 11.49, image: item3},
+//       { id: '2g', name: 'Shrimp Fried Rice', price: 12.99, image: item2 },
+//       { id: '2h', name: 'Chicken Fried Rice', price: 11.49, image: item3}
+      
+//     ]
+//   },
+//   { 
+//     id: 3, 
+//     product_name: 'Veggie Pizza', 
+//     price: 15.49, 
+//     image: item3,
+//     currency: "LRD",
+//     variants: [
+//       { id: '3a', name: 'Mushroom Veggie Pizza', price: 16.49, image: item3 },
+//       { id: '3b', name: 'Spinach Veggie Pizza', price: 16.99, image: item3 }
+//     ]
+//   },
+//   { 
+//     id: 4, 
+//     product_name: 'Burger', 
+//     price: 8.99, 
+//     image: '/images/burger.jpg',
+//       currency: "USD",
+//     variants: [
+//       { id: '4a', name: 'Cheeseburger', price: 9.49, image: '/images/variant-cheeseburger.jpg' },
+//       { id: '4b', name: 'Bacon Burger', price: 10.49, image: '/images/variant-bacon-burger.jpg' }
+//     ]
+//   },
+//   { 
+//     id: 6, 
+//     product_name: 'Yazz Toothpaste', 
+//     price: 4.50, 
+//     image: item3,
+//        currency: "USD",
+//     variants: [
+//       { id: '6a', name: 'Mint Yazz Toothpaste', price: 4.50, image: '/images/variant-mint-yazz.jpg' },
+//       { id: '6b', name: 'Herbal Yazz Toothpaste', price: 4.70, image: '/images/variant-herbal-yazz.jpg' }
+//     ]
+//   },
+//   { 
+//     id: 54, 
+//     product_name: 'Burger', 
+//     price: 8.99, 
+//     image: '/images/burger.jpg',
+//        currency: "USD",
+//     variants: [
+//       { id: '4a', name: 'Cheeseburger', price: 9.49, image: '/images/variant-cheeseburger.jpg' },
+//       { id: '4b', name: 'Bacon Burger', price: 10.49, image: '/images/variant-bacon-burger.jpg' }
+//     ]
+//   },
+//   { 
+//     id: 16, 
+//     product_name: 'Yazz Toothpaste', 
+//     price: 4.50, 
+//     image: item3,
+//        currency: "LRD",
+//     variants: [
+//       { id: '6a', name: 'Mint Yazz Toothpaste', price: 4.50, image: '/images/variant-mint-yazz.jpg' },
+//       { id: '6b', name: 'Herbal Yazz Toothpaste', price: 4.70, image: '/images/variant-herbal-yazz.jpg' }
+//     ]
+//   },
+//   { 
+//     id: 89, 
+//     product_name: 'Burger', 
+//     price: 8.99, 
+//     image: '/images/burger.jpg',
+//        currency: "LRD",
+//     variants: [
+//       { id: '4a', name: 'Cheeseburger', price: 9.49, image: '/images/variant-cheeseburger.jpg' },
+//       { id: '4b', name: 'Bacon Burger', price: 10.49, image: '/images/variant-bacon-burger.jpg' }
+//     ]
+//   },
+//   { 
+//     id: 57, 
+//     product_name: 'Yazz Toothpaste', 
+//     price: 4.50, 
+//     image: item3,
+//     currency: "USD",
+//     variants: [
+//       { id: '6a', name: 'Mint Yazz Toothpaste', price: 4.50, image: '/images/variant-mint-yazz.jpg' },
+//       { id: '6b', name: 'Herbal Yazz Toothpaste', price: 4.70, image: '/images/variant-herbal-yazz.jpg' }
+//     ]
+//   }
 // ];
 
+
 const CashierDashboard = () => {
+  const { userData } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [isBillingOpen, setIsBillingOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  const {refreshAll,fetchProducts, products, productsLoading, productsError} = useInventory();
+  const {refreshAll,fetchProducts, POS_Product_data, productsLoading, productsError, 
+          variantsLoading, variantsError} = useInventory();
+    
   const store_id = Cookies.get("store_id");
-
-  
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showVariant, setshowVariant] = useState(false);
+  const openVariantModal = (product) => {
+    setSelectedProduct(product);
+    setshowVariant(true);
+  };
   const handleSignOut = () => {
     // Add your sign-out logic here
     alert("Signed out!");
     setShowModal(false);
   };
 
-    // Select or deselect an item
-  const handleSelectItem = (item, selected) => {
-    setCartItems((prev) => {
-      const exists = prev.find((i) => i.id === item.id);
-
-      if (selected) {
-        // Add only if it doesn't exist
-        if (exists) return prev;
-        return [...prev, { ...item, quantity: 1 }];
+  const updateCartQuantity = (variantId, newQuantity, variantData) => {
+  setCartItems((prev) => {
+    const exists = prev.find((item) => item.id === variantId);
+    if (exists) {
+      // Update quantity if already in cart
+      if (newQuantity < 1) {
+        // Remove if quantity less than 1
+        return prev.filter((item) => item.id !== variantId);
       } else {
-        // Remove item from cart
-        return prev.filter((i) => i.id !== item.id);
+        return prev.map((item) =>
+          item.id === variantId ? { ...item, quantity: newQuantity } : item
+        );
       }
-    });
-  };
-
-  // Update quantity from Receipt or ItemCard
-  const updateQuantity = (itemId, newQuantity) => {
-    if (newQuantity < 1) {
-      // Remove if quantity becomes 0
-      setCartItems((prev) => prev.filter((i) => i.id !== itemId));
     } else {
-      setCartItems((prev) =>
-        prev.map((i) => i.id === itemId ? { ...i, quantity: newQuantity } : i)
-      );
+      // Add new variant to cart with quantity
+      if (newQuantity < 1) return prev; // don't add if less than 1
+      return [...prev, { ...variantData, quantity: newQuantity }];
     }
-  };
+  });
+};
+  const cartQuantities = cartItems.reduce((acc, item) => {
+    acc[item.id] = item.quantity;
+    return acc;
+  }, {});
 
    useEffect(() => {
     if (store_id) {
@@ -183,32 +276,29 @@ const CashierDashboard = () => {
         <section className='main-section'>
           {productsLoading ? (
             <div className="product-grid-scrollable">
-              <div className="product-grid-skeleton">
-                {Array.from({ length: 28 }).map((_, idx) => (
+              <div className="product-grid">
+                {Array.from({ length: 32 }).map((_, idx) => (
                   <ProductCardSkeleton key={idx} />
                 ))}
               </div>
             </div>
           ) : productsError ? (
             <div className="error">
-              <AlertCircle size={48} className="error-icon" />
+              <AlertCircle size={30} className="error-icon" />
               <p>Error: {productsError}</p>
             </div>
-          ) : products.length > 0 ? (
+          ) : POS_Product_data.length > 0 ? (
             <div className="product-grid-scrollable">
               <div className="product-grid">
-                {products.map(item => {
-                  const cartItem = cartItems.find(ci => ci.id === item.id);
+                {POS_Product_data.map(item => {
                   return (
-                    <ItemCard
+                    <ProductCard
+                      showVariantCardOnClick={true}
+                      onCardClick={() => openVariantModal(item)}
                       key={item.id}
                       itemName={item.product_name}
                       price={item.price}
                       imageSrc={item.image}
-                      selected={!!cartItem}
-                      quantity={cartItem?.quantity || 0}
-                      onSelect={(selected) => handleSelectItem(item, selected)}
-                      onQuantityChange={(q) => updateQuantity(item.id, q)}
                     />
                   );
                 })}
@@ -216,7 +306,7 @@ const CashierDashboard = () => {
             </div>
           ) : (
             <div className="empty-message">
-              <Package size={48} />
+              <Package size={108} />
               <p>No products available.</p>
             </div>
           )}
@@ -240,12 +330,18 @@ const CashierDashboard = () => {
                 ) : (
                   <UserCircle size={  20} className="user-icon" />
                 )}
-                <p>Cashier Name</p>
+                <p>{userData?.user}</p>
             </div>
           </div>
 
           <div className='business-data'>
-            <p>Business Name</p>
+            <p>{userData?.business_name}</p>
+            <p>-</p>
+            <p>Store Number: {store_id}</p>
+          </div>
+
+          <div className='rate'>
+            <p>Exchange Rate: {userData?.exchange_rate}</p>
           </div>
           
           <div className='date'>
@@ -267,7 +363,7 @@ const CashierDashboard = () => {
         </div>
         
         <div className="desktop-billing-content">
-          <Receipt  cartItems={cartItems} onQuantityChange={updateQuantity} onClearCart={handleClearCart} />
+          <Receipt  cartItems={cartItems} onQuantityChange={updateCartQuantity} onClearCart={handleClearCart} />
         </div>
 
         {/* Fullscreen billing overlay for mobile */}
@@ -276,7 +372,7 @@ const CashierDashboard = () => {
             <button className="closebtn" onClick={() => setIsBillingOpen(false)}>
               <X size={24} />
             </button>
-            <Receipt  cartItems={cartItems} onQuantityChange={updateQuantity} onClearCart={handleClearCart}/>
+            <Receipt  cartItems={cartItems} onQuantityChange={updateCartQuantity} onClearCart={handleClearCart}/>
           </div>
         )}
         
@@ -287,6 +383,30 @@ const CashierDashboard = () => {
         onClose={() => setShowModal(false)}
         onConfirm={handleSignOut}
       />
+
+       {selectedProduct && (
+        <VariantCard
+          isOpen={showVariant}
+          onClose={() => setshowVariant(false)}
+          title={selectedProduct.product_name}
+          currency={selectedProduct?.currency}
+          variants={selectedProduct.variants}
+          loading={variantsLoading}
+          error = {variantsError}
+
+          initialQuantities={cartQuantities} 
+          onQuantityChange={(variantId, qty, variantData) => {
+            const combinedVariantData = {
+              ...variantData,
+              currency: selectedProduct.currency,
+              name: `${variantData.name} ${selectedProduct.product_name}`,
+              product_id: selectedProduct.id
+            };
+            updateCartQuantity(variantId, qty, combinedVariantData);
+          }}
+        />
+      )}
+
     </div>
     
   );
