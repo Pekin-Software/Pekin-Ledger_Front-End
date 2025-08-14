@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { refreshAccessToken } from '../components/Authentications/refreshtoken';
 
 const InventoryContext = createContext();
 export const useInventory = () => useContext(InventoryContext);
@@ -8,15 +7,14 @@ export const useInventory = () => useContext(InventoryContext);
 export const InventoryProvider = ({ children }) => {
     const tenantDomain  = localStorage.getItem("tenant");
     const accessToken =  Cookies.get("access_token");
-    // let accessToken = localStorage.getItem("access_token");
 
     const getAuthHeaders = (isJson = true) => ({
       ...(isJson && { "Content-Type": "application/json" }),
       Authorization: `Bearer ${accessToken}`,
     });
 
-    // const apiBase = `https://${tenantDomain}/api`
-     const apiBase = `http://${tenantDomain}:8000/api`
+    const apiBase = `https://${tenantDomain}/api`
+    //  const apiBase = `http://${tenantDomain}:8000/api`
     const inventory = `${apiBase}/inventory/`
     const overviewUrl = `${inventory}overview/`
     const mainInventoryUrl = `${inventory}main-inventory/` 
@@ -63,104 +61,14 @@ export const InventoryProvider = ({ children }) => {
             setoverviewLoading(false);
         }
     };
-
-    // const fetchProducts = async ({
-    //     storeId = null,
-    //     excludeStoreId = null,
-    //     type = "store", // "store" or "unassigned"
-    //     } = {}) => {
-    //     if (!tenantDomain || !accessToken) {
-    //         setoverviewError("Missing tenant domain or access token.");
-    //         setoverviewLoading(false);
-    //         return;
-    //     }
-
-    //     try {
-    //         const setTarget = type === "unassigned" ? setUnassignedProducts : setproducts;
-    //         const setLoading = type === "unassigned" ? setproductsLoading : setproductsLoading;
-
-    //         setLoading(true);
-
-    //         let url = mainInventoryUrl;
-
-    //         if (storeId) {
-    //         url = `${apiBase}/inventory/${storeId}/inventory/`;
-    //         } else if (excludeStoreId) {
-    //         url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
-    //         }
-
-    //         const response = await fetch(url, {
-    //         method: 'GET',
-    //         headers: getAuthHeaders(),
-    //         });
-
-    //         if (response.status === 401) {
-    //             try {
-    //             const data = await refreshAccessToken();
-    //             accessToken = data.access;
-    //             localStorage.setItem("access_token", accessToken);
-
-    //             // Retry original request with new token
-    //             options.headers["Authorization"] = `Bearer ${accessToken}`;
-    //             response = await fetch(url, options);
-    //             } catch (err) {
-    //             console.error("Unable to refresh token:", err);
-    //             throw err;
-    //             }
-    //         }
-
-    //         if (!response.ok) {
-    //         const errorData = await response.json().catch(() => ({}));
-    //         throw new Error(errorData.detail || `HTTP error: ${response.status}`);
-    //         }
-
-    //         const rawData = await response.json();
-
-    //         const posProductData = rawData.map(item => {
-    //             const product = item.product || {};
-    //             const variants = (item.variants || []).map((variant, index) => {
-    //                 const newestLot = (variant.lots || [])
-    //                 .sort((a, b) => new Date(b.purchase_date || 0) - new Date(a.purchase_date || 0))[0] || {};
-
-    //                 // Assign unique string ID for each variant: '1a', '1b', ...
-    //                 const variantId = variant.id;
-
-    //                 return {
-    //                 id: variantId,
-    //                 name: variant.attributes.map(attr => attr.value).join(' '), // e.g., "Brown M"
-    //                 price: parseFloat(newestLot.retail_selling_price) || 0,
-    //                 image: variant.barcode_image || ""
-    //                 };
-    //         });
-
-    //         return {
-    //             id: product.id,
-    //             product_name: product.product_name,
-    //             image: product.product_image_url || "",
-    //             currency: product.currency,
-    //             variants: variants
-    //         };
-    //         });
-
-    //        setPOS_Product_data(posProductData);
-    //         setproducts(rawData);   
-    //     } catch (err) {
-    //         setproductsError(err.message || 'Failed to fetch inventory');
-    //     } finally {
-    //         setproductsLoading(false);
-    //     }
-    // };
-
-    // Add this inside InventoryProvider
-    
+  
     const fetchProducts = async ({
         
     storeId = null,
     excludeStoreId = null,
     type = "store", // "store" or "unassigned"
 } = {}) => {
-    console.log(tenantDomain)
-    console.log(accessToken)
+   
     if (!tenantDomain || !accessToken) {
         setoverviewError("Missing tenant domain or access token.");
         setoverviewLoading(false);
@@ -179,26 +87,10 @@ export const InventoryProvider = ({ children }) => {
         } else if (excludeStoreId) {
             url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
         }
-
+          
         // Prepare headers
         let headers = getAuthHeaders();
         let response = await fetch(url, { method: 'GET', headers });
-
-        // If unauthorized, try refreshing
-        // if (response.status === 401) {
-        //     try {
-        //         const data = await refreshAccessToken(); // uses HttpOnly cookie
-        //         accessToken = data.access;
-        //         localStorage.setItem("access_token", accessToken);
-
-        //         // Retry with new token
-        //         headers = getAuthHeaders();
-        //         response = await fetch(url, { method: 'GET', headers });
-        //     } catch (err) {
-        //         console.error("Unable to refresh token:", err);
-        //         throw err;
-        //     }
-        // }
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));

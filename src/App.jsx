@@ -69,11 +69,11 @@ import "./App.css";
 function App() {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(Cookies.get("role") || null);
-  const [tenant, setTenant] = useState(Cookies.get("tenant") || null);
+  const [tenant, setTenant] = useState(localStorage.getItem("tenant") || null);
 
   useEffect(() => {
     const role = Cookies.get("role");
-    const tenant = Cookies.get("tenant");
+    const tenant = localStorage.getItem("tenant");
     setUserRole(role);
     setTenant(tenant);
 

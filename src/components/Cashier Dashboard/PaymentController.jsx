@@ -8,14 +8,12 @@ import {
   PaymentModal,
 } from './payment';
 import { useContext } from "react";
-import { UserContext } from '../../contexts/UserContext';
 import usePrintReceipt from '../../utils/reciept';
 import Cookies from 'js-cookie';
 
 export function PaymentController({  cartItems, selectedCurrency, totalLRD, totalUSD, grandTotal, onClose, method, onClearCart,
                                      showStatusModal}) {
-      const { userData } = useContext(UserContext);
-  const storeId = userData?.store_id;
+  const storeId = localStorage.getItem('store_id');
     const printReceipt = usePrintReceipt();
 
     const [queue, setQueue] = useState([]); // All payments with status
@@ -189,12 +187,11 @@ export function PaymentController({  cartItems, selectedCurrency, totalLRD, tota
 
     const submitSale = async (payload) => {
     const access_token = Cookies.get('access_token');
-    const tenantDomain = Cookies.get('tenant')
+    const tenantDomain = localStorage.getItem('tenant')
     const url = `https://${tenantDomain}/api/sales/sale/`
-
+        // const localurl = `http://${tenantDomain}:8000/api/sales/sale/`
     try {
-        // const response = await fetch(
-        // 'http://testing022.client1.localhost:8000/api/sales/sale/',
+        // const response = await fetch(localurl,
         // {
         const response = await fetch(url,
         {

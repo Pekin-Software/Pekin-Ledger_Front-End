@@ -3,7 +3,6 @@ import { Package } from 'lucide-react';
 import './cart.css';
 import { PaymentController } from './PaymentController';
 import DiscountModal from './DiscountModal';
-import { UserContext } from '../../contexts/UserContext';
 
 Receipt.defaultProps = {
   cartItems: [],
@@ -12,8 +11,7 @@ Receipt.defaultProps = {
 };
 
 export default function Receipt({ cartItems, onQuantityChange, onClearCart }) {
-  const { userData } = useContext(UserContext);
-  const conversionRate = userData?.exchange_rate;
+  const conversionRate = localStorage.getItem('exchange_rate');
   const [selectedCurrency, setselectedCurrency] = useState("LRD");
 
   const totalUSD = (cartItems || [])

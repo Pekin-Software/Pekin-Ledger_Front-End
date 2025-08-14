@@ -1,10 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../contexts/UserContext";
 import "./authentication.css";
 import { getCountries, getCountryCallingCode } from "libphonenumber-js";
 import Cookies from "js-cookie";
-import { refreshAccessToken } from "./refreshtoken";
+
 // Get all countries with names, dialing codes
 const countries = getCountries().map((code) => ({
   name: new Intl.DisplayNames(["en"], { type: "region" }).of(code), // Get country name
@@ -39,7 +38,6 @@ export default function Authentication({ defaultSignIn, setShowAuth }) {
 function SignInForm({ navigate }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setUserData } = useContext(UserContext);
 
   const handleLogin = async (e) => {
     e.preventDefault(); 
@@ -56,34 +54,22 @@ function SignInForm({ navigate }) {
         throw new Error("Login failed: " + response.statusText);
       }
       else
-        
         console.log("Login Successful")
-      const access_token = Cookies.get('access_token')
-      console.log(access_token)
+
       const data = await response.json();
-      const { role, user, tenant_domain, store_id, exchange_rate, business_name} = data;
+      const { role, user, tenant_domain, store_id,access_token, exchange_rate, business_name} = data;
 
       if (!role || !user) {
         throw new Error("Invalid login response: Missing role, or user data");
       }
-  
-      // // Optionally store non-sensitive data (like role, tenant, or user info)
-      // Cookies.set("access_token", data.access_token, { path: "/" });
-      // localStorage.setItem("access_token", access_token);
-      Cookies.set("refresh_token", data.refresh_token, { path: "/" });
+      Cookies.set("access_token", access_token, { path: "/" }); //always remove during production 
       Cookies.set("role", role, { path: "/" });
-      Cookies.set("user", JSON.stringify(user), { path: "/" });  
-      Cookies.set("store_id", store_id, { path: "/" });
-      Cookies.set("exchange_rate", exchange_rate, { path: "/" });
-      Cookies.set("business_name", business_name, { path: "/" });
-      // Cookies.set("tenant", tenant_domain, { path: "/" });
-       localStorage.setItem("tenant", tenant_domain);
-        
-       // 🔹 Call refreshAccessToken immediately to get access token
-    const tokenData = await refreshAccessToken();
-    localStorage.setItem("access_token", tokenData.access); // store access token in memory or localStorage
+      localStorage.setItem("user", JSON.stringify(user));  
+      localStorage.setItem("store_id", store_id);
+      localStorage.setItem("exchange_rate", exchange_rate);
+      localStorage.setItem("business_name", business_name);
+      localStorage.setItem("tenant", tenant_domain);
 
-      setUserData({ role, user, store_id, exchange_rate, business_name });
        if (role === "Cashier") {
         navigate("/point-of-sale");
       } else if (role === "Manager") {
@@ -93,7 +79,6 @@ function SignInForm({ navigate }) {
       } else {
         navigate("/")
       }
-      console.log(localStorage.getItem("access_token"))
     } catch (error) {
       console.error("Login failed", error);
     }
@@ -192,64 +177,6 @@ export function SignUpForm({
     }
   };
   
-  
-  // const handleSubmit = async (e) => {
-  // e.preventDefault();
-  // const payload = {
-  //   ...formData,
-  //   phone1: selectedDialCode + formData.phone1,
-  //   phone2: formData.phone2 || "",
-  //   country: selectedCountry,
-  //   photo: null,
-  // };
-
-  // try {
-  //   // 1. Send signup request
-  //   const response = await fetch("https://pekingledger.store/api/create/", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(payload),
-  //   });
-
-  //   if (!response.ok) {
-  //     const errorData = await response.json();
-  //     console.error("Signup failed:", errorData);
-  //     return;
-  //   }
-
-  //   // 2. If successful, auto-login
-  //   const loginResponse = await fetch("https://pekingledger.store/api/auth/login/", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     credentials: 'include',
-  //     body: JSON.stringify({
-  //       username: formData.username,
-  //       password: formData.password,
-  //     }),
-  //   });
-
-  //   if (!loginResponse.ok) {
-  //     const loginError = await loginResponse.json();
-  //     console.error("Auto-login failed:", loginError);
-  //     return;
-  //   }
-
-  //   const loginData = await loginResponse.json();
-  //   const { role, tenant_domain, user, access_token } = loginData;
-
-  //   Cookies.set("role", role, { path: "/" });
-  //   Cookies.set("tenant", tenant_domain.split('.')[0], { path: "/" });
-  //   Cookies.set("user", user, { path: "/" });
-  //   Cookies.set("access_token", access_token, { path: "/" });
-
-  //   navigate(`/${role.toLowerCase()}`);
-  // } catch (error) {
-  //   console.error("Error during signup/login:", error);
-  // }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -311,7 +238,7 @@ export function SignUpForm({
     Cookies.set("role", role, { path: "/" });
     Cookies.set("tenant", tenant_domain.split('.')[0], { path: "/" });
     Cookies.set("user", user, { path: "/" });
-    Cookies.set("access_token", access_token, { path: "/" });
+    // Cookies.set("access_token", access_token, { path: "/" });
 
     navigate(`/${role.toLowerCase()}`);
     } catch (error) {

@@ -1,7 +1,6 @@
 import React, { useState,  useEffect, useCallback, useContext } from 'react';
 import { UserCircle, ChevronUp,ChevronDown, X, LogOutIcon, Package, AlertCircle} from 'lucide-react';
 import "./cashierdashboard.css";
-import { UserContext } from '../../contexts/UserContext';
 import ProductCard from '../ProductCard/productCard';
 import VariantCard from '../ProductCard/variantCard';
 import {ProductCardSkeleton} from '../ProductCard/skeletons';
@@ -133,7 +132,6 @@ const SCREEN_SAVER_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
 
 const CashierDashboard = () => {
-  const { userData } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [isBillingOpen, setIsBillingOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -142,7 +140,7 @@ const CashierDashboard = () => {
   const {refreshAll,fetchProducts, POS_Product_data, productsLoading, productsError, 
           variantsLoading, variantsError} = useInventory();
     
-  const store_id = Cookies.get("store_id");
+  const store_id = localStorage.getItem("store_id");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showVariant, setshowVariant] = useState(false);
   const openVariantModal = (product) => {
@@ -330,18 +328,18 @@ const CashierDashboard = () => {
                 ) : (
                   <UserCircle size={  20} className="user-icon" />
                 )}
-                <p>{userData?.user}</p>
+                <p>{localStorage.getItem('user')}</p>
             </div>
           </div>
 
           <div className='business-data'>
-            <p>{userData?.business_name}</p>
+            <p>{localStorage.getItem('business_name')}</p>
             <p>-</p>
             <p>Store Number: {store_id}</p>
           </div>
 
           <div className='rate'>
-            <p>Exchange Rate: {userData?.exchange_rate}</p>
+            <p>Exchange Rate: {localStorage.getItem('exchange_rate')}</p>
           </div>
           
           <div className='date'>
