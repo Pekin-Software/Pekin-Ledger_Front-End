@@ -10,6 +10,7 @@ import {
 import { useContext } from "react";
 import { UserContext } from '../../contexts/UserContext';
 import usePrintReceipt from '../../utils/reciept';
+import Cookies from 'js-cookie';
 
 export function PaymentController({  cartItems, selectedCurrency, totalLRD, totalUSD, grandTotal, onClose, method, onClearCart,
                                      showStatusModal}) {
