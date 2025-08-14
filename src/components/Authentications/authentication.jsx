@@ -4,6 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import "./authentication.css";
 import { getCountries, getCountryCallingCode } from "libphonenumber-js";
 import Cookies from "js-cookie";
+import { refreshAccessToken } from "./refreshtoken";
 // Get all countries with names, dialing codes
 const countries = getCountries().map((code) => ({
   name: new Intl.DisplayNames(["en"], { type: "region" }).of(code), // Get country name
@@ -55,23 +56,32 @@ function SignInForm({ navigate }) {
         throw new Error("Login failed: " + response.statusText);
       }
       else
+        
         console.log("Login Successful")
-  
+      const access_token = Cookies.get('access_token')
+      console.log(access_token)
       const data = await response.json();
-      const { role, user, tenant_domain, access_token, store_id, exchange_rate, business_name} = data;
+      const { role, user, tenant_domain, store_id, exchange_rate, business_name} = data;
 
       if (!role || !user) {
         throw new Error("Invalid login response: Missing role, or user data");
       }
   
       // // Optionally store non-sensitive data (like role, tenant, or user info)
-      Cookies.set("access_token", data.access_token, { path: "/" });
+      // Cookies.set("access_token", data.access_token, { path: "/" });
+      // localStorage.setItem("access_token", access_token);
+      Cookies.set("refresh_token", data.refresh_token, { path: "/" });
       Cookies.set("role", role, { path: "/" });
       Cookies.set("user", JSON.stringify(user), { path: "/" });  
       Cookies.set("store_id", store_id, { path: "/" });
       Cookies.set("exchange_rate", exchange_rate, { path: "/" });
       Cookies.set("business_name", business_name, { path: "/" });
-      Cookies.set("tenant", tenant_domain, { path: "/" });
+      // Cookies.set("tenant", tenant_domain, { path: "/" });
+       localStorage.setItem("tenant", tenant_domain);
+        
+       // 🔹 Call refreshAccessToken immediately to get access token
+    const tokenData = await refreshAccessToken();
+    localStorage.setItem("access_token", tokenData.access); // store access token in memory or localStorage
 
       setUserData({ role, user, store_id, exchange_rate, business_name });
        if (role === "Cashier") {
@@ -83,7 +93,7 @@ function SignInForm({ navigate }) {
       } else {
         navigate("/")
       }
-  
+      console.log(localStorage.getItem("access_token"))
     } catch (error) {
       console.error("Login failed", error);
     }
