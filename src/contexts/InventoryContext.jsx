@@ -8,7 +8,6 @@ export const InventoryProvider = ({ children }) => {
     const tenantDomain  = Cookies.get("tenant");
     const accessToken =  Cookies.get("access_token");
     
-    console.log(tenantDomain)
     const getAuthHeaders = (isJson = true) => ({
       ...(isJson && { "Content-Type": "application/json" }),
       Authorization: `Bearer ${accessToken}`,

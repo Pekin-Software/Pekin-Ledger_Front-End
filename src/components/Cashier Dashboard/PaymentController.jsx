@@ -187,16 +187,20 @@ export function PaymentController({  cartItems, selectedCurrency, totalLRD, tota
     };
 
     const submitSale = async (payload) => {
-    // const access_token = Cookies.get('access_token');
+    const access_token = Cookies.get('access_token');
+    const tenantDomain = Cookies.get('tenant')
+    const url = `https://${tenantDomain}/api/sales/sale/`
 
     try {
-        const response = await fetch(
-        'http://testing022.client1.localhost:8000/api/sales/sale/',
+        // const response = await fetch(
+        // 'http://testing022.client1.localhost:8000/api/sales/sale/',
+        // {
+        const response = await fetch(url,
         {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
-            // 'Authorization': `Bearer ${access_token}`, // Add token here
+            'Authorization': `Bearer ${access_token}`, // Add token here
             },
             body: JSON.stringify(payload),
             credentials: 'include',
