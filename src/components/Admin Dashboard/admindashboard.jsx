@@ -6,15 +6,27 @@ import ManageStaff from "./Staff Dashboard/manageStaff";
 import InventoryDashboard from "../Inventory/inventoryDashboard";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import DonutChart from "../graphs/DonutChart";
+import LowQuantityStock from "./LowQuantityStock";
+import TopSellingStock from "./TopSellingStock";
+import Reports from "../../SalesReports/reports";
+import SignOutModal from "../Authentications/LogOutModal";
 
 const logo = "/logo.jpg";
 
 export default function AdminDashboard() {
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [activePage, setActivePage] = useState("dashboard");
 
-  const user = Cookies.get("user");
+  const user = localStorage.getItem('user');
+
+    const handleSignOut = () => {
+    // Add your sign-out logic here
+    alert("Signed out!");
+    setShowModal(false);
+  };
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 2000); // Simulate loading time
@@ -31,19 +43,59 @@ export default function AdminDashboard() {
         return <Stores />;
       case "manageStaff":
         return <ManageStaff />;
+      case "reports":
+        return <Reports />;
       default:
+
         return (
-          <div className="dashboard-items">
-            <div className="dashboard-column left-column">
-              <div className="dashboard-card"> {user}</div>
-              <div className="dashboard-card">Dashboard Item 2</div>
+          <>
+            <div className="left-row">
+              <div className="dashboard-card sales_overview">
+                <span className="overview_title">Sales Overview</span>
+                <div className="overview_details">
+                  <div className="overview_info">
+                    <span className="info-heading"><Store className="sales-icon"/><p>In-Store Sales Revenue</p></span>
+                    <span className="info-txt"><p>LRD$ </p> || <p>USD$ </p></span>
+                  </div>
+              
+                  <div className="overview_info">
+                    <span className="info-heading"><ShoppingCart className="sales-icon"/><p>Online Order Revenue</p></span>
+                    <span className="info-txt"><p>LRD$ </p> || <p>USD$ </p></span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="dashboard-card  top-stock-container">
+                <TopSellingStock />
+              </div> 
             </div>
-            <div className="dashboard-column right-column">
-              <div className="dashboard-card">Dashboard Item 3</div>
-              <div className="dashboard-card">Dashboard Item 4</div>
-              <div className="dashboard-card">Dashboard Item 5</div>
+
+            <div className="right-row">
+              <div className=" dashboard-card overview-graph"> <DonutChart /></div>
+
+              <div className="dashboard-card inventory_summary">
+                <span className="inven_title">Inventory Summary</span>
+                <div className="inventory-details">
+                  <div className="inven_info">
+                    <Package className="sales-icon"/>
+                    <p>12000</p>
+                     <p>Available Stock</p>
+                  </div>
+              
+                  <div className="inven_info">
+                    <Truck className="sales-icon"/>
+                    <p>20000</p>
+                    <p>Pending Quantity </p>
+                  </div>
+                </div>
+              </div>
+
+              
+              <div className="dashboard-card low-stock-qty">
+                <LowQuantityStock />
+              </div>
             </div>
-          </div>
+          </>
         );
     }
   };
@@ -55,20 +107,22 @@ export default function AdminDashboard() {
        <img src={logo} alt="logo" />
         <nav className="nav-links">
           <a 
-            href="#" 
             className={activePage === "dashboard" ? "active" : ""} 
             onClick={() => setActivePage("dashboard")}
           >
             <LayoutDashboard /> Dashboard
           </a>
           <a 
-            href="#" 
             className={activePage === "inventory" ? "active" : ""} 
             onClick={() => setActivePage("inventory")}
           >
             <Package /> Inventory
           </a>
-          <a href="#"><BarChart /> Reports</a>
+          <a 
+            className={activePage === "reports" ? "active" : ""} 
+            onClick={() => setActivePage("reports")}>
+            
+            <BarChart /> Reports</a>
           <a href="#"><Truck /> Suppliers</a>
           <a href="#"><ShoppingCart /> Orders</a>
           
@@ -90,7 +144,7 @@ export default function AdminDashboard() {
           <a href="#" className="settings">
             <Settings /> Settings
           </a>
-          <a href="#" className="logout" onClick={handleLogout}>
+          <a href="#" className="logout" onClick={() => setShowModal(true)}>
             <LogOut /> Logout
           </a>
         </div>
@@ -122,6 +176,11 @@ export default function AdminDashboard() {
             renderContent()
           )}
         </main>
+              <SignOutModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleSignOut}
+      />
       </div>
     </div>
   );
