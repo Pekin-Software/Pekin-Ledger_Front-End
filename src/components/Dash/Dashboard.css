@@ -1,0 +1,20 @@
+.dashboard-items{
+    flex: 1;
+    display: flex;
+    overflow-y: hidden;
+    gap: 15px;
+    padding: 5px;
+}
+
+.left-row{
+    flex: 2;
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  .right-row{
+    flex: 1;
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+  }

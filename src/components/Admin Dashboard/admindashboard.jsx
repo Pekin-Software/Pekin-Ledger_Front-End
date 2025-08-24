@@ -6,11 +6,12 @@ import ManageStaff from "./Staff Dashboard/manageStaff";
 import InventoryDashboard from "../Inventory/inventoryDashboard";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import DonutChart from "../graphs/DonutChart";
-import LowQuantityStock from "./LowQuantityStock";
-import TopSellingStock from "./TopSellingStock";
+// import DonutChart from "../graphs/DonutChart";
+// import LowQuantityStock from "./LowQuantityStock";
+// import TopSellingStock from "./TopSellingStock";
 import Reports from "../../SalesReports/reports";
 import SignOutModal from "../Authentications/LogOutModal";
+import Dashboard from "../Dash/Dashboard";
 
 const logo = "/logo.jpg";
 
@@ -48,54 +49,15 @@ export default function AdminDashboard() {
       default:
 
         return (
-          <>
-            <div className="left-row">
-              <div className="dashboard-card sales_overview">
-                <span className="overview_title">Sales Overview</span>
-                <div className="overview_details">
-                  <div className="overview_info">
-                    <span className="info-heading"><Store className="sales-icon"/><p>In-Store Sales Revenue</p></span>
-                    <span className="info-txt"><p>LRD$ </p> || <p>USD$ </p></span>
-                  </div>
-              
-                  <div className="overview_info">
-                    <span className="info-heading"><ShoppingCart className="sales-icon"/><p>Online Order Revenue</p></span>
-                    <span className="info-txt"><p>LRD$ </p> || <p>USD$ </p></span>
-                  </div>
-                </div>
-              </div>
+          <Dashboard
+  inStoreRevenue={{ LRD: 12000, USD: 300 }}
+  onlineRevenue={{ LRD: 8000, USD: 200 }}
+  inventory={{ available: 12000, pending: 20000 }}
+  // TopSellingStock={TopSellingStock}
+  // LowQuantityStock={LowQuantityStock}
+  // DonutChart={DonutChart}
+/>
 
-              <div className="dashboard-card  top-stock-container">
-                <TopSellingStock />
-              </div> 
-            </div>
-
-            <div className="right-row">
-              <div className=" dashboard-card overview-graph"> <DonutChart /></div>
-
-              <div className="dashboard-card inventory_summary">
-                <span className="inven_title">Inventory Summary</span>
-                <div className="inventory-details">
-                  <div className="inven_info">
-                    <Package className="sales-icon"/>
-                    <p>12000</p>
-                     <p>Available Stock</p>
-                  </div>
-              
-                  <div className="inven_info">
-                    <Truck className="sales-icon"/>
-                    <p>20000</p>
-                    <p>Pending Quantity </p>
-                  </div>
-                </div>
-              </div>
-
-              
-              <div className="dashboard-card low-stock-qty">
-                <LowQuantityStock />
-              </div>
-            </div>
-          </>
         );
     }
   };
