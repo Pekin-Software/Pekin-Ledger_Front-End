@@ -12,30 +12,20 @@ const navigate = useNavigate();
 
       try {
         const refreshToken = Cookies.get("refresh_token");
-        const accessToken = Cookies.get("access_token");
-        
-        console.log(accessToken)
 
-        if (!refreshToken  && !accessToken) {
+        if (!refreshToken ) {
           console.error("No token found, cannot log out.");
           return;
         }
 
-        const body = refreshToken
-          ? { refresh_token: refreshToken }
-          : { access_token: accessToken };
-  
+
         const response = await fetch("https://pekingledger.store/api/auth/logout/", {
         // const response = await fetch("http://client1.localhost:8000/api/auth/logout/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            ...(accessToken && !refreshToken
-              ? { Authorization: `Bearer ${accessToken}` } // optional
-              : {}),
           },
           credentials: "include", 
-          body: JSON.stringify(body),
         });
   
         if (!response.ok) {
