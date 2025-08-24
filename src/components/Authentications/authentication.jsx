@@ -69,6 +69,7 @@ function SignInForm({ navigate }) {
       localStorage.setItem("exchange_rate", exchange_rate);
       localStorage.setItem("business_name", business_name);
       localStorage.setItem("tenant", tenant_domain);
+      localStorage.setItem("token", access_token);
 
        if (role === "Cashier") {
         navigate("/point-of-sale");
