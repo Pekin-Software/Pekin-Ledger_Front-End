@@ -62,7 +62,7 @@ function SignInForm({ navigate }) {
       if (!role || !user) {
         throw new Error("Invalid login response: Missing role, or user data");
       }
-      Cookies.set("access_token", access_token, { path: "/" }); //always remove during production 
+      // Cookies.set("access_token", access_token, { path: "/" }); //always remove during production 
       Cookies.set("role", role, { path: "/" });
       localStorage.setItem("user", JSON.stringify(user));  
       localStorage.setItem("store_id", store_id);

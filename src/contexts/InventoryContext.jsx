@@ -6,7 +6,7 @@ export const useInventory = () => useContext(InventoryContext);
 
 export const InventoryProvider = ({ children }) => {
     const tenantDomain  = localStorage.getItem("tenant");
-    // const accessToken =  Cookies.get("access_token");
+    const accessToken =  Cookies.get("access_token");
 
     const getAuthHeaders = (isJson = true) => ({
       ...(isJson && { "Content-Type": "application/json" }),
