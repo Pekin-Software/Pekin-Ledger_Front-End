@@ -87,6 +87,7 @@ export const InventoryProvider = ({ children }) => {
         } else if (excludeStoreId) {
             url = `${mainInventoryUrl}?exclude_store_id=${excludeStoreId}`;
         }
+        console.log(url)
           
         // Prepare headers
         let headers = getAuthHeaders();

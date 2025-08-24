@@ -25,8 +25,8 @@ const navigate = useNavigate();
           ? { refresh_token: refreshToken }
           : { access_token: accessToken };
   
-        // const response = await fetch("https://pekingledger.store/api/auth/logout/", {
-        const response = await fetch("http://client1.localhost:8000/api/auth/logout/", {
+        const response = await fetch("https://pekingledger.store/api/auth/logout/", {
+        // const response = await fetch("http://client1.localhost:8000/api/auth/logout/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
