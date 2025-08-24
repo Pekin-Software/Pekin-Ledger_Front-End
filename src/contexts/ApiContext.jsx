@@ -13,7 +13,7 @@ export const ApiProvider = ({ children }) => {
   const [UnassignedStaff, setUnassignedStaff] = useState([]);
 
 
-  const tenantDomain  = Cookies.get("tenant");
+  const tenantDomain  = localStorage.getItem("tenant");
   const accessToken =  Cookies.get("access_token");
 
   const getAuthHeaders = (isJson = true) => ({
@@ -23,6 +23,7 @@ export const ApiProvider = ({ children }) => {
 
 
   const apiBase = `https://${tenantDomain}.pekingledger.store/api`;
+    // const apiBase = `http://${tenantDomain}:8000/api`;
   const categoriesUrl = `${apiBase}/categories/`;
   const productsUrl = `${apiBase}/products/`;
   const storesUrl = `${apiBase}/store/`;
@@ -310,6 +311,7 @@ const uploadProductImage = async (productId, file) => {
         subaccounts,
         StoreStaff,
         UnassignedStaff,
+        // fetchAccounts,
         fetchSubaccounts,
         fetchStoreStaff,
         fetchUnassignedStaff,
