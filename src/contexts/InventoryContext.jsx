@@ -10,7 +10,7 @@ export const InventoryProvider = ({ children }) => {
 
     const getAuthHeaders = (isJson = true) => ({
       ...(isJson && { "Content-Type": "application/json" }),
-    //   Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     });
 
     const apiBase = `https://${tenantDomain}/api`
