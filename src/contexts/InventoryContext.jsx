@@ -11,7 +11,8 @@ export const InventoryProvider = ({ children }) => {
     console.log(accessToken)
     const getAuthHeaders = (isJson = true) => ({
       ...(isJson && { "Content-Type": "application/json" }),
-      Authorization: `Bearer ${accessToken}`,
+    //   Authorization: `Bearer ${accessToken}`,
+  
     });
 
     const apiBase = `https://${tenantDomain}/api`
@@ -92,7 +93,7 @@ export const InventoryProvider = ({ children }) => {
           
         // Prepare headers
         let headers = getAuthHeaders();
-        let response = await fetch(url, { method: 'GET', headers });
+        let response = await fetch(url, { method: 'GET', headers,   credentials: "include" });
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
