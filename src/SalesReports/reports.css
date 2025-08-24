@@ -1,5 +1,5 @@
 .report-container{
-  padding: 15px;
+  padding: 5px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -9,7 +9,7 @@
 th, td {
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
-  font-size: .9rem;
+  font-size: .8rem;
   color: #2c2d30d7;
 }
 th{
@@ -24,7 +24,7 @@ th{
 .card {
   padding: 10px;
   background: rgb(255, 255, 255);
-  box-shadow: 0px 0px 8px rgba(46, 46, 46, 0.575);  
+  box-shadow: 0px 0px 8px rgba(26, 24, 24, 0.76);  
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -77,11 +77,10 @@ th{
   display: flex;
   /* background: rgb(255, 255, 255); */
   flex-direction: column;
-  box-shadow: 0px 0px 8px rgba(46, 46, 46, 0.575);  
+ box-shadow: 0px 0px 8px rgba(26, 24, 24, 0.76);
   border-radius: 6px;
     padding: 10px;
   height: 40%;
-  
     overflow: hidden;
 }
 .chart-header{

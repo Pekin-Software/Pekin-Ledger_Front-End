@@ -238,14 +238,14 @@ function ProfitRevenueChart() {
     return Math.max(...data.map((d) => Math.max(d.revenue, d.profit)));
   }, []);
 
-const ticks = useMemo(() => {
-  const magnitude = Math.pow(10, Math.floor(Math.log10(maxValue)));
-  const niceMax = Math.ceil(maxValue / magnitude) * magnitude;
-  const step = niceMax / 5;
-  return Array.from({ length: 6 }, (_, i) => step * i);
-}, [maxValue]);
+// const ticks = useMemo(() => {
+//   const magnitude = Math.pow(10, Math.floor(Math.log10(maxValue)));
+//   const niceMax = Math.ceil(maxValue / magnitude) * magnitude;
+//   const step = niceMax / 4;
+//   return Array.from({ length: 5 }, (_, i) => step * i);
+// }, [maxValue]);
 
-const yDomain = [0, ticks[ticks.length - 1]]; // force domain to end at last tick
+// const yDomain = [0, ticks[ticks.length - 1]]; // force domain to end at last tick
 
   return (
     <>
@@ -273,8 +273,8 @@ const yDomain = [0, ticks[ticks.length - 1]]; // force domain to end at last tic
           />
           <YAxis 
           tick={{ fontSize: 12, fill: "#6B7280" }}
-            domain={yDomain}
-            ticks={ticks} // dynamic ticks
+            // domain={yDomain}
+            // ticks={ticks} // dynamic ticks
             allowDecimals={false}  // avoids weird float ticks
             tickFormatter={(value) => {
               if (value >= 1_000_000) return (value / 1_000_000).toFixed(1) + "M";

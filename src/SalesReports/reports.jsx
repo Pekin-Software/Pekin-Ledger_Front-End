@@ -203,7 +203,7 @@ const productData = [
         </div>
 
         <div className="chart">
-            <ProfitRevenueChart />
+             <ProfitRevenueChart /> 
         </div>
 
         <div className="product-table">
