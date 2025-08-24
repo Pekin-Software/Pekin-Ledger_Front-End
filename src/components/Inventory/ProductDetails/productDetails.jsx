@@ -1,51 +1,15 @@
 import React, { useState } from "react";
-import "./productDetail.css"; // Ensure you have a CSS file for styling
-// import { useApi } from "../../../ApiContext";
-import { useApi } from "../../../contexts/ApiContext";
+import "./productDetail.css";
 
+import { useApi } from "../../../contexts/ApiContext";
+import { ArrowLeftCircle } from "lucide-react";
+import ImageUploader from "../imageUploader";
+import ProfitRevenueCharts from "../../../SalesReports/SalesLineChart";
+import ProductsVariants from "./productsVariants";
 
 export default function ProductDetail({ product, onClose }) {
-  const back_btn = "/arrow.png";
+ 
   const { uploadProductImage } = useApi();
-  const [imageFile, setImageFile] = useState(null); // actual file to send
-
-  const [activeTab, setActiveTab] = useState("Overview"); // State to track active tab
-
-  const [image, setImage] = useState(null);
-
-  // const handleImageUpload = (event) => {
-  //   const file = event.target.files[0]; // Get uploaded file
-  //   if (file) {
-  //     // setFormData((prevData) => ({ ...prevData, product_image: file }));
-  
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setImage(reader.result); // Update the image preview
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImageFile(file); // Store file for upload
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result); // preview
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  const handleUploadImage = async (productId) => {
-    if (!imageFile) return;
-    const result = await uploadProductImage(productId, imageFile);
-    if (result) {
-      alert("✅ Image uploaded successfully!");
-    } else {
-      alert("❌ Failed to upload image.");
-    }
-  };
 
   const stockData = [
     { storeName: "Main Branch", stock: 120 },
@@ -57,193 +21,141 @@ export default function ProductDetail({ product, onClose }) {
     { storeName: "Warehouse", stock: 500 },
     // add more to test scroll
   ];
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "Overview":
-        return (
-          <section className="tab-content">
-            
-            <section className="tab-content-product-detail">
-              <div className="tab-content-left">
-                <h3>Product Details</h3>
-
-                <div className="product-detail">
-                  <p className="info">Product Name: </p>
-                  <p>{product.product_name}</p>
-                </div>
-
-                <div className="product-detail">
-                  <p className="info">Product ID: </p>
-                  <p>{product.id}</p>
-                </div>
-
-                <div className="product-detail">
-                  <p className="info">Product Category: </p>
-                  <p>{product.category}</p>
-                </div>
-
-                <div className="product-detail">
-                  <p className="info">Expiry Date: </p>
-                  {
-                    product.expired_date || 
-                    (product.lots && product.lots.length > 0 && product.lots[0].expired_date) || 
-                    'N/A'
-                  }
-                </div>
-
-                <div className="product-detail">
-                  <p className="info">Threshold Value: </p>
-                  <p>{product.threshold_value}</p>
-                </div>
-
-                <section className="supplier-details">
-                  <h3>Supplier Details</h3>
-                  <div className="product-detail">
-                    <p className="info">Supplier Name: </p>
-                    <p>{product.name}</p>
-                  </div>
-                  <div className="product-detail">
-                    <p className="info">Contact Number: </p>
-                    <p >{product.name} 0770-957-345</p>
-                  </div>
-                </section>
-              </div>
-
-              <div className="tab-content-right"> 
-                <section className="image-upload">
-                  <label htmlFor="image-upload" className="image-holder">
-                    {/* {image ? <img src={image} alt="Product" /> : "Drag image or Browse"} */}
-                    {image 
-                      ? <img src={image} alt="Product Preview" />
-                      : product.image 
-                        ? <img src={product.image} alt="Existing Product" />
-                        : "Drag image or Browse"
-                    }
-
-                  </label>
-                  <input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} hidden />
-                    <button 
-                      className="upload-btn" 
-                      onClick={() => handleUploadImage(product.id)} 
-                      disabled={!imageFile}
-                    >
-                    Upload Image
-                  </button>
-                </section>
-
-                <section>
-                  <div className="product-detail">
-                    <p className="info-right">Opening Stock: </p>
-                    <p>40</p>
-                  </div>
-
-                  <div className="product-detail">
-                    <p className="info-right">Remaining Stock: </p>
-                    <p>36</p>
-                  </div>
-
-                  <div className="product-detail">
-                    <p className="info-right">On the way: </p>
-                    <p>15</p>
-                  </div>
-                </section>
-              </div>
-            </section>
-
-            <section className="tab-content-store-list">
-              <h3 className="sticky-heading">Stock Locations</h3>
-
-              <div className="table-wrapper">
-                <table className="stock-table">
-                  <thead>
-                    <tr>
-                      <th className="stores">Store Name</th>
-                      <th className="stock-detail">Stock at hand</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stockData.map((row, idx) => (
-                      <tr key={idx}>
-                        <td className="store">{row.storeName}</td>
-                        <td className="stock-value">{row.stock}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-          </section>
-        );
-      case "Purchases":
-        return (
-          <div className="tab-content">
-            <h3>Purchases</h3>
-            <p>No purchase data available.</p> {/* Replace with actual data */}
-          </div>
-        );
-      case "Sales":
-        return (
-          <div className="tab-content">
-            <h3>Sales</h3>
-            <p>No sales data available.</p> {/* Replace with actual data */}
-          </div>
-        );
-      case "Restock":
-        return (
-          <div className="tab-content">
-            <h3>Restock Information</h3>
-            <p>Restock is due in 30 days.</p> {/* Replace with actual restock info */}
-          </div>
-        );
-      default:
-        return <div className="tab-content">Select a tab to view information.</div>;
-    }
-  };
+  
+   const variants = [
+    { id: 1, title: "Variant 1", price: "$59.99", qty: "120" },
+    { id: 2, title: "Variant 2", price: "$79.99" , qty: "120" },
+    { id: 3, title: "Variant 3", price: "$99.99" , qty: "120" },
+    { id: 4, title: "Variant 4", price: "$129.99" , qty: "120" },
+      { id: 1, title: "Variant 1", price: "$59.99" , qty: "120" },
+    { id: 2, title: "Variant 2", price: "$79.99", qty: "120" },
+    { id: 3, title: "Variant 3", price: "$99.99", qty: "120" },
+  ];
 
   return (
-    <div className="product-detail-container">
       <div className="product-detail-modal">
-        {/* Close Button */}
-        <section className="model-ctrl">
-          <button className="closebtn" onClick={onClose}><img src={back_btn} alt="Back"/></button>
-        </section>
-
-        {/* Top Navigation Bar */}
         <div className="product-nav">
+           <button className="closebtn" onClick={onClose}>
+            <ArrowLeftCircle/>
+           </button>
           <ul>
-            <li
-              className={activeTab === "Overview" ? "active" : ""}
-              onClick={() => setActiveTab("Overview")}
-            >
-              Overview
-            </li>
-            <li
-              className={activeTab === "Purchases" ? "active" : ""}
-              onClick={() => setActiveTab("Purchases")}
-            >
-              Purchases
-            </li>
-            <li
-              className={activeTab === "Sales" ? "active" : ""}
-              onClick={() => setActiveTab("Sales")}
-            >
-              Sales
-            </li>
-            <li
-              className={activeTab === "Restock" ? "active" : ""}
-              onClick={() => setActiveTab("Restock")}
-            >
-              Restock
+            <li>
+             Product Detail
             </li>
           </ul>
         </div>
 
        <section className="contents">
-         {/* Tab Content */}
-         {renderTabContent()}
+         <section className="store-product-detail">
+              <div className=" product-detail">
+                <ImageUploader/>
+                <section className="info-section">
+                  <div>
+                    <span>
+                      <p className="info">Product Name</p>  
+                      <p>{product.product_name}</p>
+                    </span>
+                    <span>
+                      <p className="info">Product ID</p>  
+                      <p>{product.id}</p>
+                    </span>
+                    <span>
+                      <p className="info">Product Category</p> 
+                      <p>{product.category} </p>
+                    </span>
+                  </div>
+
+                  <div>
+                    <span>
+                      <p className="info">Supplier Name: </p> 
+                      <p>{product.name}</p>
+                    </span>
+                    <span>
+                      <p className="info">Contact Number: </p>
+                      <p >{product.name} 0770-957-345</p>
+                    </span>
+                  </div>
+                </section>
+              </div>
+
+                <section className="variants-holder">
+                   {variants.map((variant) => (
+                <ProductsVariants key={variant.id} {...variant}/>
+                 ))}
+                </section>
+              
+            </section>
+
+            <section className="product-store-sales">
+
+              <span className="product-overview">
+                <div className="card">
+                    <h4 className="card-title">Overview</h4>
+                    <div className="card-col">
+                        <div  className="card-row">
+                            <h4>Total Sales</h4>
+                            <p>LRDS 90,000.00</p>
+                        </div> 
+                        <div className="card-row" >
+                            <h4>Total Purchase Cost</h4>
+                            <p>LRDS 19,000,000.00</p>
+                        </div>
+                        <div className="card-row">
+                            <h4>Net Profit</h4>
+                            <p>LRDS 190,000.00</p>
+                        </div>
+                    </div>
+                    
+                    <div className="card-col">
+                        <div  className="card-row">
+                            <h4>Total Sales</h4>
+                            <p>LRDS 90,000.00</p>
+                        </div> 
+                        <div className="card-row" >
+                            <h4>Total Purchase Cost</h4>
+                            <p>LRDS 19,000,000.00</p>
+                        </div>
+                        <div className="card-row">
+                            <h4>Net Profit</h4>
+                            <p>LRDS 190,000.00</p>
+                        </div>
+                        <div className="card-row">
+                            <h4>Net Profit</h4>
+                            <p>LRDS 190,000.00</p>
+                        </div>
+                    </div>
+                </div> 
+                        <div className="sales-chart">
+                            <ProfitRevenueCharts /> 
+                        </div>
+              
+              </span>
+
+              <span className="location-listings">
+                <h3>Stock Locations</h3>
+
+                <div className="table-wrapper">
+                  <table className="stock-table">
+                    <thead>
+                      <tr>
+                        <th className=" location">Store Name</th>
+                        <th className="stock-detail">Stock at hand</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stockData.map((row, idx) => (
+                        <tr key={idx}>
+                          <td className="location-list">{row.storeName}</td>
+                          <td className="stock-value">{row.stock}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </span>
+
+            </section>
        </section>
       </div>
-    </div>
   );
 }

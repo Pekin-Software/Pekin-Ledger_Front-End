@@ -18,8 +18,8 @@ export default function ProductCard({
   const handleCardClick = () => {
     if (showVariantCardOnClick) {
       setvariantOpen(true);
-       onCardClick();
     }
+     onCardClick();
   };
 
 

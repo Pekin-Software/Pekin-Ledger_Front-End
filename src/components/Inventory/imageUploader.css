@@ -1,0 +1,138 @@
+.product-image {
+  display: flex;
+  align-items: flex-end;
+  gap: .8rem;
+  width: 100px;
+}
+
+.imageholder {
+    flex: 1;
+  height: 100px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+  background-color: #8881812f;
+  position: relative;
+}
+
+.imageholder:hover {
+  border-color: #888;
+}
+
+.imageholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.icon-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6b6565;
+  font-size: .7rem;
+  text-align: center;
+  position: absolute;
+  inset: 0; 
+  pointer-events: none; 
+  span{
+    color: #0a0a0ac9;
+  }
+}
+.imageholder::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 0;
+}
+.icon-placeholder {
+  z-index: 1;
+}
+.placeholder-text {
+  color: #999;
+  font-size: 16px;
+  text-align: center;
+}
+
+.upload-img, .close-img {
+  
+  padding: 6px 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .8rem;
+  transition: background-color 0.3s ease;
+}
+.upload-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.upload-btn:hover {
+  background-color: #2980b9;
+}
+.close-img:hover {
+  background-color: #da2121ce;
+  font-weight: bold;
+  /* color: black; */
+}
+.close-img {
+  background-color: #eb1010;
+  padding: 0 20px;
+}
+.upload-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.upload-btn:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+
+/* Modal styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: rgb(247, 247, 247);
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  width: 18%;
+  height: 50%;
+  text-align: center;
+  position: relative;
+
+  & span{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+    padding: 10px;
+  }
+}
+.modal-image {
+  width: 100%;
+  height: 85%;
+  border-radius: 8px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
