@@ -32,25 +32,35 @@ export default function StoreProfile({ store, onClose, onSave }) {
 
   return (
     <div className="store-overlay">
-      <div className="store-content">
+      <div className="store-modal">
         <h2>{store ? "Edit Store" : "Add Store"}</h2>
         <form className="store-form">
-          <label>Branch Name</label>
+          <div className="business-name">
+            <label>Branch Name</label>
           <input type="text" name="store_name" value={formData.store_name} onChange={handleChange} required />
-
-          <div className="address-group">
-            <label>Address:</label>
-            <input type="text" name="address" value={formData.address} onChange={handleChange} required />
-
-            <label>City:</label>
-            <input type="text" name="city" value={formData.city} onChange={handleChange} required />
           </div>
+          
           <div className="address-group">
-            <label>Country:</label>
-            <input type="text" name="country" value={formData.country} onChange={handleChange} required />
+            <span>
+              <label>Address</label>
+              <input type="text" name="address" value={formData.address} onChange={handleChange} required />
+            </span>
+            <span>
+              <label>City</label>
+              <input type="text" name="city" value={formData.city} onChange={handleChange} required />
+            </span>
+          </div>
 
-            <label>Phone Number:</label>
-            <input type="text" name="phone_number" value={formData.phone_number} onChange={handleChange} required />
+          <div className="address-group">
+            <span>
+              <label>Country</label>
+              <input type="text" name="country" value={formData.country} onChange={handleChange} required />
+            </span>
+
+            <span>
+              <label>Phone Number</label>
+              <input type="text" name="phone_number" value={formData.phone_number} onChange={handleChange} required />
+            </span>
           </div>
 
           <div className="button-group">

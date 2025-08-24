@@ -2,68 +2,44 @@
   margin: 0;
   padding: 0;
 }
-section{
-  border-radius: 0;
-}
-.store-detail-container {
-  padding: 1rem;
-  width: 100%;
-  height:  100%;;
+
+.div{
   display: flex;
-  justify-content: center;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: hidden;
+}
+
+.store-nav {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  z-index: 10; 
-  overflow: hidden;
- 
+  gap: 10px;
 }
-.product-detail-modal{
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.726);
+.nav-list{
+  display: flex;
 }
-.overview-content {
-    /* padding: 12px 30px; */
-    /* padding-bottom: 0; */
-    width: 100%;
-    height: 100%;
-    gap: 30px;
-    display: flex;
-    flex-direction: row-reverse;
-    flex-wrap: nowrap;
-    font-size: .8rem;
-}
-.store-info{
-    
-    flex: .5;
-}
-.store-info-txt{
-    background-color: #fff;
-    padding: 16px 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.548);
-    margin-bottom: 16px;
 
-    h3 {
-    margin: 0;
-    }
+.store-contents{
+  flex: 1;
+  display: flex;
+  overflow-y: hidden;
+  padding: 5px;
+  }
 
-    h4{
-    margin-top: 5px;
-    } 
+.returnbtn {
+  background: none;
+  display: flex;
+  border: none;
+  cursor: pointer;
+  padding: 3px 10px;
 }
-.store-data-graph{
-    background-color: #007bff2f;
-    flex: 2;
-}
-  
 
 h4 {
     margin-bottom: 8px;
 }
-
-.store-nav {
-    /* margin-bottom: 5px; */
-    /* border-bottom: 2px solid #F0F1F3; */
-    height: 5%;
-}
-  
+ 
 .store-nav ul {
     display: flex;
     list-style-type: none;
@@ -85,11 +61,11 @@ h4 {
     border-bottom: 2px solid #007bff;
     color: #007bff;
   }
-.contents{
-    height: 90%;
-    background-color: #007bff;
-    /* padding: 100px; */
-  }
+.storename{
+  padding-right: 15px;
+  font-size: .9rem;
+  color: #474b4e;
+}
   .tab-content {
     padding: 100px; 
     padding-bottom: 0; 
@@ -101,13 +77,7 @@ h4 {
 
   }
 
-  .store-content{
-    background-color: #777;
-    padding: 0;
-    border-radius: 0;
-    width: 100%;
-    height: 100%;
-  }
+
   .products{
      height: 100%;
     width: 100%;
@@ -183,108 +153,6 @@ h4 {
   flex-basis: 70%;
 }
 
-/* Store Staff */
-.store-staff-container {
-  padding: 0;
-}
-
-.staff-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.staff-header h2 {
-  font-size: 1.4rem;
-  color: #333;
-}
-
-.add-staff-btn {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.add-staff-btn:hover {
-  background-color: #1570EF;
-}
-
-.staff-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.staff-card {
-  width: 33%;
-  padding: 5px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(104, 102, 102, 0.719);
-  display: flex;
-}
-.staff-info{
-  flex: auto;
-  padding: 10px;
-}
-.staff-name{
-  margin: 0;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-.data{
-  margin: 5px 0;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  font-size: .9em;
-}
-.data div:nth-child(1){
-  color: rgba(34, 33, 33, 0.5);
-}
-
-.staff-img{
-  width: 25%;
-  height: 50%;
-  margin-top: 10px;
-  border: 2px solid #1570EF;
-  border-radius: 100px;
-  background-color: #b0b0b1be;
-}
-.staff-actions {
-  width: 100%;
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-}
-.btn{
-  width: 40%;
-  padding-top: 3px;
-}
-.staff-actions button {
-  padding: 4px 2px;
-  width: 100%;
-  border: none;
-  cursor: pointer;
-  background-color: #1570EF;
-}
-
-.staff-actions button:hover {
-  opacity: 0.9;
-}
-
-.staff-actions .delete-btn {
-  background-color: #dc3545;
-  width: 60%;
-  color: white;
-}
-
-
 /* Model Style */
 .modal-overlay {
   position: fixed;
@@ -299,40 +167,13 @@ h4 {
   z-index: 999;
 }
 
-.staff-modal {
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 10px;
-  width: 75%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-}
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+
+
 
 .modal-header h2 {
   margin: 0;
 }
 
-.staff-content {
-  padding: 12px 0;
-  width: 100%;
-  height: 100%;
-  gap: 10px;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.close-btn {
-  background: none;
-  font-size: 1.5rem;
-  border: none;
-  cursor: pointer;
-}
 
 

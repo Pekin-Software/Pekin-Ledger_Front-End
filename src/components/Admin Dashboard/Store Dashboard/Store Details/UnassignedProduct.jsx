@@ -375,7 +375,7 @@
 
 import { useEffect } from "react";
 import { X } from "lucide-react";
-import ProductSection from "../../../Inventory/ProductDetails/products";
+// import ProductSection from "../../../Inventory/ProductDetails/products";
 import "./unassignedProduct.css";
 import { useInventory } from "../../../../contexts/InventoryContext";
 
@@ -403,7 +403,7 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
         </div>
 
         <div className="modal-body">
-          <ProductSection
+          {/* <ProductSection
             products={unassignedProducts}
             productsLoading={productsLoading}
             productsError={productsError}
@@ -411,7 +411,7 @@ export default function UnassignedProduct({ onClose, onSubmit, storeId}) {
             storeId={storeId}
             onAddProductFromModal={onSubmit}
             onClose={onClose} 
-          />
+          /> */}
         </div>
       </div>
     </div>
