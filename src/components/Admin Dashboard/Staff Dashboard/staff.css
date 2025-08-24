@@ -1,84 +1,11 @@
-/* .staff-container {
-    padding: 20px;
-    max-width: 100%;
-    margin: 15px 15px;
-    background-color: #FFFFFF;
-  }
-  
-.staff-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    h2{
-        color: #383E49;
-        font-size: 16px;
-    }
-}
-  
-.add-user {
-    background-color: #1366D9;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-  
-.list {
-    max-height: 70vh;
-    overflow-y: auto;
-    padding-right: 90px;
+.staff-dashboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
 }
 
-.store-list.scrollable::-webkit-scrollbar {
-    width: 8px; 
-  }
-  
-.store-card {
-    background: white;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    display: flex;
-    border: 1px solid #F0F1F3;
-}
-  
-.store-name {
-    flex-basis: 200px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #333;
-    background-color: #F0F1F3;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.store-details{
-    padding: 15px;
-    font-size: 12px;
-}
-.store-details :nth-child(4){
-    margin-top: 5px;
-}
-  
-.edit-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    color: #1366D9;
-    font-size: 11px;
-    font-weight: 600;
-    border: 1px solid #babec7;
-    padding: 5px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
 .close-button {
   background-color: transparent;
   color: rgb(82, 81, 81);
@@ -93,7 +20,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(34, 33, 33, 0.678);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -110,4 +37,43 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
   }
- */
+
+
+ .add-user {
+    background-color: #1366D9;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.staff-grid-list {
+   /* background-color: #1366D9; */
+    display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-width: thin; 
+  scrollbar-color: #ffffff80 #3c3d3d77; 
+  padding: 5px;
+}
+
+.staff-grid-list::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.staff-grid-list::-webkit-scrollbar-track {
+  background: #3c3d3d77; 
+  border-radius: 4px;
+}
+
+.staff-grid-list::-webkit-scrollbar-thumb {
+  background-color: #ffffff80; 
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.staff-grid-list::-webkit-scrollbar-thumb:hover {
+  background-color: #ffffff;
+}

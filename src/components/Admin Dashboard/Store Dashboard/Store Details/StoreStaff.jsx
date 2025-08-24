@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import "./storeDetails.css";
-import StaffListModal from "./StaffModal";
-import StaffCard from "./StaffCard";
+import "./StoreStaff.css";
+import StaffListModal from "../../Staff Dashboard/StaffModal";
+import StaffCard from "../../Staff Dashboard/StaffCard";
 import { useApi } from "../../../../contexts/ApiContext";
 import Cookies from "js-cookie";
 
@@ -27,8 +27,9 @@ export default function StoreStaff({ storeID }) {
 
   const handleAddStaff = async (user) => {
     try {
-      const tenantDomain = Cookies.get("tenant"); 
+      const tenantDomain = localStorage.getItem("tenant"); 
       const accessToken = Cookies.get("access_token");
+      // const response = await fetch(`http://${tenantDomain}:8000/api/store/${storeID}/add-staff/`, {
       const response = await fetch(`https://${tenantDomain}.pekingledger.store/api/store/${storeID}/add-staff/`, {
         method: "POST",
         headers: {
@@ -72,7 +73,7 @@ export default function StoreStaff({ storeID }) {
   };
 
   return (
-    <div className="store-staff-container">
+    <section className="staff-listing"> 
       <div className="staff-header">
         <h2>
           {storeStaffList.length > 0
@@ -84,12 +85,12 @@ export default function StoreStaff({ storeID }) {
         </button>
       </div>
 
-      <div className="staff-list">
+      <div className="staff-grid-list">
         {storeStaffList.map((staff) => (
           <StaffCard
-            key={staff.email}
+            key={staff.id}
             staff={staff}
-            mode="view"
+            mode="remove"
             onChangePosition={handleChangePosition}
             onDelete={handleDelete}
           />
@@ -102,6 +103,6 @@ export default function StoreStaff({ storeID }) {
           onClose={() => setShowModal(false)}
         />
       )}
-    </div>
+    </section>
   );
 }

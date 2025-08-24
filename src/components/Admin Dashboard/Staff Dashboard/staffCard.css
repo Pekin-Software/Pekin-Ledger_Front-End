@@ -1,0 +1,85 @@
+
+.staff-card {
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(73, 73, 73, 0.671);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.data{
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+.staff-img{
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+    border-radius: 50%;
+    background-color: #d3d0d03b;
+    border: 1px solid rgba(0, 0, 0, 0.24);
+}
+
+.staff-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  border-radius: 50%;
+}
+.user-icon{
+    color: rgba(0, 0, 0, 0.418);
+}
+
+.staff-name{
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1570efe0;
+  line-height: 1;
+}
+
+.staff-role{
+  font-weight: 600;
+  font-size: .8rem;
+  color: #161616c9;
+  line-height: 1;
+  padding-bottom: 10px;
+}
+
+.staff-info{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    font-size: .75em;
+}
+
+.staff-contact{
+    line-height: 1.2;
+    color: rgba(0, 0, 0, 0.692);
+}
+.staff-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.staff-actions button {
+  padding: 4px 1px;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  background-color: #1570EF;
+}
+
+.staff-actions button:hover {
+  opacity: 0.9;
+}
+
+.staff-actions .delete-btn {
+  background-color: #dc3545;
+  /* width: 60%; */
+  color: white;
+}
