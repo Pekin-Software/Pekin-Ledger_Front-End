@@ -14,11 +14,9 @@ export const ApiProvider = ({ children }) => {
 
 
   const tenantDomain  = localStorage.getItem("tenant");
-  const accessToken =  Cookies.get("access_token");
 
   const getAuthHeaders = (isJson = true) => ({
-  ...(isJson && { "Content-Type": "application/json" }),
-  Authorization: `Bearer ${accessToken}`,
+  ...(isJson && { "Content-Type": "application/json" })
   });
 
 
@@ -33,7 +31,8 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await fetch(`${apiBase}/users/staff/`, {
         method: "GET",
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
+        credentials: "include" 
       });
 
       const raw = await response.text();
