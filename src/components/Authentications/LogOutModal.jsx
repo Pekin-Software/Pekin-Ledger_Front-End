@@ -11,20 +11,9 @@ const navigate = useNavigate();
     const handleLogout = async () => {
 
       try {
-        const refreshToken = Cookies.get("refresh_token");
-
-        if (!refreshToken ) {
-          console.error("No token found, cannot log out.");
-          return;
-        }
-
-
         const response = await fetch("https://pekingledger.store/api/auth/logout/", {
         // const response = await fetch("http://client1.localhost:8000/api/auth/logout/", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           credentials: "include", 
         });
   
