@@ -1,50 +1,56 @@
-name: Deploy React App to S3
+name: Deploy React App to S3 + CloudFront
 
 on:
   push:
     branches:
-      - main
+      - main  # deploy on pushes to main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    # Step 1: Checkout repo
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup Node
+    # Step 2: Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 18
 
+    # Step 3: Install dependencies
     - name: Install dependencies
       run: npm ci
 
+    # Step 4: Build React app
     - name: Build
       run: npm run build
 
-    - name: Sync to S3
+    # Step 5: Sync build folder to S3
+    - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@v0.5.1
       with:
-        args: --acl public-read --delete
+        args: --delete --exclude ".git/*"
         bucket: app.pekinledger.com
         source-dir: build/
       env:
-        AWS_S3_BUCKET: app.pekinledger.com
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: us-east-1
+        AWS_REGION: us-east-1  # change if your bucket is in another region
 
+    # Step 6: Invalidate CloudFront cache
     - name: Invalidate CloudFront
       uses: chetan/invalidate-cloudfront-action@v1
       with:
-        distribution: E2CYR3GJ55E8P6
+        distribution: E2CYR3GJ55E8P6   # Replace with your CloudFront distribution ID
         paths: "/*"
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+    # Step 7: Cache node modules to speed up future runs
     - name: Cache node modules
       uses: actions/cache@v3
       with:
