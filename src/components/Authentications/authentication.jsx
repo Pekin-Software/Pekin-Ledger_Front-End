@@ -19,7 +19,6 @@ export default function Authentication({ defaultSignIn, setShowAuth }) {
   return (
     <div className="auth-container">
       <div className="logo-container">
-        <button className="close-btn" onClick={() => { navigate('/');  }}><img src={back_btn} alt="Back"/></button>
         <div className="logo"><img src={logo} alt="Logo"/></div>
       </div>
       
@@ -35,7 +34,7 @@ export default function Authentication({ defaultSignIn, setShowAuth }) {
   );
 }
 
-function SignInForm({ navigate }) {
+function SignInForm({ navigate, setIsSignIn }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -83,11 +82,6 @@ function SignInForm({ navigate }) {
     } catch (error) {
       console.error("Login failed", error);
     }
-  
-  const handleSignUp = (e) => {
-    e.preventDefault(); // Prevent form submission behavior
-    navigate("/signup"); // Navigate to the signup page
-  };
   };
   
   return (
@@ -119,7 +113,7 @@ function SignInForm({ navigate }) {
 
       <p className="signup-txt">
         Don't have an account?
-        <button onClick={() => navigate("/signup")}>Sign Up</button>
+        <button type="button" onClick={() => setIsSignIn(false)}>Sign Up</button>
       </p>
     </form>
 
@@ -128,6 +122,7 @@ function SignInForm({ navigate }) {
 
 export function SignUpForm({ 
   navigate,
+  setIsSignIn,
   title = "Create an account",
   subtitle = "Start your 30-day free trial.",
   usePositionInsteadOfBusinessName = false,
@@ -373,7 +368,7 @@ export function SignUpForm({
         {showLoginLink && (
           <p className="signup-txt">
             Already have an account?
-            <button onClick={() => navigate('/login')}>Login</button>
+            <button type="button" onClick={() => setIsSignIn(true)}>Login</button>
           </p>
         )}
       </form>
