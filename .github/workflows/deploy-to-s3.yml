@@ -25,7 +25,7 @@ jobs:
       run: npm run build
 
     - name: Deploy to S3
-      uses: aws-actions/s3-sync@v1
+      uses: aws-actions/s3-sync@v1.3.0
       with:
         source-dir: build/
         bucket: app.pekinledger.com
@@ -36,7 +36,7 @@ jobs:
         AWS_REGION: us-east-1  # change to your region
 
     - name: Invalidate CloudFront cache
-      uses: aws-actions/cloudfront-invalidate@v1
+      uses: aws-actions/cloudfront-invalidate@v1.0.1
       with:
         distribution-id: E2CYR3GJ55E8P6
         paths: "/*"
