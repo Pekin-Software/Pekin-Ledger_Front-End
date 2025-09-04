@@ -39,7 +39,7 @@ jobs:
     # Step 6: Deploy build folder to S3
     - name: Deploy to S3
       run: |
-        aws s3 sync build/ s3://app.pekinledger.com --delete --exact-timestamps
+        aws s3 sync dist/ s3://app.pekinledger.com --delete --exact-timestamps
       # No --acl, works with bucket owner enforced
 
     # Step 7: Invalidate CloudFront
