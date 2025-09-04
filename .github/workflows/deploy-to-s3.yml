@@ -33,12 +33,13 @@ jobs:
       uses: jakejarvis/s3-sync-action@v0.5.1
       with:
         args: --delete --exclude ".git/*"
-        bucket: app.pekinledger.com
-        source-dir: build/
       env:
+        AWS_S3_BUCKET: app.pekinledger.com
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: us-east-1  # change if your bucket is in another region
+        AWS_REGION: us-east-1
+        SOURCE_DIR: build
+
 
     # Step 6: Invalidate CloudFront cache
     - name: Invalidate CloudFront
