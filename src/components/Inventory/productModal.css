@@ -1,13 +1,3 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  background: #f7f8fa;
-  color: #333;
-}
 
 /* Modal Overlay */
 .modal-overlay {
@@ -73,11 +63,12 @@ body {
 }
 
 /* Form Section */
-form{
+/* Uncomment and style for product input */
+/* form{
   display: flex;
   height: 90%;
   justify-content: space-between;
-}
+} */
 
 form input[type="date"]::-webkit-calendar-picker-indicator{
   background-color: #a19facd7;
