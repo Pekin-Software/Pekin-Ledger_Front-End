@@ -168,7 +168,7 @@ function ProfitRevenueChart() {
   }, []);
 
    const maxValue = useMemo(() => {
-    return Math.max(...data.map((d) => Math.max(d.revenue, d.profit)));
+    return Math.max(...profitRevenue.map((d) => Math.max(d.revenue, d.profit)));
   }, []);
 
   return (
