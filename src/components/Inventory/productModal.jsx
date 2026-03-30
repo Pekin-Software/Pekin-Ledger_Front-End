@@ -1,41 +1,3 @@
-
-//   const { categories, addProduct } = useApi();
-//   const [selectedCategory, setSelectedCategory] = useState("");
-
-//   const [selectedUnit, setSelectedUnit] = useState("");
-//   const [currency, setCurrency] = useState("USD");
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const newProduct = await addProduct(
-//         formData,
-//         selectedCategory,
-//         selectedUnit,
-//         attributes,
-//       );
-
-//       if (newProduct && onProductAdded) {
-//         onProductAdded(newProduct);
-//       }
-//     } catch (err) {
-//       console.error("Failed to handle product submit:", err);
-//     }
-//   };
-
-//   return (
-
-              
-//               <label>
-//                   Category:
-//                   <select name="category" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} required>
-//                     <option value="">Select a category</option>
-//                     {categories.map((cat) => (
-//                       <option key={cat.id} value={cat.id}>{cat.name}</option>
-//                     ))}
-//                   </select>
-
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
@@ -44,21 +6,21 @@ import CategoryForm from "./categoryform";
 import { useApi } from "../../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
 import { X, Minus} from "lucide-react";
+import CustomDropdown from "../CustomDropdown";
 
 export default function ProductModal({ onClose, onProductAdded }) {
-  const navigate = useNavigate();
   const { categories, fetchCategories, addProduct } = useApi();
 
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [barcodeData, setBarcodeData] = useState("");
   const [showScanner, setShowScanner] = useState(false);
-  const [currency, setCurrency] = useState("USD");
 
   // GST states simplified - will sync with form values below
   const [wholesaleGstIncluded, setWholesaleGstIncluded] = useState(false);
   const [wholesaleGstExcluded, setWholesaleGstExcluded] = useState(false);
   const [retailGstIncluded, setRetailGstIncluded] = useState(false);
   const [retailGstExcluded, setRetailGstExcluded] = useState(false);
+  const [showVariantList, setShowVariantList] = useState(false);
 
   useEffect(() => {
     fetchCategories(); // Fetch categories on mount
@@ -74,6 +36,7 @@ export default function ProductModal({ onClose, onProductAdded }) {
     handleSubmit,
     setValue,
     getValues,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -81,29 +44,38 @@ export default function ProductModal({ onClose, onProductAdded }) {
       category: "",
       unit: "",
       threshold_value: "",
-      barcode: "",
+      currency: "LRD",
       attributes: [{ name: "", value: "" }],
       lots: [
         {
-          purchased_date: "",
           quantity: "",
           wholesale_quantity: "",
           expired_date: "",
-          wholesale_purchase_price: "",
-          retail_purchase_price: "",
+          purchase_price: "",
           wholesale_selling_price: "",
           retail_selling_price: "",
+          barcode: "",
         },
       ],
     },
   });
+  const preventInvalidNumberInput = (e) => {
+  if (["e", "E", "+", "-"].includes(e.key)) {
+    e.preventDefault();
+  }
+};
+
+useEffect(() => {
+  register("category", { required: true });
+}, [register]);
 
   // Manage dynamic attributes fields
-  const { fields: attributes, append: appendAttribute, remove: removeAttribute } = useFieldArray({
+  const { fields: attributes, append: appendAttribute, remove: removeAttribute,  replace: replaceAttributes, } = useFieldArray({
     control,
     name: "attributes",
   });
 
+  
   // Memoized unit options
   const unitOptions = useMemo(
     () => [
@@ -126,6 +98,7 @@ export default function ProductModal({ onClose, onProductAdded }) {
       setShowScanner(false);
     }
   }, [setValue]);
+
 
   // Price formatting utility (memoized callback)
   const formatPrice = useCallback((value) => {
@@ -151,147 +124,326 @@ export default function ProductModal({ onClose, onProductAdded }) {
     return "";
   }, [retailSellingPrice, retailGstIncluded, retailGstExcluded]);
 
-  // Add attribute if last one is filled
-  const addAttributeField = useCallback(() => {
-    const lastAttr = getValues("attributes").slice(-1)[0];
-    if (lastAttr && lastAttr.name && lastAttr.value && attributes.length < 5) {
+
+  const [variants, setVariants] = useState([]);
+  const [showPrices, setShowPrices] = useState(true); 
+  const [showAttributes, setShowAttributes] = useState(false); 
+const handleKeyDown = (e) => {
+  const allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+  if (!allowed.includes(e.key) && e.key.length === 1) {
+    e.preventDefault();
+  }
+};
+const handleAddVariant = useCallback(() => {
+  
+  const attrs = getValues("attributes") || [];
+  const filledAttrs = attrs.filter(
+    (a) => a?.name?.toString().trim() && a?.value?.toString().trim()
+  );
+
+  if (filledAttrs.length === 0) {
+    // If no attributes exist, just show the attribute inputs
+    setShowAttributes(true);
+
+     if (attributes.length === 0) {
       appendAttribute({ name: "", value: "" });
     }
-  }, [appendAttribute, attributes.length, getValues]);
+    return;
+  }
 
+  // If attributes exist, save as a variant
+  const lot = (getValues("lots") || [])[0] || {};
 
+  let prices;
+  if (!showPrices && variants.length > 0) {
+    // Copy prices from last variant
+    prices = variants[variants.length - 1].prices;
+  } else {
+    prices = {
+      purchase_price: lot.purchase_price ?? "",
+      wholesale_selling_price: lot.wholesale_selling_price ?? "",
+      wholesale_quantity: lot.wholesale_quantity ?? "",
+      retail_selling_price: lot.retail_selling_price ?? "",
+    };
+  }
 
-  // Handle price blur for formatting prices inside lots
-  const handlePriceBlur = useCallback(
-    (name, value) => {
-      const formatted = formatPrice(value);
-      setValue(name, formatted, { shouldValidate: true });
-    },
-    [formatPrice, setValue]
-  );
+  const variant = {
+    attributes: filledAttrs.map((a) => ({
+      name: a.name.trim(),
+      value: a.value.trim(),
+    })),
+    quantity: lot.quantity ?? "",
+    prices,
+    createdAt: new Date().toISOString(),
+  };
 
-  const onSubmit = useCallback(
-    async (data) => {
-      try {
-        const newProduct = await addProduct(
-          data,
-          data.category,
-          data.unit,
-          data.attributes,
-        );
-        if (newProduct && onProductAdded) {
-          onProductAdded(newProduct);
-        }
-      } catch (err) {
-        console.error("Failed to add product:", err);
+  setVariants((prev) => [...prev, variant]);
+
+  // Reset attribute fields for next input
+  replaceAttributes([{ name: "", value: "" }]);
+  setShowPrices(false); // optionally hide prices
+  setShowAttributes(true);
+}, [getValues, replaceAttributes, setShowPrices, variants]);
+
+  const handleRemoveVariant = (index) => {
+    setVariants((prev) => {
+      const updated = prev.filter((_, i) => i !== index);
+
+      if (updated.length === 0) {
+        // Reset back to initial state
+        reset({
+          attributes: [{ name: "", value: "" }],
+          lots: [
+            {
+              purchase_price: "",
+              quantity: "",
+              wholesale_selling_price: "",
+              wholesale_quantity: "",
+              retail_selling_price: "",
+            },
+          ],
+        });
+        setShowPrices(true);
+        setShowAttributes(false);
       }
-    },
-    [addProduct, onProductAdded]
-  );
+
+      return updated;
+    });
+  };
+
+useEffect(() => {
+  const subscription = watch((value, { name }) => {
+    const attributes = value.attributes || [];
+
+    const lastAttr = attributes[attributes.length - 1];
+
+    const isLastFilled =
+      lastAttr?.name?.trim() &&
+      lastAttr?.value?.trim() &&
+      attributes.length < 5;
+
+    if (isLastFilled) {
+      // Delay slightly to let form state update before appending
+      setTimeout(() => {
+        appendAttribute({ name: "", value: "" });
+      }, 0);
+    }
+  });
+
+  return () => subscription.unsubscribe();
+}, [watch, appendAttribute]);
+
+useEffect(() => {
+  if (attributes.length === 0) {
+    setShowAttributes(false);
+  }
+}, [attributes.length]);
+
+const onSubmit = useCallback(
+  async (formValues) => {
+    try {
+      const lot = formValues.lots?.[0] || {};
+      const filledAttributes = (formValues.attributes || []).filter(
+        (a) => a.name?.trim() && a.value?.trim()
+      );
+
+      const hasUncommittedData = filledAttributes.length > 0 || lot.quantity;
+
+      const lastCommitted = variants.length > 0 ? variants[variants.length - 1] : null;
+
+      const finalVariants = [...variants.map((variant) => ({
+        attributes: variant.attributes || [],
+        lots: [
+          {
+            quantity: parseFloat(variant.quantity),
+            purchase_price: parseFloat(variant.prices.purchase_price),
+            retail_selling_price: parseFloat(variant.prices.retail_selling_price),
+            wholesale_selling_price: parseFloat(variant.prices.wholesale_selling_price),
+            wholesale_quantity: parseFloat(variant.prices.wholesale_quantity),
+            expired_date: formValues.lots?.[0]?.expired_date || null,
+            barcode: formValues.barcode || "",
+          },
+        ],
+      }))];
+
+      // ✅ Only add uncommitted variant if:
+      // 1. There are no committed variants (always include)
+      // 2. Or there are attributes filled (i.e. not empty variation)
+      const shouldIncludeUncommitted =
+        variants.length === 0 || filledAttributes.length > 0;
+
+      if (hasUncommittedData && shouldIncludeUncommitted) {
+        // Use form prices or fallback to last committed
+        const useFallback = (val, fallback) =>
+          val !== undefined && val !== "" ? parseFloat(val) : fallback;
+
+        const uncommittedVariant = {
+          attributes: filledAttributes,
+          lots: [
+            {
+              quantity: parseFloat(lot.quantity),
+              purchase_price: useFallback(
+                lot.purchase_price,
+                lastCommitted?.prices?.purchase_price ?? 0
+              ),
+              retail_selling_price: useFallback(
+                lot.retail_selling_price,
+                lastCommitted?.prices?.retail_selling_price ?? 0
+              ),
+              wholesale_selling_price: useFallback(
+                lot.wholesale_selling_price,
+                lastCommitted?.prices?.wholesale_selling_price ?? 0
+              ),
+              wholesale_quantity: useFallback(
+                lot.wholesale_quantity,
+                lastCommitted?.prices?.wholesale_quantity ?? 0
+              ),
+              expired_date: lot.expired_date || null,
+              barcode: formValues.barcode || "",
+            },
+          ],
+        };
+
+        finalVariants.push(uncommittedVariant);
+      }
+
+      // Final payload
+      const payload = {
+        product_name: formValues.product_name,
+        category: formValues.category,
+        unit: formValues.unit,
+        threshold_value: parseFloat(formValues.threshold_value),
+        currency: formValues.currency || "LRD",
+        variants: finalVariants,
+      };
+
+      console.log("Submitting payload:", payload);
+
+      const newProduct = await addProduct(payload);
+
+      if (newProduct && onProductAdded) {
+        onProductAdded(newProduct);
+      }
+
+      reset();
+      setVariants([]);
+    } catch (err) {
+      console.error("Failed to add product:", err);
+    }
+  },
+  [addProduct, onProductAdded, variants, reset]
+);
 
   return (
     <div className="modal-overlay" >
       <div className="product-modal-content" onClick={(e) => e.stopPropagation()}>
-       <div className="frm-header">
-        <span>
-            <h2>Add New Product</h2>
-            <button className="open-modal-btn" onClick={() => setIsCategoryModalOpen(true)}>
-              Create Category
-            </button>
-        </span>
-        <button type="button" className="closeBTN" onClick={onClose}><X  size={18}/></button>
+        <div className="frm-header">
+          <h2 className="frm_title">Add New Product</h2>
+          <X  size={18} onClick={onClose} className="close_frm" />
         </div>
 
         {isCategoryModalOpen && <CategoryForm closeModal={() => setIsCategoryModalOpen(false)} />}
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-        
+        <form className="product_form" onSubmit={handleSubmit(onSubmit)}>
+          
             <div className="detail-section">
             {/* Product Info */}
             <label>
-              <p>Product Name:{errors.product_name && <span className="error">*</span>}</p>
+              <p>Product Name:</p>
               <input type="text" {...register("product_name", { required: true })} 
                  className={errors.product_name ? "input-error" : ""}
+                 onKeyDown={handleKeyDown}
               />
-             
+               
             </label>
-           
 
-
-            <div className="detail-row">
-              <label>
-                <p>Category: {errors.category && <span className="error">*</span>}</p>
-                <select {...register("category", { required: true })}
-                  className={errors.category ? "input-error" : ""}
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
+             <div className="detail-row">
+               <label>
+                <CustomDropdown
+      label="Category"
+      options={categories.map((cat) => ({
+        value: cat.id,
+        label: cat.name,
+      }))}
+      value={watch("category")}
+      onChange={(val) => setValue("category", val)}
+      placeholder="Select Category"
+      error={errors.category}
+    />
                 
               </label>
 
-              <label>
-                Unit:
-                <select {...register("unit")}>
-                  <option value="">Select Unit</option>
-                  {unitOptions.map((unit) => (
-                    <option key={unit} value={unit}>{unit}</option>
-                  ))}
-                </select>
-              </label>
-            </div>
+              <button className="open-modal-btn" onClick={() => setIsCategoryModalOpen(true)}>
+              Create Category
+            </button>
+             </div>
 
               <div className="detail-row">
-                <label>
-                  <p>
-                    Quantity: {errors.lots?.[0]?.quantity && <span className="error">*</span>}
-                  </p>
-                  <input
-                    type="number"
-                    {...register("lots.0.quantity", { required: true })}
-                    className={errors.lots?.[0]?.quantity ? "input-error" : ""}
-                  />
-                </label>
+               
+              <label>
+                <CustomDropdown
+    label="Unit"
+    options={unitOptions.map((u) => ({ value: u, label: u }))}
+    value={watch("unit")}
+    onChange={(val) => setValue("unit", val)}
+    placeholder="Select Unit"
+  />
+              </label>
+    <label>
+                Currency:
+                <select {...register("currency", { required: true })}  className={errors.currency ? "input-error" : ""}>
+                  <option value="USD">USD</option>
+                  <option value="LRD">LRD</option>
+                </select>
+              </label>
 
-                <label>
-                  <p>
-                    Threshold Value: {errors.threshold_value && <span className="error">*</span>}
-                  </p>
-                  <input type="number" {...register("threshold_value", { required: true })} 
-                  className={errors.threshold_value ? "input-error" : ""}/>
-                </label>
+               
+
               </div>
             
               <div className="detail-row">
-                
-                <label>
-                  <p>
-                   Purchased Date: {errors.lots?.[0]?.purchased_date && <span className="error">*</span>}
-                  </p>
-                  <input
-                    type="date"
-                    {...register("lots.0.purchased_date", { required: true })}
-                    className={errors.lots?.[0]?.purchased_date ? "input-error" : ""}
-                  />
-                </label>
-
-
                 <label>
                   Expired Date:
-                  <input type="date" {...register("lots.0.expired_date")} />
+                  <input type="date" {...register("lots.0.expired_date", {
+                    validate: (value) => {
+                      if (!value) return true; // allow empty if not required
+                      const selectedDate = new Date(value);
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0); // ignore time part
+                      return selectedDate >= today || "Expired date cannot be in the past";},
+})} />
+                </label>
+              
+           <label>
+                  <p>
+                    Threshold Value:
+                  </p>
+                  <input type="number" {...register("threshold_value", { required: true })} 
+                    className={errors.threshold_value ? "input-error" : ""}
+                    onKeyDown={preventInvalidNumberInput}/>
+                  
+                </label>
+
+              </div>
+              <div>
+                {errors.lots?.[0]?.expired_date && (
+  <p className="error-msg">{errors.lots[0].expired_date.message}</p>
+)}
+              <div className="detail-row gst">
+                <label>
+                  GST Included <input
+                    type="checkbox"
+                    checked={wholesaleGstIncluded}
+                    onChange={() => {
+                      setWholesaleGstIncluded((prev) => !prev);
+                      setWholesaleGstExcluded(false);
+                    }}/>
                 </label>
               </div>
           
-            <label>
-              Barcode:
-              <input {...register("barcode")} value={barcodeData} readOnly />
-            </label>
-            <div className="barcode-buttons">
-              <button type="button" onClick={() => setShowScanner(true)}>Add Barcode</button>
-              <button type="button">Generate Barcode</button>
-            </div>
+              </div>
+          
+           
             {showScanner && (
               <BarcodeScannerComponent width={300} height={100} onUpdate={handleScan} />
             )}
@@ -299,177 +451,231 @@ export default function ProductModal({ onClose, onProductAdded }) {
 
             {/* Attributes */}
             <div className="attributes-section">
+      {showAttributes && attributes.length > 0 &&  (
+        <div className="attributes-section">
+          <label>Variations</label>
+          {attributes.map((attr, index) => (
+            <div key={attr.id} className="attribute-row">
+              <input
+                type="text"
+                {...register(`attributes.${index}.name`)}
+                placeholder="Name"
+              />
+              <input
+                type="text"
+                {...register(`attributes.${index}.value`)}
+                placeholder="Value"
+              />
+              
+                  <Minus onClick={() => removeAttribute(index)} className="attr-btn" />
+                
+              
+            </div>
+          ))}
+      
+        </div>
+      )}
+      <div className="detail-row">
+        
+        <label></label><label></label><label></label><label></label>
+       </div>
+   
+        <div className="prices">
+          <div className="detail-row">
               <label>
                 <p>
-                  Specifications: {(errors.attributes?.[0]?.name || errors.attributes?.[0]?.value) && (
-                    <span className="error">*</span>
-                  )}
+                  Quantity:{" "}
                 </p>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register("lots.0.quantity", { required: true })}
+                  className={errors.lots?.[0]?.quantity ? "input-error" : ""}
+                  onKeyDown={preventInvalidNumberInput}
+                />
               </label>
+{showAttributes && !showPrices && (
+          <div className="barcode-buttons">
+            <button type="button" onClick={() => setShowPrices(true)}>
+            Add New Prices
+          </button>
+          </div>
+        )}
+{showPrices && (  
 
-              {attributes.map((attr, index) => (
-                <div key={attr.id} className="attribute-row">
-                  <input
-                    type="text"
-                    {...register(`attributes.${index}.name`, {
-                      required: index === 0 ? "Name is required" : false, // only first required
-                    })}
-                    placeholder="Name"
-                    onBlur={addAttributeField}
-                    className={errors.attributes?.[index]?.name ? "input-error" : ""}
-                  />
-                  <input
-                    type="text"
-                    {...register(`attributes.${index}.value`, {
-                      required: index === 0 ? "Value is required" : false, // only first required
-                    })}
-                    placeholder="Value"
-                    onBlur={addAttributeField}
-                    className={errors.attributes?.[index]?.value ? "input-error" : ""}
-                  />
+            <label>
+              <p>
+                Purchase Price:{" "}
+              </p>
+              <input
+                type="number"
+                step="0.01"
+                {...register("lots.0.purchase_price", { required: true })}
+                className={
+                  errors.lots?.[0]?.purchase_price ? "input-error" : ""
+                }
+                onKeyDown={preventInvalidNumberInput}
+              />
+            </label>
+              )}  
+          </div>
+{showPrices && (
+    <>
+          <div className="detail-row">
+            <label>
+              <p>
+                Wholesale Selling Price:{" "}
+              </p>
+              <input
+                type="number"
+                step="0.01"
+                {...register("lots.0.wholesale_selling_price", {
+                  required: true,
+                })}
+                className={
+                  errors.lots?.[0]?.wholesale_selling_price ? "input-error" : ""
+                }
+                onKeyDown={preventInvalidNumberInput}
+              />
+            </label>
+            <label>
+              <p>
+                Wholesale Quantity:{" "}
+              </p>
+              <input
+                type="number"
+                step="0.01"
+                {...register("lots.0.wholesale_quantity", { required: true })}
+                className={
+                  errors.lots?.[0]?.wholesale_quantity ? "input-error" : ""
+                }
+                onKeyDown={preventInvalidNumberInput}
+              />
+            </label>
+          </div>
 
-                  {attributes.length > 1 && (
-                    <button type="button" onClick={() => removeAttribute(index)}>
-                      <Minus />
-                    </button>
-                  )}
-                </div>
-              ))}
+          <div className="detail-row">
+            <label>
+              <p>
+                Retail Selling Price:{" "}
+              </p>
+              <input
+                type="number"
+                step="0.01"
+                {...register("lots.0.retail_selling_price", { required: true })}
+                className={
+                  errors.lots?.[0]?.retail_selling_price ? "input-error" : ""
+                }
+                onKeyDown={preventInvalidNumberInput}
+              />
+            </label>
+          </div>
+        </>
+  )}
+        </div>
+      
+  
+       <label>
+              Barcode:
+              <input {...register("barcode")} value={barcodeData} readOnly />
+            </label>
+      {/* Buttons */}
+       <div className="barcode-buttons">
+              <button type="button" onClick={() => setShowScanner(true)}>Add Barcode</button>
+              {/* <button type="button">Generate Barcode</button> */}
+              <label>
+                <input
+                  type="checkbox"
+                  // checked={generateBarcode} 
+                  onChange={(e) => setGenerateBarcode(e.target.checked)}
+                />
+                Generate Barcode
+              </label>
+               <button type="button" onClick={handleAddVariant}>Add Variation</button>
+            </div> 
             </div>
 
 
             {/* Lots */}
            <div className="price">
+            {showVariantList && (
               <div className="lots-section">
-                {/* Wholesale Prices */}
-                <div className="prices">
-                  <div>
-                    <label>
-                      <p>Wholesale Purchase Price: {errors.lots?.[0]?.wholesale_purchase_price && <span className="error">*</span>}</p>
-                      <input
-                        type="number"
-                        step="0.01"
-                        {...register("lots.0.wholesale_purchase_price", { required: true })}
-                        onBlur={(e) => handlePriceBlur("lots.0.wholesale_purchase_price", e.target.value)}
-                        className={errors.lots?.[0]?.wholesale_purchase_price ? "input-error" : ""}
-                      />
-                    </label>
-
-                    <label>
-                    <p> Wholesale Selling Price: {errors.lots?.[0]?.wholesale_selling_price && <span className="error">*</span>}</p>
-                      <input
-                        type="number"
-                        step="0.01"
-                        {...register("lots.0.wholesale_selling_price", { required: true } )}
-                        onBlur={(e) => handlePriceBlur("lots.0.wholesale_selling_price", e.target.value)}
-                        className={errors.lots?.[0]?.wholesale_selling_price ? "input-error" : ""}
-                      />
-                    </label>
-                  </div>
-
-                  {/* GST checkboxes */}
-                  <div className="gst">
+                      {variants.length > 0 && (
+              <div className="variants-list">
+                <label>Added Variants</label>
+                {variants.map((variant, idx) => (
+                  <div key={idx} className="variant-item">
+                    <div className="list-header">
+                        <X size={16}  onClick={() => handleRemoveVariant(idx)} className="list-btn" />
+                    </div>
                     <span>
-                      <label>
-                        GST Included <input
-                          type="checkbox"
-                          checked={wholesaleGstIncluded}
-                          onChange={() => {
-                            setWholesaleGstIncluded((prev) => !prev);
-                            setWholesaleGstExcluded(false);
-                          }}/>
-                      </label>
-
-                      <label>
-                        GST Excluded <input
-                          type="checkbox"
-                          checked={wholesaleGstExcluded}
-                          onChange={() => {
-                            setWholesaleGstExcluded((prev) => !prev);
-                            setWholesaleGstIncluded(false);
-                          }}
-                        />
-                      </label>
-                    </span>
-                    <p>Wholesale GST: {wholesaleGST ? wholesaleGST.toFixed(2) : "-"}</p>
-
-                  </div>
-
-                  <div>
-                    <label>
-                      <p>Wholesale Quantity: {errors.lots?.[0]?.wholesale_quantity && <span className="error">*</span>}</p>
-                      <input
-                        type="number"
-                        step="0.01"
-                        {...register("lots.0.wholesale_quantity", { required: true })}
-                        onBlur={(e) => handlePriceBlur("lots.0.wholesale_quantity", e.target.value)}
-                        className={errors.lots?.[0]?.wholesale_quantity ? "input-error" : ""}
-                      />
-                    </label>
+                      <div className="variant-attr">
+                      {variant.attributes.length > 0 ? (
+                        variant.attributes.map((a, i) => (
+                            <label key={i}>
+                            {a.name}: {a.value}
+                          </label>
+                        ))
+                      ) : (
+                        <em>No attributes</em>
+                      )}
+                      </div>
                     
+                     <div className="variant-p">
+                        <label>
+                          <p>Purchase Price</p>
+                          <span>{variant.prices.purchase_price}</span>
+                        </label>
+                       
+                        <label>
+                          <p>Quantity</p>
+                          <span>{variant.quantity}</span>
+                        </label>
+                     </div>
+
+                      <div className="variant-p">
+                        
+                        <label>
+                          <p>Wholesale Quantity</p>
+                          <span>{variant.prices.wholesale_quantity}</span>
+                        </label>
+
+                       <label>
+                          <p>Wholesale Price</p>
+                          <span>{variant.prices.wholesale_selling_price}</span>
+                        </label>
+                      </div>
+
+                      <div className="variant-p">
+                        <label>
+                          <p>Retail Price</p>
+                          <span>{variant.prices.retail_selling_price}</span>
+                        </label>
+                         <label>
+                          <p>Barcode </p>
+                          <span>{variant.prices.wholesale_selling_price}</span>
+                        </label>
+                         
+                      </div>
+                      </span>
                   </div>
-
-                </div>
-                  {/* Retail Prices */}
-                <div className="prices">
-                  <div>
-                    <label>
-                      <p>
-                      Retail Purchase Price: {errors.lots?.[0]?.retail_purchase_price && <span className="error">*</span>}
-                      </p>
-                      <input
-                        type="number"
-                        step="0.01"
-                        {...register("lots.0.retail_purchase_price", { required: true })}
-                        onBlur={(e) => handlePriceBlur("lots.0.retail_purchase_price", e.target.value)}
-                        className={errors.lots?.[0]?.retail_purchase_price ? "input-error" : ""}
-                      />
-                    </label>
-
-                    <label>
-                      <p>Retail Selling Price: {errors.lots?.[0]?.retail_selling_price && <span className="error">*</span>}</p>
-                      <input
-                        type="number"
-                        step="0.01"
-                        {...register("lots.0.retail_selling_price", { required: true })}
-                        onBlur={(e) => handlePriceBlur("lots.0.retail_selling_price", e.target.value)}
-                        className={errors.lots?.[0]?.retail_selling_price ? "input-error" : ""}
-                      />
-                    </label>
-                  </div>
-
-                    {/* GST checkboxes */}
-                  <div className="gst">
-                    <span>
-                      <label>
-                        GST Included  <input
-                          type="checkbox"
-                          checked={retailGstIncluded}
-                          onChange={() => {
-                            setRetailGstIncluded((prev) => !prev);
-                            setRetailGstExcluded(false);
-                          }}
-                        />
-                      </label>
-
-                      <label>
-                        GST Excluded <input
-                          type="checkbox"
-                          checked={retailGstExcluded}
-                          onChange={() => {
-                            setRetailGstExcluded((prev) => !prev);
-                            setRetailGstIncluded(false);
-                          }}
-                        />
-                      </label>
-                    </span>
-
-                    <p>Retail GST: {retailGST ? retailGST.toFixed(2) : "-"}</p>
-                  </div>
-                </div>
+                ))}
               </div>
+            )}
+              </div>
+            )}
               <div className="form-buttons">
                 <button type="submit">Save</button>
+                {variants.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowVariantList(prev => !prev)}
+                  className="variant-toggle-btn"
+                >
+                  {showVariantList ? "Hide Variants" : `Show Variants (${variants.length})`}
+                </button>
+)}
+
               </div>
            </div>
            
@@ -479,3 +685,5 @@ export default function ProductModal({ onClose, onProductAdded }) {
     </div>
   );
 }
+
+

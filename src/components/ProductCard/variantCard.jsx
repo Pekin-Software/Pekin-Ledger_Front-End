@@ -119,7 +119,11 @@ const VariantCard = ({
                       <img src={v.image} alt={v.name} />
                     </div>
                     <div className="variant-info">
-                      <p className="variant-name">{`${v.name} ${title}`}</p>
+                      <p className="variant-name">
+                        {v?.name?.trim()
+                          ? `${v.name.trim()} ${title}`
+                          : title}
+                      </p>
                       <p className="variant-price">{currency}$ {v.price.toFixed(2)}</p>
                     </div>
                     <div className="quantity-controls">

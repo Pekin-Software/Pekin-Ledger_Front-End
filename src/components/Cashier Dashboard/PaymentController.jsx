@@ -11,11 +11,12 @@ import { useContext } from "react";
 import usePrintReceipt from '../../utils/reciept';
 import Cookies from 'js-cookie';
 
-export function PaymentController({  cartItems, selectedCurrency, totalLRD, totalUSD, grandTotal, onClose, method, onClearCart,
+export function PaymentController({  cartItems, conversionRate, selectedCurrency, totalLRD, totalUSD, grandTotal, onClose, method, onClearCart,
                                      showStatusModal}) {
-  const storeId = localStorage.getItem('store_id');
+    const storeId = localStorage.getItem('store_id');
+    const access_token = localStorage.getItem('token');
     const printReceipt = usePrintReceipt();
-
+    const [completedPayment, setCompletedPayment] = useState(null);
     const [queue, setQueue] = useState([]); // All payments with status
     const [current, setCurrent] = useState(null);
     const [showSplit, setShowSplit] = useState(true);
@@ -40,11 +41,19 @@ export function PaymentController({  cartItems, selectedCurrency, totalLRD, tota
         setSubmitting(false);
     };
 
- useEffect(() => {
-        if (finalSuccess) {
-            printReceipt(cartItems, totalUSD, totalLRD, onClearCart);
-        }
-    }, [finalSuccess]);
+useEffect(() => {
+  if (finalSuccess && completedPayment) {
+      printReceipt(
+          cartItems,
+          totalUSD,
+          totalLRD,
+          grandTotal,
+          conversionRate,
+          completedPayment,
+          onClearCart
+      );
+  }
+}, [finalSuccess, completedPayment]);
 
     const startSinglePayment = (method) => {
         setIsSinglePayment(true); // Mark as single payment
@@ -135,6 +144,7 @@ export function PaymentController({  cartItems, selectedCurrency, totalLRD, tota
             p.id === current.data.id ? { ...p, status: 'completed' } : p
         );
         setQueue(updated);
+        setCompletedPayment(current.data);
         setCurrent(null);
         setShowIntermediateSuccess(true);
         }
@@ -186,15 +196,15 @@ export function PaymentController({  cartItems, selectedCurrency, totalLRD, tota
     };
 
     const submitSale = async (payload) => {
-    const access_token = Cookies.get('access_token');
     const tenantDomain = localStorage.getItem('tenant')
-    const url = `https://${tenantDomain}/api/sales/sale/`
-        // const localurl = `http://${tenantDomain}:8000/api/sales/sale/`
+    // const url = `https://${tenantDomain}/api/sales/sale/`
+        const localurl = `http://${tenantDomain}:8000/api/sales/sale/`
     try {
-        // const response = await fetch(localurl,
-        // {
-        const response = await fetch(url,
+        const response = await fetch(localurl,
         {
+        
+        // const response = await fetch(url,
+        // {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
@@ -236,7 +246,7 @@ const submitPaymentData = async () => {
       method: p.method,
       amount: parseFloat(
         p.amount.toString().replace(/[^0-9.-]+/g, '') 
-        ),
+        ).toFixed(2),
       currency,
     }));
 

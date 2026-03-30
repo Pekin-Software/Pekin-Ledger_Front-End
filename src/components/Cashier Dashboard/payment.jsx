@@ -214,20 +214,6 @@ export function PaymentModal({ grandTotal, payments, onUpdatePayments, onClose, 
     });
   };
 
-  // const handleProcess = () => {
-  //   setProcessAttempted(true);
-
-  //   const validPayments = payments.filter(p => {
-  //     const { methodError, amountError, duplicateError } = validatePayment(p);
-  //     return !methodError && !amountError && !duplicateError;
-  //   });
-
-  //   const pendingValid = validPayments.filter(p => p.status !== 'completed');
-  //   if (pendingValid.length === 0) return;
-
-  //   onProcess(pendingValid);
-  // };
-
   const handleProcess = () => {
     setProcessAttempted(true);
     setSplitMismatch(false);

@@ -149,8 +149,12 @@ const totalLRD = (cartItems || [])
       {showSplitModal && (
         <PaymentController
           cartItems={cartItems}
+           totalUSD={totalUSD}     
+          totalLRD={totalLRD}
           grandTotal={grandTotal}
           selectedCurrency={selectedCurrency}
+          conversionRate={conversionRate}
+          method="Cash" //remove this to accept multi payment methods 
           onClose={() => {
             setShowSplitModal(false);
           }}

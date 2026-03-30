@@ -1,5 +1,3 @@
-
-/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -12,17 +10,17 @@
   align-items: center;
   z-index: 1000;
 }
-/* Modal Content Box */
+
 .product-modal-content {
   position: relative;
   background: white;
-  width: 80%;
-  height: 65%;
+  max-height: 72vh;
   gap: 10px;
   padding: 1rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .frm-header{
   display: flex;
@@ -33,28 +31,28 @@
     align-items: center;
   }
 }
-.closeBTN{
+.close_frm{
   background-color: transparent;
-  border: none;
   color: #f30303;
 }
-/* Modal Header */
-.product-modal-content h2 {
+
+.frm_title {
   margin-top: 0;
   font-weight: 700;
   font-size: .9rem;
   color: #222222cc;
 }
 
-/* Create Category Button */
+/* Category Button */
 .open-modal-btn {
   background-color: #1366D9;
   border: none;
-  color: white;
-  padding: 6px;
+  border-radius: 5px;
+  color: rgb(255, 255, 255);
+  padding: 3px 8px;
+  font-size: .8rem;
   cursor: pointer;
-  align-self: center;
-  font-weight: 600;
+  align-self: flex-end;
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -63,88 +61,138 @@
 }
 
 /* Form Section */
-/* Uncomment and style for product input */
-/* form{
+.product_form{
   display: flex;
-  height: 90%;
   justify-content: space-between;
-} */
-
-form input[type="date"]::-webkit-calendar-picker-indicator{
-  background-color: #a19facd7;
-  border-radius: 5px;
-  cursor: pointer; 
+  gap: .8rem;
+  overflow-y: auto;
 }
 
-form input[type="date"]::-moz-calendar-picker-indicator{
-  background-color: #a19facd7;
-  border-radius: 5px;
-  cursor: pointer; 
-}
-
-.detail-section,
-.attributes-section,.price {
-  width: 31%;
-  padding: 1rem;
-  gap: 10px;
-}
 .price{
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 0;
-  height: 100%;
-  width: 35%;
+  overflow: hidden;
+  gap: 10px;
 }
 .attributes-section{
-  height: 65%;
   display: flex;
   flex-direction: column;
   gap: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.637);
+
 }
 .detail-section {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.637);
+  gap: 10px;
+  padding-right: 10px;
+  border-right: 1px solid rgba(134, 128, 128, 0.431) ;
 }
 .lots-section {
-  height: 75%;
-  padding: 1rem;
+  padding: .5rem;
   gap: 0;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;  
+  scrollbar-color: #767677a9 #f1f1f1;
 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.637);
-  div{
-    display: flex;
-    width: 100%;
-  }
 }
 
+.variants-list{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.variant-item{
+  width: 320px;
+  background-color: rgba(255, 255, 255, 0.944);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+   box-shadow: 0px 0px 6px rgba(26, 24, 24, 0.76); 
+   span{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+   }
+}
+.list-header{
+  padding: 0;
+  display: flex;
+  justify-content: right;
+  padding: 3px;
+
+}
+.list-btn{
+ padding: 1px;
+ color: red;
+ cursor: pointer;
+}
+.variant-attr{
+  padding: 0 10px;
+}
+.variant-p{
+  display: flex;
+  gap: 5px;
+  padding: 0 10px;
+  label{
+    flex: 1;
+    flex-wrap: nowrap;
+    border-right: 1px solid lightgray;
+    color: #555;
+    p{
+    color: #0057b3d7;
+    }
+  }
+}
+/* Chrome, Edge, Safari */
+.lots-section::-webkit-scrollbar {
+  width: 8px;      /* scrollbar width */
+}
+
+.lots-section::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 4px;
+}
+
+.lots-section::-webkit-scrollbar-thumb {
+  background-color: #1366D9; /* thumb color */
+  border-radius: 4px;
+  border: 2px solid #f1f1f1; /* creates space around thumb */
+}
+
+.lots-section::-webkit-scrollbar-thumb:hover {
+  background-color: #0d4ba0; /* darker on hover */
+}
 /* Labels */
 label {
   display: flex;
   flex-direction: column;
   color: #444;
 }
+form input[type="date"]::-webkit-calendar-picker-indicator{
+  border-radius: 5px;
+  cursor: pointer; 
+}
 
+form input[type="date"]::-moz-calendar-picker-indicator{
+  border-radius: 5px;
+  cursor: pointer; 
+}
 /* Inputs, Select, Textarea */
 input[type="text"],
 input[type="number"],
 input[type="date"],
 input[type="checkbox"],
 select {
-  padding: 4px 12px;
+  padding: 1px 4px;
   border: 1.5px solid #ccc;
-  border-radius: 6px;
+  border-radius: 4px;
   transition: border-color 0.2s ease-in-out;
   background-color: transparent;
   color: #212529;
-}
-select{
-  background-color: rgba(128, 128, 128, 0.685);
 }
 
 input[type="text"]:focus,
@@ -162,8 +210,8 @@ input[readonly] {
   cursor: not-allowed;
   color: #555;
   border: none;
-  padding: 15px 0;
-  /* width: 80%; */
+  padding: 6px 0;
+  width: 65%;
 }
 
 /* Barcode Buttons container */
@@ -171,25 +219,30 @@ input[readonly] {
   display: flex;
   gap: 0.7rem;
   margin-top: 0.5rem;
-  /* width: 80%; */
+  label{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
 }
 
 .barcode-buttons button {
-  flex: 1;
   background-color: #28a745;
   border: none;
   color: white;
-  padding: 4px;
-  border-radius: 6px;
+  padding: 2px 10px;
+  border-radius: 5px;
   cursor: pointer;
    font-size: .8rem;
-  /* font-weight: 600; */
   transition: background-color 0.2s ease-in-out;
 }
 
 .barcode-buttons button:nth-child(2) {
   background-color: #ffc107;
   color: #212529;
+   padding: 4px 9px;
 }
 
 .barcode-buttons button:hover {
@@ -209,11 +262,8 @@ select.input-error,
 input[type="number"].input-error,
 input[type="text"].input-error,
 input[type="date"].input-error  {
-  border: 1px solid red;
+  border: 1.5px solid red !important;
 }
-
-
-
 
 /* Attribute Rows */
 .attribute-row {
@@ -221,17 +271,13 @@ input[type="date"].input-error  {
   gap: 10px;
   margin-bottom: 10px;
 }
-
-.attribute-row input {
-  width: 45%;
+.error-msg{
+  font-size: .8rem;
+  color: red;
 }
-
-.attribute-row button {
-  background: transparent;
-  border: none;
+.attr-btn {
   color: rgb(184, 3, 3);
   cursor: pointer;
-  font-weight: 700;
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -257,26 +303,9 @@ input[type="date"].input-error  {
 }
 
 .gst{
-  display: flex;
-  flex-direction: column;
-  
   label{
-    display: flex;
     flex-direction: row;
     gap: 10px;
-  }
-  span{
-    display: flex;
-    label{
-      width: 30%;
-    }
-    
-  }
-  p{
-    font-size: .8rem;
-    font-weight: 600;
-    color: #007bff;
-    margin-top: 0;
   }
   
 }
@@ -286,7 +315,7 @@ input[type="date"].input-error  {
 .prices{
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 10px;
   div{
     width: 100%;
     display: flex;
@@ -299,14 +328,15 @@ input[type="date"].input-error  {
 
 /* Form Buttons */
 .form-buttons {
+  flex-shrink: 0; 
   align-self: flex-end;
   justify-content: flex-end;
 }
 
 .form-buttons button {
-  padding: 4px 10px;
-  font-size: .8rem;
-  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: .7rem;
+  border-radius: 5px;
   border: none;
   cursor: pointer;
   font-weight: 700;
@@ -330,19 +360,17 @@ input[type="date"].input-error  {
 .form-buttons button[type="button"]:hover {
   background-color: #5a6268;
 }
+
+select.input-error {
+  border: 1.5px solid red !important;
+  background-color: green;
+  border-radius: 4px;
+}
+
 /* Responsive Design */
 
 /* Medium devices (laptops, desktops) */
 @media (min-width: 768px) {
-  .product-modal-content {
-    /* width: 85%;
-    max-width: 900px;
-    padding: 2.5rem 3rem; */
-  }
-
-  .attribute-row input {
-    /* font-size: 1rem; */
-  }
 
 }
 
@@ -363,6 +391,39 @@ input[type="date"].input-error  {
     margin-top: 0.5rem;
   }
 
+  .price {
+    order: 3;
+    background-color: purple;
+    width: 100%;
+    padding: 0;
+  }
+
+  .lots-section {
+    width: 100%;
+    max-height: 35vh;
+    margin-top: 10px;
+    border-top: 1px solid #ccc;
+  }
+
+  .form-buttons {
+    background-color: #000;
+    order: 2;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .variant-toggle-btn {
+    background-color: #ffc107;
+    color: #000;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+
 }
 
 /* Phones */
@@ -370,37 +431,23 @@ input[type="date"].input-error  {
   .product-modal-content {
     width: 100%;
     height: 100%;
+    background-color: #0056b3;
     border-radius: 0;
     padding: 1.5rem 1.5rem;
     max-height: 100vh;
   }
-
-  .barcode-buttons {
+  .product_form{
+    background-color: #1e7e34;
     flex-direction: column;
+    display: flex;
+  flex-direction: column;
+  height: 100%;
   }
-
-  .barcode-buttons button {
-    width: 100%;
-  }
-
-  .attribute-row {
-    /* flex-direction: column; */
-    /* align-items: stretch; */
-  }
-
-  .attribute-row button
-  {
-    /* width: 100%; */
-    margin-top: 0.5rem;
-  }
+  .price {
+  margin-top: auto; /* Pushes it to the bottom */
+  background-color: yellow; /* just for visibility testing, remove later */
+  padding: 1rem 0;
+}
 
 
-  .form-buttons {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .form-buttons button {
-    width: 100%;
-  }
 }

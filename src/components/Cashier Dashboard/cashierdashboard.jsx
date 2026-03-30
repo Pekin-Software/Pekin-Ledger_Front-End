@@ -393,15 +393,22 @@ const CashierDashboard = () => {
           error = {variantsError}
 
           initialQuantities={cartQuantities} 
+
           onQuantityChange={(variantId, qty, variantData) => {
-            const combinedVariantData = {
-              ...variantData,
-              currency: selectedProduct.currency,
-              name: `${variantData.name} ${selectedProduct.product_name}`,
-              product_id: selectedProduct.id
-            };
-            updateCartQuantity(variantId, qty, combinedVariantData);
-          }}
+          const variantName = variantData?.name?.trim();
+
+          const combinedVariantData = {
+            ...variantData,
+            currency: selectedProduct.currency,
+            name: variantName
+              ? `${variantName} ${selectedProduct.product_name}`
+              : selectedProduct.product_name,
+            product_id: selectedProduct.id
+          };
+
+          updateCartQuantity(variantId, qty, combinedVariantData);
+         }}
+
         />
       )}
 
