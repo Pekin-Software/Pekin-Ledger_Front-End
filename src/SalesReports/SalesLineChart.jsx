@@ -1,4 +1,4 @@
-import React, { useState, useMemo} from "react";
+import React, { useState, useMemo, useEffect} from "react";
 import { Calendar } from "lucide-react";
 import {
   LineChart,
@@ -11,25 +11,8 @@ import {
   Legend,
 } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
-
-const data = [
-  { month: "Sep", revenue: 2220000, profit: 1500000 },
-  { month: "Oct", revenue: 2000000, profit: 1500000 },
-  { month: "Nov", revenue: 1500000, profit: 2500000 }, 
-  { month: "Dec", revenue: 800000, profit: 1200000 },
-  { month: "Jan", revenue: 900000, profit: 1500000 },
-  { month: "Feb", revenue: 2203123, profit: 1400000 },
-  { month: "Mar", revenue: 2203123, profit: 1700000 },
-  { month: "April", revenue: 2203123, profit: 1550000 },
-  { month: "May", revenue: 2803123, profit: 1900000 },
-  { month: "June", revenue: 2203123, profit: 2000000 },
-  { month: "Jul", revenue: 2203123, profit: 3000000 },
-  { month: "Aug", revenue: 2203123, profit: 1900000 },
-];
-// Get current month abbreviation (e.g., "Aug")
-
-
-
+import { useSales } from "../contexts/reportContext";
+ 
 // Custom vertical line (cursor)
 const CustomCursor = ({ points, height }) => {
   const { x } = points[0];
@@ -44,70 +27,6 @@ const CustomCursor = ({ points, height }) => {
     />
   );
 };
-
-// const CustomTooltip = ({ active, payload, label, coordinate, setHover }) => {
-//   React.useEffect(() => {
-//     setHover(active); // trigger glow
-//   }, [active, setHover]);
-//   const currentMonth= new Date().toLocaleString("default", { month: "short", year: "numeric" });
-//   if (!active || !payload || !payload.length) return null;
-
-//   return (
-//     <AnimatePresence>
-//       <motion.div
-//         initial={{ opacity: 0, y: 4 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         exit={{ opacity: 0, y: 4 }}
-//         transition={{ duration: 0.2 }}
-//         style={{
-//           // position: "absolute",
-//           left: coordinate.x,  // use the coordinate prop
-//           top: coordinate.y - 40, // shift upward to appear above dot
-//           transform: "translateX(-50%)",
-//           pointerEvents: "none",
-//           zIndex: 10,
-//         }}
-//       >
-//         <div
-//           style={{
-//             background: "#fff",
-//             padding: "10px 14px",
-//             border: "1px solid #E5E7EB",
-//             borderRadius: "8px",
-//             boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
-//             fontSize: "8px",
-//           }}
-//         >
-//           {label === currentMonth && (
-//             <p style={{ margin: 0, fontWeight: "500", fontSize: "10px", color: "#6B7280" }}>
-//               This Month
-//             </p>
-//           )}
-//           <p style={{ margin: 0, fontWeight: "bold", fontSize: "12px", color: "#111827" }}>
-//             {payload[0].value.toLocaleString()}
-//           </p>
-//           <p style={{ margin: 0, fontSize: "10px", color: "#9CA3AF" }}>{label}</p>
-//         </div>
-
-//         <div
-//           style={{
-//             position: "absolute",
-//             bottom: "-5px",
-//             left: "50%",
-//             transform: "translateX(-50%) rotate(45deg)",
-//             width: "10px",
-//             height: "10px",
-//             background: "#fff",
-//             borderLeft: "1px solid #E5E7EB",
-//             borderBottom: "1px solid #E5E7EB",
-//           }}
-//         />
-//       </motion.div>
-//     </AnimatePresence>
-//   );
-// };
-
-// Pulsing active dot
 
 const CustomTooltip = ({ active, payload, label, coordinate, setHover }) => {
   React.useEffect(() => {
@@ -234,18 +153,23 @@ const CustomLegend = () => (
 
 function ProfitRevenueChart() {
   const [hover, setHover] = useState(false);
+  const {
+    fetchSales,
+    profitRevenue,
+    loading,
+  } = useSales();
+  
+  useEffect(() => {
+    // without store_id
+    fetchSales();
+
+    // with store_id
+    // fetchSales(1);
+  }, []);
+
    const maxValue = useMemo(() => {
     return Math.max(...data.map((d) => Math.max(d.revenue, d.profit)));
   }, []);
-
-// const ticks = useMemo(() => {
-//   const magnitude = Math.pow(10, Math.floor(Math.log10(maxValue)));
-//   const niceMax = Math.ceil(maxValue / magnitude) * magnitude;
-//   const step = niceMax / 4;
-//   return Array.from({ length: 5 }, (_, i) => step * i);
-// }, [maxValue]);
-
-// const yDomain = [0, ticks[ticks.length - 1]]; // force domain to end at last tick
 
   return (
     <>
@@ -256,7 +180,7 @@ function ProfitRevenueChart() {
      </span>
       <ResponsiveContainer>
         <LineChart
-          data={data}
+          data={profitRevenue}
           margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
         >
           <CartesianGrid 
